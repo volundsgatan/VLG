@@ -1,0 +1,25 @@
+scrape_configs:
+  - job_name: hue
+    static_configs:
+      - targets:
+          - "hue_exporter:9366"
+
+  - job_name: nordpool
+    static_configs:
+      - targets:
+          - "nordpool_exporter:9367"
+
+  - job_name: ikea_tradfri
+    static_configs:
+      - targets:
+          - "ikea_tradfri_exporter:9368"
+
+  - job_name: homebridge
+    static_configs:
+      - targets:
+          - "homebridge_exporter:5000"
+
+  - job_name: deconz
+    static_configs:
+      - targets:
+          - "deconz_exporter:9369"
