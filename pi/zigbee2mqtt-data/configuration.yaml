@@ -1,0 +1,82 @@
+permit_join: true
+mqtt:
+  base_topic: zigbee2mqtt
+  server: mqtt://mqtt
+  keepalive: 60
+  reject_unauthorized: true
+  version: 4
+  include_device_information: true
+serial:
+  port: /dev/ttyACM0
+frontend:
+  port: 8080
+advanced:
+  network_key:
+    - 80
+    - 189
+    - 2
+    - 236
+    - 161
+    - 12
+    - 121
+    - 197
+    - 211
+    - 33
+    - 76
+    - 22
+    - 113
+    - 232
+    - 234
+    - 1
+  log_level: debug
+devices:
+  '0x00158d000802afb1':
+    friendly_name: Living Room
+  '0x00158d0008399e95':
+    friendly_name: Living Room Window Sensor
+  '0x00158d0007f01537':
+    friendly_name: Bathroom
+  '0x00158d0007f82461':
+    friendly_name: Bedroom
+  '0x00158d0007e66b8a':
+    friendly_name: Outdoor
+  '0x588e81fffe768eef':
+    friendly_name: Hallway Dimmer
+  '0x00158d000839a1f9':
+    friendly_name: Entrance Door Sensor
+  '0x588e81fffe8fb405':
+    friendly_name: Kitchen Dimmer
+  '0x00158d0007f82457':
+    friendly_name: Fridge
+  '0x00178801082ec23c':
+    friendly_name: Living Room Ceiling
+  '0x0017880108faec55':
+    friendly_name: Living Room Window
+  '0x001788010b91f5c1':
+    friendly_name: Living Room Signe
+  '0x0017880108378b7d':
+    friendly_name: Kitchen Ceiling
+  '0x0017880108a1a40c':
+    friendly_name: Bedroom Window
+  '0x001788010872e308':
+    friendly_name: Hue Switch 2
+    homeassistant: {}
+    optimistic: true
+    retain: false
+    legacy: false
+  '0xbc33acfffe9ceaf5':
+    friendly_name: IKEA Switch 1
+    legacy: false
+  '0xbc33acfffe8daf76':
+    friendly_name: IKEA Switch 2
+  '0x0017880108096165':
+    friendly_name: Hue Switch Living Room
+    legacy: false
+  '0x94deb8fffe59db15':
+    friendly_name: Entrance
+    description: Entrance Motion Sensor
+  '0x94deb8fffe6c21ac':
+    friendly_name: Kitchen
+    description: Kitchen Motion Sensor
+device_options:
+  retain: true
