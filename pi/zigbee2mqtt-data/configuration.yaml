@@ -1,4 +1,4 @@
-permit_join: true
+permit_join: false
 mqtt:
   base_topic: zigbee2mqtt
   server: mqtt://mqtt
@@ -29,6 +29,17 @@ advanced:
     - 234
     - 1
   log_level: debug
+  log_syslog:
+    app_name: Zigbee2MQTT
+    eol: /n
+    host: localhost
+    localhost: localhost
+    path: /dev/log
+    pid: process.pid
+    port: 123
+    protocol: tcp4
+    type: '5424'
+  last_seen: epoch
 devices:
   '0x00158d000802afb1':
     friendly_name: Living Room
@@ -50,6 +61,7 @@ devices:
     friendly_name: Fridge
   '0x00178801082ec23c':
     friendly_name: Living Room Ceiling
+    transition: 0
   '0x0017880108faec55':
     friendly_name: Living Room Window
   '0x001788010b91f5c1':
@@ -80,3 +92,6 @@ devices:
     description: Kitchen Motion Sensor
 device_options:
   retain: true
+groups:
+  '1':
+    friendly_name: living_room_lights

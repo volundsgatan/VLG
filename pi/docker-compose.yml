@@ -23,3 +23,13 @@ services:
       - TZ=Europe/Stockholm
     devices:
       - /dev/ttyACM0:/dev/ttyACM0
+
+  sonos-api:
+    network_mode: host
+    restart: always
+    image: chrisns/docker-node-sonos-http-api
+    volumes:
+      - ./sonos/settings.json:/app/settings.json
+      - ./sonos/clips:/app/static/clips
+      - ./sonos/cache:/app/cache
+      - ./sonos/presets:/app/presets
