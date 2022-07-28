@@ -1,7 +1,4 @@
-<script lang="ts">
-</script>
-
-<ul class="text-2xl mt-12">
+<ul class="text-md flex w-full justify-between p-4 text-gray-500">
     <li><a rel="external" href="https://zegl.grafana.net/d/CB4gXSgRz/vlg?orgId=1&refresh=10s">Grafana</a></li>
     <li><a rel="external" href="http://vlg.gurrewe94.gmail.com.beta.tailscale.net:9090/graph">Prometheus</a>
     </li>
