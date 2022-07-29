@@ -6,6 +6,7 @@
     import {onMount} from "svelte";
     import {type State} from "../lib/devices";
     import Room from "../lib/Room.svelte";
+    import Music from "../lib/Music.svelte";
 
     let states: Record<string, State> = {};
     let ws: WebSocket;
@@ -67,8 +68,8 @@
 </svelte:head>
 
 <section>
-    <div class="p-2 md:p-4">
-        <div class="grid grid-cols-7 md:grid-cols-8 grid-rows-8 h-48 md:h-64 w-full text-gray-700">
+    <div class="p-2 md:p-4 flex flex-col space-y-16 h-full">
+        <div class="grid grid-cols-7 md:grid-cols-8 grid-rows-8 w-full text-gray-700">
 
             <div class="row-start-1 row-end-2  col-start-1 col-end-5 border-black border-b-2 border-r-2">
                 <!-- Top Border -->
@@ -108,7 +109,10 @@
                 <Room name="Yard" states="{states}" ws={ws}/>
             </div>
         </div>
+
+        <Music />
     </div>
+
 
     <!---  <pre>{JSON.stringify(sonosSpeakersNowPlaying, null, '  ')}</pre> -->
     <!--- <pre>{states.size}  {JSON.stringify(Array.from(states), null, '  ')}</pre> -->
