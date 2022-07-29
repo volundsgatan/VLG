@@ -17,8 +17,6 @@
     export let icon: String = "🔉"
 
     const getTitle = (track: SonosInput): string | undefined => {
-        console.log("track", track)
-
         if (track?.state?.currentTrack?.title) {
             return track.state.currentTrack.title;
         }
@@ -50,7 +48,7 @@
     {#if !isPlaying}
         <span>🔇</span>
     {:else if albumArt}
-        <img src={albumArt} alt="Album Art"/>
+        <img src={albumArt} alt="Album Art" class="h-8 w-8"/>
     {:else if title}
         <span class="text-sm overflow-hidden">{title}</span>
     {:else}
