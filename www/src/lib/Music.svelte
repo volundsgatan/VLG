@@ -35,7 +35,7 @@
     ]
 </script>
 
-<div class="flex space-x-4">
+<div class="flex space-x-4 justify-center">
     {#each playlists as playlist}
         {#if playlist.image}
             <img src="{playlist.image}" class="h-28 w-28 cursor-pointer"

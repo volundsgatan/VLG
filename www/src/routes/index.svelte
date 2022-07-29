@@ -67,9 +67,8 @@
     <meta name="description" content="VLG"/>
 </svelte:head>
 
-<section>
-    <div class="p-2 flex flex-col space-y-16 h-full">
-        <div class="grid grid-cols-8 grid-rows-8 w-full text-gray-700">
+    <div class="p-2 flex flex-col space-y-16 h-full justify-center">
+        <div class="grid grid-cols-7 grid-rows-8 w-full text-gray-700">
 
             <div class="row-start-1 row-end-4 col-start-6 col-end-8 border-l-2 border-black transition-all duration-500 flex flex-col space-y-2">
                 <Room name="Living Room" states={states} ws={ws} sonos={sonos}/>
@@ -106,4 +105,3 @@
 
     <!---  <pre>{JSON.stringify(sonosSpeakersNowPlaying, null, '  ')}</pre> -->
     <!--- <pre>{states.size}  {JSON.stringify(Array.from(states), null, '  ')}</pre> -->
-</section>

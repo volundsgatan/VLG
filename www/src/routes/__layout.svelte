@@ -3,7 +3,7 @@
 	import Links from "../lib/Links.svelte";
 </script>
 
-<main class="h-full">
+<main class="h-screen">
 	<slot />
 </main>
 
