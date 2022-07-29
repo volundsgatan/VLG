@@ -10,7 +10,7 @@
     <div
             class="text-sm"
             class:text-blue-800={light && temperature < 10}
-            class:text-blue-400={!light && temperature < 10}
+            class:text-blue-200={!light && temperature < 10}
             class:text-red-800={light && temperature > 24}
             class:text-red-400={!light && temperature > 24}
     >

@@ -3,6 +3,8 @@
     import Temperature from "./Temperature.svelte";
     import NowPlaying from "./NowPlaying.svelte";
     import Light from "./Light.svelte";
+    import Occupancy from "./Occupancy.svelte";
+    import Contact from "./Contact.svelte";
 
     export let states: Record<string, State> = {};
     export let sonos: Record<string, any> = {};
@@ -60,25 +62,43 @@
     }
 </script>
 
-<div class="{'grid grid-cols-'+group.size.cols+' grid-rows-'+group.size.rows+' flex-col p-2 md:p-4 h-full w-full select-none'}"
+<div class="grid p-2 md:p-4 h-full w-full select-none"
      on:click={toggleLights}
+     class:grid-cols-1={group.size.cols === 1}
+     class:grid-cols-2={group.size.cols === 2}
+     class:grid-cols-3={group.size.cols === 3}
+     class:grid-cols-4={group.size.cols === 4}
+     class:grid-cols-5={group.size.cols === 5}
+     class:grid-rows-1={group.size.rows === 1}
+     class:grid-rows-2={group.size.rows === 2}
+     class:grid-rows-3={group.size.rows === 3}
+     class:grid-rows-4={group.size.rows === 4}
+     class:grid-rows-5={group.size.rows === 5}
      class:cursor-pointer={haveLights}
-     class:bg-orange-200="{haveLights && anyLightOn}"
+     class:bg-[#d6d0c1]="{haveLights && anyLightOn}"
      class:bg-gray-600="{haveLights && !anyLightOn}"
      class:text-gray-100="{haveLights && !anyLightOn}">
 
     {#each roomMqttStates as state}
-        <div class="{
-        'text-center inline-flex justify-center items-center text-xl md:text-2xl' +
-        (state.webConfig.row ? ' row-start-' + state.webConfig.row  : '') +
-        (state.webConfig.col ? ' col-start-' + state.webConfig.col : '')
-        }">
+        <div class="text-center inline-flex justify-center items-center text-xl md:text-2xl"
+        class:col-start-1={state.webConfig.col === 1}
+        class:col-start-2={state.webConfig.col === 2}
+        class:col-start-3={state.webConfig.col === 3}
+        class:col-start-4={state.webConfig.col === 4}
+        class:col-start-5={state.webConfig.col === 5}
+        class:row-start-1={state.webConfig.row === 1}
+        class:row-start-2={state.webConfig.row === 2}
+        class:row-start-3={state.webConfig.row === 3}
+        class:row-start-4={state.webConfig.row === 4}
+        class:row-start-5={state.webConfig.row === 5}
+
+        >
             {#if state?.temperature}
                 <Temperature temperature={state.temperature} light={anyLightOn}/>
             {:else if state.contact !== undefined}
-                {#if state.contact}🚪{:else}☀️{/if}
+                <Contact contact={state.contact} type={state.webConfig.contactDeviceType}/>
             {:else if state.occupancy !== undefined}
-                {#if state.occupancy}🏃{:else}💤{/if}
+                <Occupancy occupancy={state.occupancy}/>
             {:else if state.state !== undefined}
                 <Light state={state} ws={ws} />
             {/if}
