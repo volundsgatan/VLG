@@ -1,7 +1,8 @@
 <script lang="ts">
-    import {type Device, type DeviceConfig, groups, type State} from "./devices";
+    import {type DeviceConfig, groups, type State} from "./devices";
     import Temperature from "./Temperature.svelte";
     import NowPlaying from "./NowPlaying.svelte";
+    import Light from "./Light.svelte";
 
     export let states: Record<string, State> = {};
     export let sonos: Record<string, any> = {};
@@ -48,19 +49,20 @@
 
     const toggleLights = () => {
         for (const light of lights) {
-            console.log(light)
             ws.send(JSON.stringify({
                 topic: `${light.device.ieeeAddr}/set`,
                 payload: {
-                    state: anyLightOn ? "OFF" : "ON"
+                    state: anyLightOn ? "OFF" : "ON",
+                    brightness: 100,
                 }
             }))
         }
     }
 </script>
 
-<div class="{'grid grid-cols-'+group.size.cols+' grid-rows-'+group.size.rows+' flex-col p-2 md:p-4 h-full w-full'}"
+<div class="{'grid grid-cols-'+group.size.cols+' grid-rows-'+group.size.rows+' flex-col p-2 md:p-4 h-full w-full select-none'}"
      on:click={toggleLights}
+     class:cursor-pointer={haveLights}
      class:bg-orange-200="{haveLights && anyLightOn}"
      class:bg-gray-600="{haveLights && !anyLightOn}"
      class:text-gray-100="{haveLights && !anyLightOn}">
@@ -78,7 +80,7 @@
             {:else if state.occupancy !== undefined}
                 {#if state.occupancy}🏃{:else}💤{/if}
             {:else if state.state !== undefined}
-                {#if state.state == "ON"}💡{:else}🌙{/if}
+                <Light state={state} ws={ws} />
             {/if}
         </div>
     {/each}

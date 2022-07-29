@@ -50,7 +50,7 @@
     {#if !isPlaying}
         <span>🔇</span>
     {:else if albumArt}
-        <img src={albumArt} class="h-full w-full"/>
+        <img src={albumArt} alt="Album Art"/>
     {:else if title}
         <span class="text-sm overflow-hidden">{title}</span>
     {:else}
