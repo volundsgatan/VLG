@@ -1,23 +1,5 @@
 <script lang="ts">
-    const play = async (name: string) => {
-        return fetch("http://vlg-pi:5005/TV/favourite/" + name)
-            .then(res => res.json())
-
-            .then(async data => {
-                await fetch("http://vlg-pi:5005/TV/shuffle/on")
-                await fetch("http://vlg-pi:5005/TV/next")
-            })
-
-            .then(async data => {
-                // Join ALL
-                await fetch("http://vlg-pi:5005/Five/join/TV")
-                await fetch("http://vlg-pi:5005/Kitchen/join/TV")
-            })
-
-            .catch(err => {
-                console.error(err);
-            });
-    }
+    import MusicPlaylist from "./MusicPlaylist.svelte";
 
     const playlists = [
         {
@@ -37,14 +19,6 @@
 
 <div class="flex space-x-4 justify-center">
     {#each playlists as playlist}
-        {#if playlist.image}
-            <img src="{playlist.image}" class="h-28 w-28 cursor-pointer"
-                 on:click|preventDefault={() => play(playlist.name)}/>
-        {:else}
-            <div class="cursor-pointer bg-red-200 h-28 w-28 text-red-600 text-2xl justify-center inline-flex items-center"
-                 on:click|preventDefault={() => play(playlist.name)}>
-                {playlist.abbr}
-            </div>
-        {/if}
+        <MusicPlaylist image={playlist.image} name={playlist.name} abbr={playlist.abbr}/>
     {/each}
 </div>
