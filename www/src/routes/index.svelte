@@ -101,7 +101,3 @@
 
         <Music />
     </div>
-
-
-    <!---  <pre>{JSON.stringify(sonosSpeakersNowPlaying, null, '  ')}</pre> -->
-    <!--- <pre>{states.size}  {JSON.stringify(Array.from(states), null, '  ')}</pre> -->

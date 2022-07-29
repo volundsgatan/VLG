@@ -1,7 +1,7 @@
 <script lang="ts">
     import {type DeviceConfig, groups, type State} from "./devices";
     import Temperature from "./Temperature.svelte";
-    import NowPlaying from "./NowPlaying.svelte";
+    import Sonos from "./Sonos.svelte";
     import Light from "./Light.svelte";
     import Occupancy from "./Occupancy.svelte";
     import Contact from "./Contact.svelte";
@@ -116,7 +116,7 @@
              class:row-start-4={state.webConfig.row === 4}
              class:row-start-5={state.webConfig.row === 5}
         >
-            <NowPlaying track={state}/>
+            <Sonos track={state}/>
         </div>
     {/each}
 </div>

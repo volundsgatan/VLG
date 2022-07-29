@@ -10,6 +10,7 @@
     };
 
     type SonosInput = {
+        name: string;
         state?: State;
     }
 
@@ -42,9 +43,27 @@
     $: title = getTitle(track);
     $: albumArt = getArt(track);
     $: isPlaying = track?.state?.playbackState === "PLAYING";
+
+    const toggle = async () => {
+        if (isPlaying) {
+            return fetch("http://vlg-pi:5005/" + track.name + "/leave")
+            .then(res => res.json())
+
+            .catch(err => {
+                console.error(err);
+            });
+        } else {
+            return fetch("http://vlg-pi:5005/" + track.name + "/join/TV")
+            .then(res => res.json())
+
+            .catch(err => {
+                console.error(err);
+            });
+        }
+    }
 </script>
 
-<div class="inline-flex items-center space-x-2">
+<div on:click|stopPropagation={toggle} class="inline-flex items-center space-x-2 cursor-pointer">
     {#if !isPlaying}
         <span>🔇</span>
     {:else if albumArt}
