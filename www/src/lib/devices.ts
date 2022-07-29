@@ -21,18 +21,18 @@ export const groups: Group[] = [
         name: 'Living Room',
         size: {
             cols: 5,
-            rows: 4,
+            rows: 5,
         },
         devices: [
-            {addr: "0x00158d0008399e95", row: 2, col: 1}, // Window Sensor
-            {addr: "0x0017880108faec55", row: 3, col: 1}, // Window Light
-            {addr: "0x001788010b91f5c1", row: 4, col: 1}, // Signe Floor Light
-            {addr: "0x00178801082ec23c", row: 3, col: 2}, // Table Light
-            {addr: "0x00158d000802afb1", row: 4, col: 5}, // Temperature Sensor
+            {addr: "0x00158d0008399e95", row: 3, col: 5}, // Window Sensor
+            {addr: "0x0017880108faec55", row: 2, col: 5}, // Window Light
+            {addr: "0x001788010b91f5c1", row: 1, col: 5}, // Signe Floor Light
+            {addr: "0x00178801082ec23c", row: 3, col: 4}, // Table Light
+            {addr: "0x00158d000802afb1", row: 3, col: 3}, // Temperature Sensor
             // {addr: "0x00178801082ec23c", row: 3, col: 4}, // Sofa light (fake addr)
             {addr: "0x0017880108096165"}, // Hue Switch
-            {sonosName: "TV", row: 1, col: 5},
-            {sonosName: "Five", row: 1, col: 1},
+            {sonosName: "TV", row: 5, col: 2},
+            {sonosName: "Five", row: 5, col: 5},
         ],
     },
 
@@ -44,7 +44,7 @@ export const groups: Group[] = [
         },
         devices: [
             {addr: "0x00158d0007f82461", row: 1, col: 2}, // Temperature Sensor
-            {addr: "0x0017880108a1a40c", row: 1, col: 3},  // Window Light
+            {addr: "0x0017880108a1a40c", row: 1, col: 1},  // Window Light
         ],
     },
 
@@ -52,14 +52,14 @@ export const groups: Group[] = [
         name: 'Kitchen',
         size: {
             cols: 3,
-            rows: 3,
+            rows: 5,
         },
         devices: [
-            {addr: "0x94deb8fffe6c21ac", row: 2, col: 1}, // Motion Sensor
-            {addr: "0x588e81fffe8fb405", row: 1, col: 2}, // Spotlight
-            {addr: "0x0017880108378b7d", row: 2, col: 2}, // Ceiling
-            {addr: "0x00158d0007f82457", row: 1, col: 1}, // Fridge Temperature Sensor
-            {sonosName: "Kitchen", row: 3, col: 1},
+            {addr: "0x94deb8fffe6c21ac", row: 4, col: 3}, // Motion Sensor
+            {addr: "0x588e81fffe8fb405", row: 5, col: 2}, // Spotlight
+            {addr: "0x0017880108378b7d", row: 3, col: 2}, // Ceiling
+            {addr: "0x00158d0007f82457", row: 5, col: 3}, // Fridge Temperature Sensor
+            {sonosName: "Kitchen", row: 1, col: 3},
         ]
     },
 
@@ -79,11 +79,11 @@ export const groups: Group[] = [
 
         size: {
             cols: 1,
-            rows: 1,
+            rows: 2,
         },
         devices: [
-            {addr: "0x00158d000839a1f9"}, // Door Sensor
-            {addr: "0x003c84fffeb6e38b"}, // Door Lamp
+            {addr: "0x00158d000839a1f9", row: 2, col: 1}, // Door Sensor
+            {addr: "0x003c84fffeb6e38b", row: 1, col: 1}, // Door Lamp
         ]
     },
 
@@ -92,11 +92,11 @@ export const groups: Group[] = [
 
         size: {
             cols: 3,
-            rows: 2,
+            rows: 3,
         },
         devices: [
-            {addr: "0x94deb8fffe59db15", row: 1, col: 2}, // Motion Sensor
-            {addr: "0x588e81fffe768eef", row: 1, col: 1}, // Dimmer
+            {addr: "0x94deb8fffe59db15", row: 3, col: 1}, // Motion Sensor
+            {addr: "0x588e81fffe768eef", row: 3, col: 3}, // Dimmer
             {addr: "0x003c84fffeb15921", row: 2, col: 2}, // Dimmer (ceiling lamp)
         ]
     },

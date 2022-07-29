@@ -68,44 +68,38 @@
 </svelte:head>
 
 <section>
-    <div class="p-2 md:p-4 flex flex-col space-y-16 h-full">
-        <div class="grid grid-cols-7 md:grid-cols-8 grid-rows-8 w-full text-gray-700">
+    <div class="p-2 flex flex-col space-y-16 h-full">
+        <div class="grid grid-cols-8 grid-rows-6 w-full text-gray-700">
 
-            <div class="row-start-1 row-end-2  col-start-1 col-end-5 border-black border-b-2 border-r-2">
-                <!-- Top Border -->
+            <div class="row-start-4 row-end-6 col-start-5 col-end-8 border-black">
                 &nbsp;
             </div>
 
-            <div class="row-start-2 row-end-7 col-start-1 col-end-4 border-2 border-t-0 border-black transition-all duration-500 flex flex-col space-y-2">
+            <div class="row-start-1 row-end-4 col-start-6 col-end-8 border-2 border-l-0 border-black transition-all duration-500 flex flex-col space-y-2">
                 <Room name="Living Room" states={states} ws={ws} sonos={sonos}/>
             </div>
 
-            <div class="row-start-2 row-end-6 col-start-4 col-end-6 border-2 border-black border-l-0 border-t-0 transition-all duration-500">
+            <div class="row-start-2 row-end-4 col-start-4 col-end-6 border-2 border-black border-l-0 border-t-0 transition-all duration-500">
                 <Room name="Hallway" states="{states}" ws={ws}/>
             </div>
 
-
-            <div class="row-start-1 row-end-2 col-start-5 col-end-6 border-black border-t-2 border-r-2 transition-all duration-500">
-                <!-- Entrance By Door -->
+            <div class="row-start-4 row-end-6 col-start-4 col-end-5 border-black border-b-2 border-r-2 transition-all duration-500">
                 <Room name="Entrance" parent="Hallway" states="{states}" ws={ws}/>
             </div>
 
-            <div class="bg-orange-100 row-start-6 row-end-7 col-start-4 col-end-6 border-2 border-black border-l-0 border-t-0 flex flex-col">
+            <div class="bg-orange-100 row-start-1 row-end-2 col-start-4 col-end-6 border-2 border-black border-l-0 flex flex-col">
                 <Room name="Bathroom" states="{states}" ws={ws}/>
             </div>
 
-            <div class="row-start-4 row-end-7 col-start-6 col-end-8 border-2 border-black border-t-0 border-l-0 transition-all duration-500 ">
-                <!-- Bedroom -->
+            <div class="row-start-1 row-end-3 col-start-2 col-end-4 border-2 border-black border-b-0 transition-all duration-500 ">
                 <Room name="Bedroom" states="{states}" ws={ws}/>
             </div>
 
-            <div class="row-start-1 row-end-4 col-start-6 col-end-8 border-2 border-black border-l-0 transition-all duration-500 flex flex-col">
-                <!-- Kitchen -->
+            <div class="row-start-3 row-end-6 col-start-2 col-end-4 border-2 border-black transition-all duration-500 flex flex-col">
                 <Room name="Kitchen" states="{states}" ws={ws} sonos={sonos}/>
             </div>
 
-            <div class="bg-green-700 text-gray-100 row-start-1 row-end-7 col-start-8 col-end-9 p-2 md:p-4 hidden md:block">
-                <!-- Yard -->
+            <div class="bg-green-700 text-gray-100 row-start-1 row-end-6 col-start-1 col-end-2 p-2">
                 <Room name="Yard" states="{states}" ws={ws}/>
             </div>
         </div>
