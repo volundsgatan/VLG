@@ -72,7 +72,7 @@
 </script>
 
 <div
-	class="grid h-full w-full select-none p-2"
+	class="grid h-full w-full select-none"
 	on:click={toggleLights}
 	class:grid-cols-1={group.size.cols === 1}
 	class:grid-cols-2={group.size.cols === 2}
