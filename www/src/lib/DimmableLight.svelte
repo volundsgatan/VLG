@@ -4,12 +4,27 @@
 	export let state: State;
 	export let ws: WebSocket;
 
+	const levels = [0, 50, 125, 254];
+	const emojis = ['🌙', '🏮', '🕯', '💡'];
+
 	const emoji = (s: State) => {
-		return s.state === 'ON' ? '💡' : '🌙'
+		if (s.state === 'ON') {
+			for (const [idx, level] of levels.entries()) {
+				if (s.brightness <= level) {
+					return emojis[idx];
+				}
+			}
+		}
+
+		return '🌙';
 	};
 
 	const nextBrightness = (s: State): number => {
-		return s.state === 'ON' ? 0 : 254;
+		for (const [idx, level] of levels.entries()) {
+			if (s.brightness <= level) {
+				return levels[(idx + 1) % levels.length];
+			}
+		}
 	};
 
 	const toggle = () => {

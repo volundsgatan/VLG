@@ -3,6 +3,7 @@
 	import Temperature from './Temperature.svelte';
 	import Sonos from './Sonos.svelte';
 	import Light from './Light.svelte';
+	import DimmableLight from './DimmableLight.svelte';
 	import Occupancy from './Occupancy.svelte';
 	import Contact from './Contact.svelte';
 
@@ -106,7 +107,9 @@
 				<Contact contact={state.contact} type={state.webConfig.contactDeviceType} />
 			{:else if state.occupancy !== undefined}
 				<Occupancy occupancy={state.occupancy} />
-			{:else if state.state !== undefined}
+			{:else if state.state !== undefined && state.duration !== undefined}
+				<DimmableLight {state} {ws} />
+			{:else if state.state !== undefined && state.duration === undefined}
 				<Light {state} {ws} />
 			{/if}
 		</div>
