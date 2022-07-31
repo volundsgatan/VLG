@@ -1,6 +1,6 @@
 export type Track = {
-    title?: string;
-    stationName?: string;
-    type: string;
-    absoluteAlbumArtUri?: string;
-}
+	title?: string;
+	stationName?: string;
+	type: string;
+	absoluteAlbumArtUri?: string;
+};

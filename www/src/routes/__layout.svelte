@@ -1,6 +1,6 @@
 <script lang="ts">
-	import "../app.css";
-	import Links from "../lib/Links.svelte";
+	import '../app.css';
+	import Links from '../lib/Links.svelte';
 </script>
 
 <main class="h-screen">
@@ -8,5 +8,5 @@
 </main>
 
 <footer class="bottom-0 fixed w-full">
-	<Links/>
+	<Links />
 </footer>
