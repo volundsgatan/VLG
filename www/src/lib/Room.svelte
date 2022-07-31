@@ -10,7 +10,7 @@
 	export let states: Record<string, State> = {};
 	export let sonos: Record<string, any> = {};
 	export let name: string;
-	export let parent: string | null = null; // Light and background acting as another room
+	export let joinRoomName: string | null = null; // Join light status with this room
 	export let ws: WebSocket;
 
 	const mqttStatesForAddrs = (
@@ -36,10 +36,9 @@
 	$: roomMqttStates = mqttStatesForAddrs(states, roomDevices);
 
 	// Get lights from this room, or from the parent room if any
-	$: lightsGroupName = parent ? parent : name;
 	$: roomLightsMqttStates = mqttStatesForAddrs(
 		states,
-		groups?.find((g) => g.name === lightsGroupName).devices
+		groups?.filter((g) => (joinRoomName && g.name === joinRoomName) ||  g.name === name).map(g => g.devices).flat()
 	);
 	$: lights = roomLightsMqttStates.filter((s) => s.state !== undefined);
 	$: anyLightOn = lights.some((s) => s.state == 'ON');

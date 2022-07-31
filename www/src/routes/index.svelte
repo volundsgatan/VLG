@@ -76,11 +76,11 @@
 		</div>
 
 		<div class="row-start-2 row-end-4 col-start-4 col-end-6 transition-all duration-500">
-			<Room name="Hallway" {states} {ws} />
+			<Room name="Hallway" joinRoomName="Entrance" {states} {ws} />
 		</div>
 
 		<div class="row-start-4 row-end-6 col-start-4 col-end-5 transition-all duration-500">
-			<Room name="Entrance" parent="Hallway" {states} {ws} />
+			<Room name="Entrance" joinRoomName="Hallway" {states} {ws} />
 		</div>
 
 		<div
