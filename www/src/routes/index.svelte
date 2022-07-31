@@ -67,42 +67,42 @@
 	<meta name="description" content="VLG" />
 </svelte:head>
 
-<div class="p-2 flex flex-col space-y-16 h-full justify-center">
-	<div class="grid grid-cols-7 grid-rows-8 w-full text-gray-700">
+<div class="flex h-full flex-col justify-center space-y-16 p-2">
+	<div class="grid-rows-8 grid w-full grid-cols-7 text-gray-700">
 		<div
-			class="row-start-1 row-end-4 col-start-6 col-end-8 border-l-2 border-black transition-all duration-500 flex flex-col space-y-2"
+			class="col-start-6 col-end-8 row-start-1 row-end-4 flex flex-col space-y-2 border-l-2 border-black transition-all duration-500"
 		>
 			<Room name="Living Room" {states} {ws} {sonos} />
 		</div>
 
-		<div class="row-start-2 row-end-4 col-start-4 col-end-6 transition-all duration-500">
+		<div class="col-start-4 col-end-6 row-start-2 row-end-4 transition-all duration-500">
 			<Room name="Hallway" joinRoomName="Entrance" {states} {ws} />
 		</div>
 
-		<div class="row-start-4 row-end-6 col-start-4 col-end-5 transition-all duration-500">
+		<div class="col-start-4 col-end-5 row-start-4 row-end-6 transition-all duration-500">
 			<Room name="Entrance" joinRoomName="Hallway" {states} {ws} />
 		</div>
 
 		<div
-			class="bg-gray-600 row-start-1 row-end-2 col-start-4 col-end-6 border-black border-b-2 flex flex-col"
+			class="col-start-4 col-end-6 row-start-1 row-end-2 flex flex-col border-b-2 border-black bg-gray-600"
 		>
 			<Room name="Bathroom" {states} {ws} />
 		</div>
 
 		<div
-			class="row-start-1 row-end-3 col-start-2 col-end-4 border-black border-b-2 border-r-2 transition-all duration-500 "
+			class="col-start-2 col-end-4 row-start-1 row-end-3 border-b-2 border-r-2 border-black transition-all duration-500 "
 		>
 			<Room name="Bedroom" {states} {ws} />
 		</div>
 
 		<div
-			class="row-start-3 row-end-6 col-start-2 col-end-4 border-black border-r-2 transition-all duration-500 flex flex-col"
+			class="col-start-2 col-end-4 row-start-3 row-end-6 flex flex-col border-r-2 border-black transition-all duration-500"
 		>
 			<Room name="Kitchen" {states} {ws} {sonos} />
 		</div>
 
 		<div
-			class="bg-lime-700 text-gray-100 row-start-1 row-end-6 col-start-1 col-end-2 p-2 border-black border-r-2"
+			class="col-start-1 col-end-2 row-start-1 row-end-6 border-r-2 border-black bg-lime-700 p-2 text-gray-100"
 		>
 			<Room name="Yard" {states} {ws} />
 		</div>

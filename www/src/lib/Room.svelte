@@ -38,7 +38,10 @@
 	// Get lights from this room, or from the parent room if any
 	$: roomLightsMqttStates = mqttStatesForAddrs(
 		states,
-		groups?.filter((g) => (joinRoomName && g.name === joinRoomName) ||  g.name === name).map(g => g.devices).flat()
+		groups
+			?.filter((g) => (joinRoomName && g.name === joinRoomName) || g.name === name)
+			.map((g) => g.devices)
+			.flat()
 	);
 	$: lights = roomLightsMqttStates.filter((s) => s.state !== undefined);
 	$: anyLightOn = lights.some((s) => s.state == 'ON');
@@ -69,7 +72,7 @@
 </script>
 
 <div
-	class="grid p-2 h-full w-full select-none"
+	class="grid h-full w-full select-none p-2"
 	on:click={toggleLights}
 	class:grid-cols-1={group.size.cols === 1}
 	class:grid-cols-2={group.size.cols === 2}
@@ -88,7 +91,7 @@
 >
 	{#each roomMqttStates as state}
 		<div
-			class="text-center inline-flex justify-center items-center text-xl md:text-2xl"
+			class="inline-flex items-center justify-center text-center text-xl md:text-2xl"
 			class:col-start-1={state.webConfig.col === 1}
 			class:col-start-2={state.webConfig.col === 2}
 			class:col-start-3={state.webConfig.col === 3}
@@ -116,7 +119,7 @@
 
 	{#each roomSonosStates as state}
 		<div
-			class="flex justify-center items-center"
+			class="flex items-center justify-center"
 			class:col-start-1={state.webConfig.col === 1}
 			class:col-start-2={state.webConfig.col === 2}
 			class:col-start-3={state.webConfig.col === 3}

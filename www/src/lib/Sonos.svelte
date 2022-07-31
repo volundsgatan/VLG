@@ -63,13 +63,13 @@
 	};
 </script>
 
-<div on:click|stopPropagation={toggle} class="inline-flex items-center space-x-2 cursor-pointer">
+<div on:click|stopPropagation={toggle} class="inline-flex cursor-pointer items-center space-x-2">
 	{#if !isPlaying}
 		<span>🔇</span>
 	{:else if albumArt}
 		<img src={albumArt} alt="Album Art" class="h-8 w-8" />
 	{:else if title}
-		<span class="text-sm overflow-hidden">{title}</span>
+		<span class="overflow-hidden text-sm">{title}</span>
 	{:else}
 		<span>{icon}</span>
 	{/if}

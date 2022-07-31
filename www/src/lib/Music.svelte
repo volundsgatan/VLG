@@ -17,7 +17,7 @@
 	];
 </script>
 
-<div class="flex space-x-4 justify-center">
+<div class="flex justify-center space-x-4">
 	{#each playlists as playlist}
 		<MusicPlaylist image={playlist.image} name={playlist.name} abbr={playlist.abbr} />
 	{/each}

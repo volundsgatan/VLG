@@ -5,7 +5,7 @@
 	export let ws: WebSocket;
 
 	const emoji = (s: State) => {
-		return s.state === 'ON' ? '💡' : '🌙'
+		return s.state === 'ON' ? '💡' : '🌙';
 	};
 
 	const nextBrightness = (s: State): number => {

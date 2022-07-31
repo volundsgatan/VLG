@@ -37,7 +37,7 @@
 <div class="relative">
 	{#if loading}
 		<div
-			class="opacity-80 bg-black absolute inline-flex items-center top-0 left-0 w-full h-full justify-center"
+			class="absolute top-0 left-0 inline-flex h-full w-full items-center justify-center bg-black opacity-80"
 		>
 			<Spinner />
 		</div>
@@ -47,7 +47,7 @@
 		<img src={image} class="h-28 w-28 cursor-pointer" on:click|preventDefault={play} />
 	{:else}
 		<div
-			class="cursor-pointer bg-red-200 h-28 w-28 text-red-600 text-2xl justify-center inline-flex items-center"
+			class="inline-flex h-28 w-28 cursor-pointer items-center justify-center bg-red-200 text-2xl text-red-600"
 			on:click|preventDefault={play}
 		>
 			{abbr}
