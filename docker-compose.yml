@@ -15,29 +15,10 @@ services:
       - "--web.console.templates=/usr/share/prometheus/consoles"
       -  "--storage.tsdb.retention.time=3000d"
 
-  hue_exporter:
-    image: zegl/hue_exporter:latest
-    ports:
-      - "100.122.74.99:9366:9366"
-    volumes:
-      - ./config/hue_exporter:/etc/hue_exporter
-
   nordpool_exporter:
     image: zegl/nordpool_exporter:latest
     ports:
       - "100.122.74.99:9367:9367"
-
-  ikea_tradfri_exporter:
-    image: zegl/ikea_tradfri_exporter:latest
-    command:
-      - "--gateway-addr=192.168.86.55:5684"
-      - "--storage-path=/ikea_tradfri_exporter"
-      - "--security-code=d1JEEjOzZ0AOnhPI"
-      - "--client-id=vlg"
-    ports:
-      - "100.122.74.99:9368:9368"
-    volumes:
-      - ./data/ikea_tradfri_exporter:/ikea_tradfri_exporter
 
   homebridge_exporter:
     image: ghcr.io/seanson/homebridge-prometheus-exporter:latest
@@ -48,14 +29,16 @@ services:
       HOMEBRIDGE_PASSWORD: "admin"
       HOMEBRIDGE_URL: "http://100.89.255.38:8581"
 
-  deconz_exporter:
-    image: solsson/prometheus-deconz-exporter:latest
+  mqtt_exporter:
+    image: kpetrem/mqtt-exporter
     ports:
-      - "100.122.74.99:9369:9369"
-    command:
-      - "--host=100.94.102.41:8080"
-      - "--listen=:9369"
-      - "--key=0DE0E9DD3D"
+      - "9371:9000"
+    environment:
+      MQTT_ADDRESS: 100.126.60.12
+      MQTT_PORT: 1883
+      MQTT_TOPIC: "zigbee2mqtt/#"
+    restart: always
+  
   www:
     image: nginx:alpine
     ports:
