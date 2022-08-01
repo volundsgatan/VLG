@@ -8,7 +8,7 @@
 	const levels = [0, 50, 125, 254];
 
 	const colors = [
-		"text-gray-400",
+		"",
 		"text-amber-400 drop-shadow-[0_-4px_4px_rgba(245,158,11,0.5)]",
 		"text-amber-400 drop-shadow-[0_-4px_5px_rgba(245,158,11,0.7)]",
 		"text-amber-400 drop-shadow-[0_-4px_6px_rgba(245,158,11,1)]",
@@ -51,7 +51,7 @@
 </script>
 
 {#if state}
-	<div on:click|stopPropagation={toggle} class="cursor-pointer" >
-		<Icon src="{LightBulb}" class="{'h-6 w-6 ' + color}" />
+	<div on:click|stopPropagation={toggle} class="cursor-pointer h-16 w-16 inline-flex items-center justify-center" >
+		<Icon src="{LightBulb}" solid class="{'h-6 w-6 ' + color}" />
 	</div>
 {/if}

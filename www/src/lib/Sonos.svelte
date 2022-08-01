@@ -46,7 +46,7 @@
 	};
 </script>
 
-<div on:click|stopPropagation={toggle} class="cursor-pointer">
+<div on:click|stopPropagation={toggle} class="cursor-pointer h-16 w-16 inline-flex items-center justify-center">
 	{#if !isPlaying}
 		<Icon src="{VolumeOff}" class="h-6 w-6" />
 	{:else if albumArt}
