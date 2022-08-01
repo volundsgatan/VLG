@@ -86,7 +86,7 @@
 	class:grid-rows-5={group.size.rows === 5}
 	class:cursor-pointer={haveLights}
 	class:bg-stone-200={haveLights && anyLightOn}
-	class:bg-gray-600={haveLights && !anyLightOn}
+	class:bg-stone-600={haveLights && !anyLightOn}
 	class:text-gray-100={haveLights && !anyLightOn}
 >
 	{#each roomMqttStates as state}

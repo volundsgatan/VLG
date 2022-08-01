@@ -48,10 +48,10 @@
 
 <div on:click|stopPropagation={toggle} class="cursor-pointer h-16 w-16 inline-flex items-center justify-center">
 	{#if !isPlaying}
-		<Icon src="{VolumeOff}" class="h-6 w-6" />
+		<Icon src="{VolumeOff}" class="h-12 w-12" />
 	{:else if albumArt}
-		<img src={albumArt} alt="Album Art" class="h-8 w-8" />
+		<img src={albumArt} alt="Album Art" class="h-12 w-12" />
 	{:else}
-		<Icon src="{VolumeUp}" class="h-6 w-6" />
+		<Icon src="{VolumeUp}" class="h-12 w-12" />
 	{/if}
 </div>

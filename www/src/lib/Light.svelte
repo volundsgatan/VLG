@@ -28,9 +28,9 @@
 {#if state}
 	<div on:click|stopPropagation={toggle} class="cursor-pointer h-16 w-16 inline-flex items-center justify-center">
 		{#if on}
-			<Icon src="{LightBulb}" solid class="h-6 w-6 text-amber-400 drop-shadow-[0_-4px_6px_rgba(245,158,11,1)]" />
+			<Icon src="{LightBulb}" solid class="h-12 w-12 text-amber-400 drop-shadow-[0_-4px_6px_rgba(245,158,11,1)]" />
 		{:else}
-			<Icon src="{LightBulb}" solid class="h-6 w-6" /> 
+			<Icon src="{LightBulb}" solid class="h-12 w-12 text-stone-400" />
 		{/if}
 	</div>
 {/if}
