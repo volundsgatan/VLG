@@ -1,22 +1,29 @@
 <script lang="ts">
 	import { type State } from './devices';
+	import { Icon, LightBulb } from "svelte-hero-icons";
 
 	export let state: State;
 	export let ws: WebSocket;
 
 	const levels = [0, 50, 125, 254];
-	const emojis = ['🌙', '🏮', '🕯', '💡'];
 
-	const emoji = (s: State) => {
+	const colors = [
+		"text-gray-400",
+		"text-amber-400 drop-shadow-[0_-4px_4px_rgba(245,158,11,0.5)]",
+		"text-amber-400 drop-shadow-[0_-4px_5px_rgba(245,158,11,0.7)]",
+		"text-amber-400 drop-shadow-[0_-4px_6px_rgba(245,158,11,1)]",
+	]
+
+	const getColor = (s: State) => {
 		if (s.state === 'ON') {
 			for (const [idx, level] of levels.entries()) {
 				if (s.brightness <= level) {
-					return emojis[idx];
+					return colors[idx];
 				}
 			}
 		}
 
-		return '🌙';
+		return colors[0];
 	};
 
 	const nextBrightness = (s: State): number => {
@@ -40,11 +47,11 @@
 		);
 	};
 
-	$: icon = emoji(state);
+	$: color = getColor(state);
 </script>
 
 {#if state}
-	<div on:click|stopPropagation={toggle} class="cursor-pointer">
-		{icon}
+	<div on:click|stopPropagation={toggle} class="cursor-pointer" >
+		<Icon src="{LightBulb}" class="{'h-6 w-6 ' + color}" />
 	</div>
 {/if}

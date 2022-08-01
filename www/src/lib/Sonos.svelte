@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { Icon, VolumeOff, VolumeUp } from "svelte-hero-icons";
 	import { type Track } from './sonos';
 
 	type State = {
@@ -15,7 +16,6 @@
 	};
 
 	export let track: SonosInput;
-	export let icon: String = '🔉';
 
 	const getArt = (track: TrackState): string | undefined => {
 		if (track?.state?.currentTrack?.absoluteAlbumArtUri) {
@@ -48,10 +48,10 @@
 
 <div on:click|stopPropagation={toggle} class="cursor-pointer">
 	{#if !isPlaying}
-		<span>🔇</span>
+		<Icon src="{VolumeOff}" class="h-6 w-6" />
 	{:else if albumArt}
 		<img src={albumArt} alt="Album Art" class="h-8 w-8" />
 	{:else}
-		<span>{icon}</span>
+		<Icon src="{VolumeUp}" class="h-6 w-6" />
 	{/if}
 </div>

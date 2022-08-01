@@ -85,7 +85,7 @@
 	class:grid-rows-4={group.size.rows === 4}
 	class:grid-rows-5={group.size.rows === 5}
 	class:cursor-pointer={haveLights}
-	class:bg-[#d6d0c1]={haveLights && anyLightOn}
+	class:bg-stone-100={haveLights && anyLightOn}
 	class:bg-gray-600={haveLights && !anyLightOn}
 	class:text-gray-100={haveLights && !anyLightOn}
 >
@@ -109,9 +109,9 @@
 				<Contact contact={state.contact} type={state.webConfig.contactDeviceType} />
 			{:else if state.occupancy !== undefined}
 				<Occupancy occupancy={state.occupancy} />
-			{:else if state.state !== undefined && state.duration !== undefined}
+			{:else if state.state !== undefined && state.brightness !== undefined}
 				<DimmableLight {state} {ws} />
-			{:else if state.state !== undefined && state.duration === undefined}
+			{:else if state.state !== undefined && state.brightness === undefined}
 				<Light {state} {ws} />
 			{/if}
 		</div>

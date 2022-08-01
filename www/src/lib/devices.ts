@@ -9,7 +9,6 @@ export type DeviceConfig = {
 	sonosName?: string;
 	col?: number;
 	row?: number;
-	contactDeviceType?: 'DOOR' | 'WINDOW';
 };
 
 export type RoomSize = {
@@ -25,7 +24,7 @@ export const groups: Group[] = [
 			rows: 5
 		},
 		devices: [
-			{ addr: '0x00158d0008399e95', row: 3, col: 5, contactDeviceType: 'WINDOW' }, // Window Sensor
+			{ addr: '0x00158d0008399e95', row: 3, col: 5 }, // Window Sensor
 			{ addr: '0x0017880108faec55', row: 2, col: 5 }, // Window Light
 			{ addr: '0x001788010b91f5c1', row: 1, col: 5 }, // Signe Floor Light
 			{ addr: '0x00178801082ec23c', row: 3, col: 4 }, // Table Light
@@ -83,7 +82,7 @@ export const groups: Group[] = [
 			rows: 2
 		},
 		devices: [
-			{ addr: '0x00158d000839a1f9', row: 2, col: 1, contactDeviceType: 'DOOR' }, // Door Sensor
+			{ addr: '0x00158d000839a1f9', row: 2, col: 1 }, // Door Sensor
 			{ addr: '0x003c84fffeb6e38b', row: 1, col: 1 } // Door Lamp
 		]
 	},
