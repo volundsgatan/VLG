@@ -19,7 +19,14 @@
 
 	const getArt = (track: TrackState): string | undefined => {
 		if (track?.state?.currentTrack?.absoluteAlbumArtUri) {
-			return track.state.currentTrack.absoluteAlbumArtUri;
+			let uri = new URL(track?.state?.currentTrack?.absoluteAlbumArtUri)
+
+			if (uri.protocol === 'http:') {
+				uri.host = 'vlg-pi.gurrewe94.gmail.com.beta.tailscale.net:8081'
+				uri.pathname = `/sonos${uri.pathname}`
+			}
+
+			return uri.toString()
 		}
 		return undefined;
 	};

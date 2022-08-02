@@ -33,3 +33,11 @@ services:
       - ./sonos/clips:/app/static/clips
       - ./sonos/cache:/app/cache
       - ./sonos/presets:/app/presets
+
+  sonos_proxy:
+    restart: always
+    image: nginx:1.23
+    ports:
+      - 8081:80
+    volumes:
+        - ./nginx/nginx.config:/etc/nginx/conf.d/default.conf:ro
