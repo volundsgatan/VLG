@@ -10,18 +10,18 @@
 	const play = async () => {
 		loading = true;
 
-		return fetch('http://vlg-pi:5005/TV/favourite/' + name)
+		return fetch('http://vlg-pi.gurrewe94.gmail.com.beta.tailscale.net:5005/TV/favourite/' + name)
 			.then((res) => res.json())
 
 			.then(async (data) => {
-				await fetch('http://vlg-pi:5005/TV/shuffle/on');
-				await fetch('http://vlg-pi:5005/TV/next');
+				await fetch('http://vlg-pi.gurrewe94.gmail.com.beta.tailscale.net:5005/TV/shuffle/on');
+				await fetch('http://vlg-pi.gurrewe94.gmail.com.beta.tailscale.net:5005/TV/next');
 			})
 
 			.then(async (data) => {
 				// Join ALL
-				await fetch('http://vlg-pi:5005/Five/join/TV');
-				await fetch('http://vlg-pi:5005/Kitchen/join/TV');
+				await fetch('http://vlg-pi.gurrewe94.gmail.com.beta.tailscale.net:5005/Five/join/TV');
+				await fetch('http://vlg-pi.gurrewe94.gmail.com.beta.tailscale.net:5005/Kitchen/join/TV');
 			})
 
 			.catch((err) => {

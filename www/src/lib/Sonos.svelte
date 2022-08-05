@@ -36,14 +36,14 @@
 
 	const toggle = async () => {
 		if (isPlaying) {
-			return fetch('http://vlg-pi:5005/' + track.name + '/leave')
+			return fetch('http://vlg-pi.gurrewe94.gmail.com.beta.tailscale.net:5005/' + track.name + '/leave')
 				.then((res) => res.json())
 
 				.catch((err) => {
 					console.error(err);
 				});
 		} else {
-			return fetch('http://vlg-pi:5005/' + track.name + '/join/TV')
+			return fetch('http://vlg-pi.gurrewe94.gmail.com.beta.tailscale.net:5005/' + track.name + '/join/TV')
 				.then((res) => res.json())
 
 				.catch((err) => {
