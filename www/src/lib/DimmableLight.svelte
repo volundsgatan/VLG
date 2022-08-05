@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { type State } from './devices';
-	import { Icon, LightBulb } from "svelte-hero-icons";
+	import { Icon, LightBulb } from 'svelte-hero-icons';
 
 	export let state: State;
 	export let ws: WebSocket;
@@ -8,11 +8,11 @@
 	const levels = [0, 50, 125, 254];
 
 	const colors = [
-		"text-stone-400",
-		"text-amber-400 drop-shadow-[0_-4px_4px_rgba(245,158,11,0.5)]",
-		"text-amber-400 drop-shadow-[0_-4px_5px_rgba(245,158,11,0.7)]",
-		"text-amber-400 drop-shadow-[0_-4px_6px_rgba(245,158,11,1)]",
-	]
+		'text-stone-400',
+		'text-amber-400 drop-shadow-[0_-4px_4px_rgba(245,158,11,0.5)]',
+		'text-amber-400 drop-shadow-[0_-4px_5px_rgba(245,158,11,0.7)]',
+		'text-amber-400 drop-shadow-[0_-4px_6px_rgba(245,158,11,1)]'
+	];
 
 	const getColor = (s: State) => {
 		if (s.state === 'ON') {
@@ -51,7 +51,10 @@
 </script>
 
 {#if state}
-	<div on:click|stopPropagation={toggle} class="cursor-pointer h-16 w-16 inline-flex items-center justify-center" >
-		<Icon src="{LightBulb}" solid class="{'h-12 w-12 ' + color}" />
+	<div
+		on:click|stopPropagation={toggle}
+		class="inline-flex h-16 w-16 cursor-pointer items-center justify-center"
+	>
+		<Icon src={LightBulb} solid class={'h-12 w-12 ' + color} />
 	</div>
 {/if}

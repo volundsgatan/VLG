@@ -19,6 +19,11 @@
 
 <div class="flex justify-center space-x-4">
 	{#each playlists as playlist}
-		<MusicPlaylist image={playlist.image} name={playlist.name} abbr={playlist.abbr} />
+		<MusicPlaylist
+			on:sonosUpdated
+			image={playlist.image}
+			name={playlist.name}
+			abbr={playlist.abbr}
+		/>
 	{/each}
 </div>

@@ -1,51 +1,56 @@
 <script lang="ts">
-	import { Icon, VolumeOff, VolumeUp } from "svelte-hero-icons";
-	import { type Track } from './sonos';
+	import { Icon, VolumeOff, VolumeUp } from 'svelte-hero-icons';
+	import { type State } from './sonosApi';
+	import { createEventDispatcher } from 'svelte';
+	import Spinner from './Spinner.svelte';
 
-	type State = {
-		currentTrack: Track;
-		nextTrack: Track;
-		elapsedTimeFormatted: string;
-		volume: number;
-		playbackState: 'STOPPED' | 'PLAYING';
-	};
+	const dispatch = createEventDispatcher();
 
-	type SonosInput = {
+	type Sonos = {
 		name: string;
 		state?: State;
 	};
 
-	export let track: SonosInput;
+	export let sonos: Sonos;
+	export let sonosIsUpdating = false;
 
-	const getArt = (track: TrackState): string | undefined => {
-		if (track?.state?.currentTrack?.absoluteAlbumArtUri) {
-			let uri = new URL(track?.state?.currentTrack?.absoluteAlbumArtUri)
+	const getArt = (sonos: Sonos): string | undefined => {
+		if (sonos?.state?.currentTrack?.absoluteAlbumArtUri) {
+			let uri = new URL(sonos?.state?.currentTrack?.absoluteAlbumArtUri);
 
 			if (uri.protocol === 'http:') {
-				uri.host = 'vlg-pi.gurrewe94.gmail.com.beta.tailscale.net:8081'
-				uri.pathname = `/sonos${uri.pathname}`
+				uri.host = 'vlg-pi.gurrewe94.gmail.com.beta.tailscale.net:8081';
+				uri.pathname = `/sonos${uri.pathname}`;
 			}
 
-			return uri.toString()
+			return uri.toString();
 		}
 		return undefined;
 	};
 
-	$: albumArt = getArt(track);
-	$: isPlaying = track?.state?.playbackState === 'PLAYING';
+	$: albumArt = getArt(sonos);
+	$: isPlaying = sonos?.state?.playbackState === 'PLAYING';
 
 	const toggle = async () => {
 		if (isPlaying) {
-			return fetch('http://vlg-pi.gurrewe94.gmail.com.beta.tailscale.net:5005/' + track.name + '/leave')
+			return fetch(
+				'http://vlg-pi.gurrewe94.gmail.com.beta.tailscale.net:5005/' + sonos.name + '/leave'
+			)
 				.then((res) => res.json())
-
+				.then(() => {
+					dispatch('sonosUpdated', {});
+				})
 				.catch((err) => {
 					console.error(err);
 				});
 		} else {
-			return fetch('http://vlg-pi.gurrewe94.gmail.com.beta.tailscale.net:5005/' + track.name + '/join/TV')
+			return fetch(
+				'http://vlg-pi.gurrewe94.gmail.com.beta.tailscale.net:5005/' + sonos.name + '/join/TV'
+			)
 				.then((res) => res.json())
-
+				.then(() => {
+					dispatch('sonosUpdated', {});
+				})
 				.catch((err) => {
 					console.error(err);
 				});
@@ -53,12 +58,17 @@
 	};
 </script>
 
-<div on:click|stopPropagation={toggle} class="cursor-pointer h-16 w-16 inline-flex items-center justify-center">
-	{#if !isPlaying}
-		<Icon src="{VolumeOff}" class="h-12 w-12" />
+<div
+	on:click|stopPropagation={toggle}
+	class="inline-flex h-16 w-16 cursor-pointer items-center justify-center"
+>
+	{#if !isPlaying && sonosIsUpdating}
+		<Spinner />
+	{:else if !isPlaying}
+		<Icon src={VolumeOff} class="h-6 w-6" />
 	{:else if albumArt}
 		<img src={albumArt} alt="Album Art" class="h-12 w-12" />
 	{:else}
-		<Icon src="{VolumeUp}" class="h-12 w-12" />
+		<Icon src={VolumeUp} class="h-12 w-12" />
 	{/if}
 </div>

@@ -7,19 +7,21 @@
 	import { type State } from '../lib/devices';
 	import Room from '../lib/Room.svelte';
 	import Music from '../lib/Music.svelte';
+	import { type Zone, type State as SonosState } from '../lib/sonosApi';
 
 	let states: Record<string, State> = {};
 	let ws: WebSocket;
 
-	let sonos: Record<string, any> = {};
+	let sonos: Record<string, SonosState> = {};
+	let sonosIsUpdating = false;
 
 	const fetchSonos = async () => {
 		return fetch('http://vlg-pi.gurrewe94.gmail.com.beta.tailscale.net:5005/zones')
 			.then((res) => res.json())
-			.then((zones) => {
+			.then((zones: Array<Zone>) => {
 				for (const zone of zones) {
 					for (const member of zone.members) {
-						sonos[member.roomName] = zone.coordinator.state;
+						sonos[member.roomName] = member.state;
 					}
 				}
 			})
@@ -33,12 +35,20 @@
 		payload?: State | string;
 	};
 
+	const onSonosUpdated = async () => {
+		console.log('onSonosUpdated');
+		sonosIsUpdating = true;
+		for (let i = 0; i < 10; i++) {
+			await fetchSonos();
+			await new Promise((f) => setTimeout(f, 100));
+		}
+		sonosIsUpdating = false;
+	};
+
 	onMount(() => {
 		ws = new WebSocket('ws://vlg-pi.gurrewe94.gmail.com.beta.tailscale.net:8080/api');
 		ws.onmessage = (event) => {
 			const data: m2qevent = JSON.parse(event.data);
-			// console.log(data)
-
 			if (!data.payload) {
 				return;
 			}
@@ -58,7 +68,7 @@
 		fetchSonos();
 		setInterval(() => {
 			fetchSonos();
-		}, 3000);
+		}, 5000);
 	});
 </script>
 
@@ -72,7 +82,14 @@
 		<div
 			class="col-start-6 col-end-8 row-start-1 row-end-4 flex flex-col space-y-2 border-l-2 border-black transition-all duration-500"
 		>
-			<Room name="Living Room" {states} {ws} {sonos} />
+			<Room
+				name="Living Room"
+				on:sonosUpdated={onSonosUpdated}
+				{states}
+				{ws}
+				{sonos}
+				{sonosIsUpdating}
+			/>
 		</div>
 
 		<div class="col-start-4 col-end-6 row-start-2 row-end-4 transition-all duration-500">
@@ -98,7 +115,14 @@
 		<div
 			class="col-start-2 col-end-4 row-start-3 row-end-6 flex flex-col border-r-2 border-black transition-all duration-500"
 		>
-			<Room name="Kitchen" {states} {ws} {sonos} />
+			<Room
+				name="Kitchen"
+				on:sonosUpdated={onSonosUpdated}
+				{states}
+				{ws}
+				{sonos}
+				{sonosIsUpdating}
+			/>
 		</div>
 
 		<div
@@ -108,5 +132,5 @@
 		</div>
 	</div>
 
-	<Music />
+	<Music on:sonosUpdated={onSonosUpdated} />
 </div>

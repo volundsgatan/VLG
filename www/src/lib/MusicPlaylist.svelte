@@ -1,6 +1,10 @@
 <script lang="ts">
 	import Spinner from './Spinner.svelte';
 
+	import { createEventDispatcher } from 'svelte';
+
+	const dispatch = createEventDispatcher();
+
 	export let name: string;
 	export let abbr: string | undefined;
 	export let image: string | undefined;
@@ -22,6 +26,7 @@
 				// Join ALL
 				await fetch('http://vlg-pi.gurrewe94.gmail.com.beta.tailscale.net:5005/Five/join/TV');
 				await fetch('http://vlg-pi.gurrewe94.gmail.com.beta.tailscale.net:5005/Kitchen/join/TV');
+				dispatch('sonosUpdated', {});
 			})
 
 			.catch((err) => {
@@ -37,7 +42,7 @@
 <div class="relative">
 	{#if loading}
 		<div
-			class="absolute top-0 left-0 inline-flex h-full w-full items-center justify-center bg-black opacity-80"
+			class="absolute top-0 left-0 inline-flex h-full w-full items-center justify-center bg-black text-white opacity-80"
 		>
 			<Spinner />
 		</div>

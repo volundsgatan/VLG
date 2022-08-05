@@ -6,9 +6,11 @@
 	import DimmableLight from './DimmableLight.svelte';
 	import Occupancy from './Occupancy.svelte';
 	import Contact from './Contact.svelte';
+	import { type State as SonosState } from './sonosApi';
 
 	export let states: Record<string, State> = {};
-	export let sonos: Record<string, any> = {};
+	export let sonos: Record<string, SonosState> = {};
+	export let sonosIsUpdating = false;
 	export let name: string;
 	export let joinRoomName: string | null = null; // Join light status with this room
 	export let ws: WebSocket;
@@ -117,21 +119,21 @@
 		</div>
 	{/each}
 
-	{#each roomSonosStates as state}
+	{#each roomSonosStates as sonos}
 		<div
 			class="flex items-center justify-center"
-			class:col-start-1={state.webConfig.col === 1}
-			class:col-start-2={state.webConfig.col === 2}
-			class:col-start-3={state.webConfig.col === 3}
-			class:col-start-4={state.webConfig.col === 4}
-			class:col-start-5={state.webConfig.col === 5}
-			class:row-start-1={state.webConfig.row === 1}
-			class:row-start-2={state.webConfig.row === 2}
-			class:row-start-3={state.webConfig.row === 3}
-			class:row-start-4={state.webConfig.row === 4}
-			class:row-start-5={state.webConfig.row === 5}
+			class:col-start-1={sonos.webConfig.col === 1}
+			class:col-start-2={sonos.webConfig.col === 2}
+			class:col-start-3={sonos.webConfig.col === 3}
+			class:col-start-4={sonos.webConfig.col === 4}
+			class:col-start-5={sonos.webConfig.col === 5}
+			class:row-start-1={sonos.webConfig.row === 1}
+			class:row-start-2={sonos.webConfig.row === 2}
+			class:row-start-3={sonos.webConfig.row === 3}
+			class:row-start-4={sonos.webConfig.row === 4}
+			class:row-start-5={sonos.webConfig.row === 5}
 		>
-			<Sonos track={state} />
+			<Sonos on:sonosUpdated {sonos} {sonosIsUpdating} />
 		</div>
 	{/each}
 </div>
