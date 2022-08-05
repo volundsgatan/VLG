@@ -9,6 +9,7 @@ export type DeviceConfig = {
 	sonosName?: string;
 	col?: number;
 	row?: number;
+	dimmable?: boolean;
 };
 
 export type RoomSize = {
@@ -29,9 +30,9 @@ export const groups: Group[] = [
 			{ addr: '0x001788010b91f5c1', row: 1, col: 5 }, // Signe Floor Light
 			{ addr: '0x00178801082ec23c', row: 3, col: 4 }, // Table Light
 			{ addr: '0x00158d000802afb1', row: 3, col: 3 }, // Temperature Sensor
-			// {addr: "0x00178801082ec23c", row: 3, col: 4}, // Sofa light (fake addr)
+			{addr: "0x003c84fffeb1547a", row: 2, col: 2, dimmable: false}, // Sofa light (fake addr)
 			// {addr: "0x0017880108096165"}, // Hue Switch
-			{ sonosName: 'TV', row: 5, col: 1 },
+			{ sonosName: 'TV', row: 5, col: 2 },
 			{ sonosName: 'Five', row: 5, col: 5 }
 		]
 	},

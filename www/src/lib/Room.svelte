@@ -111,9 +111,9 @@
 				<Contact contact={state.contact} type={state.webConfig.contactDeviceType} />
 			{:else if state.occupancy !== undefined}
 				<Occupancy occupancy={state.occupancy} />
-			{:else if state.state !== undefined && state.brightness !== undefined}
+			{:else if state.state !== undefined && state.brightness !== undefined && state.webConfig.dimmable === undefined}
 				<DimmableLight {state} {ws} />
-			{:else if state.state !== undefined && state.brightness === undefined}
+			{:else if state.state !== undefined && (state.brightness === undefined || state.webConfig.dimmable === false)}
 				<Light {state} {ws} />
 			{/if}
 		</div>
