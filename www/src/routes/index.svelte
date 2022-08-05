@@ -63,7 +63,7 @@
 </script>
 
 <svelte:head>
-	<title>VLG 🏠❤️</title>
+	<title>VLG</title>
 	<meta name="description" content="VLG" />
 </svelte:head>
 
