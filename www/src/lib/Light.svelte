@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { type State } from './devices';
-	import { Icon, LightBulb } from 'svelte-hero-icons';
+	import BulbHigh from './BulbIcon/BulbHigh.svelte';
+	import BulbOff from './BulbIcon/BulbOff.svelte';
 
 	export let state: State;
 	export let ws: WebSocket;
@@ -31,13 +32,13 @@
 		class="inline-flex h-16 w-16 cursor-pointer items-center justify-center"
 	>
 		{#if on}
-			<Icon
-				src={LightBulb}
-				solid
-				class="h-12 w-12 text-amber-400 drop-shadow-[0_-4px_6px_rgba(245,158,11,1)]"
-			/>
+			<div class="h-12 w-12 text-amber-500">
+				<BulbHigh />
+			</div>
 		{:else}
-			<Icon src={LightBulb} solid class="h-12 w-12 text-stone-400" />
+			<div class="h-12 w-12 text-stone-400">
+				<BulbOff />
+			</div>
 		{/if}
 	</div>
 {/if}

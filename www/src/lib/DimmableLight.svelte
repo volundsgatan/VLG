@@ -1,29 +1,27 @@
 <script lang="ts">
 	import { type State } from './devices';
-	import { Icon, LightBulb } from 'svelte-hero-icons';
+	import BulbHigh from './BulbIcon/BulbHigh.svelte';
+	import BulbOff from './BulbIcon/BulbOff.svelte';
+	import BulbMedium from './BulbIcon/BulbMedium.svelte';
+	import BulbLow from './BulbIcon/BulbLow.svelte';
 
 	export let state: State;
 	export let ws: WebSocket;
 
 	const levels = [0, 50, 125, 254];
 
-	const colors = [
-		'text-stone-400',
-		'text-amber-400 drop-shadow-[0_-4px_4px_rgba(245,158,11,0.5)]',
-		'text-amber-400 drop-shadow-[0_-4px_5px_rgba(245,158,11,0.7)]',
-		'text-amber-400 drop-shadow-[0_-4px_6px_rgba(245,158,11,1)]'
-	];
+	const colors = ['text-stone-400', 'text-amber-500', 'text-amber-500', 'text-amber-500'];
 
-	const getColor = (s: State) => {
+	const getIconConfig = (s: State) => {
 		if (s.state === 'ON') {
 			for (const [idx, level] of levels.entries()) {
 				if (s.brightness <= level) {
-					return colors[idx];
+					return [colors[idx], idx];
 				}
 			}
 		}
 
-		return colors[0];
+		return [colors[0], 0];
 	};
 
 	const nextBrightness = (s: State): number => {
@@ -47,7 +45,7 @@
 		);
 	};
 
-	$: color = getColor(state);
+	$: [color, idx] = getIconConfig(state);
 </script>
 
 {#if state}
@@ -55,6 +53,16 @@
 		on:click|stopPropagation={toggle}
 		class="inline-flex h-16 w-16 cursor-pointer items-center justify-center"
 	>
-		<Icon src={LightBulb} solid class={'h-12 w-12 ' + color} />
+		<div class={'h-12 w-12 ' + color}>
+			{#if idx === 0}
+				<BulbOff />
+			{:else if idx === 1}
+				<BulbLow />
+			{:else if idx === 2}
+				<BulbMedium />
+			{:else if idx === 3}
+				<BulbHigh />
+			{/if}
+		</div>
 	</div>
 {/if}
