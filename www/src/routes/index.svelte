@@ -16,7 +16,7 @@
 	let sonosIsUpdating = false;
 
 	const fetchSonos = async () => {
-		return fetch('http://vlg-pi.gurrewe94.gmail.com.beta.tailscale.net:5005/zones')
+		return fetch('http://vlg-pi.volundsgatan.org.github.beta.tailscale.net:5005/zones')
 			.then((res) => res.json())
 			.then((zones: Array<Zone>) => {
 				for (const zone of zones) {
@@ -46,7 +46,7 @@
 	};
 
 	onMount(() => {
-		ws = new WebSocket('ws://vlg-pi.gurrewe94.gmail.com.beta.tailscale.net:8080/api');
+		ws = new WebSocket('ws://vlg-pi.volundsgatan.org.github.beta.tailscale.net:8080/api');
 		ws.onmessage = (event) => {
 			const data: m2qevent = JSON.parse(event.data);
 			if (!data.payload) {

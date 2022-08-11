@@ -4,12 +4,12 @@
 		>
 	</li>
 	<li>
-		<a rel="external" href="http://vlg.gurrewe94.gmail.com.beta.tailscale.net:9090/graph"
+		<a rel="external" href="http://vlg.volundsgatan.org.github.beta.tailscale.net:9090/graph"
 			>Prometheus</a
 		>
 	</li>
 	<li>
-		<a rel="external" href="http://vlg-pi.gurrewe94.gmail.com.beta.tailscale.net:8080"
+		<a rel="external" href="http://vlg-pi.volundsgatan.org.github.beta.tailscale.net:8080"
 			>Zigbee2Mqtt</a
 		>
 	</li>
@@ -17,7 +17,7 @@
 		<a
 			rel="external"
 			href="
-    http://gustav-mbp-m1-13.gurrewe94.gmail.com.beta.tailscale.net:8581/">Homebridge</a
+    http://gustav-mbp-m1-13.volundsgatan.org.github.beta.tailscale.net:8581/">Homebridge</a
 		>
 	</li>
 </ul>

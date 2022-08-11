@@ -19,7 +19,7 @@
 			let uri = new URL(sonos?.state?.currentTrack?.absoluteAlbumArtUri);
 
 			if (uri.protocol === 'http:') {
-				uri.host = 'vlg-pi.gurrewe94.gmail.com.beta.tailscale.net:8081';
+				uri.host = 'vlg-pi.volundsgatan.org.github.beta.tailscale.net:8081';
 				uri.pathname = `/sonos${uri.pathname}`;
 			}
 
@@ -34,7 +34,7 @@
 	const toggle = async () => {
 		if (isPlaying) {
 			return fetch(
-				'http://vlg-pi.gurrewe94.gmail.com.beta.tailscale.net:5005/' + sonos.name + '/leave'
+				'http://vlg-pi.volundsgatan.org.github.beta.tailscale.net:5005/' + sonos.name + '/leave'
 			)
 				.then((res) => res.json())
 				.then(() => {
@@ -45,7 +45,7 @@
 				});
 		} else {
 			return fetch(
-				'http://vlg-pi.gurrewe94.gmail.com.beta.tailscale.net:5005/' + sonos.name + '/join/TV'
+				'http://vlg-pi.volundsgatan.org.github.beta.tailscale.net:5005/' + sonos.name + '/join/TV'
 			)
 				.then((res) => res.json())
 				.then(() => {
