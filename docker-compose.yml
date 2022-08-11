@@ -3,6 +3,7 @@ services:
 
   prometheus:
     image: prom/prometheus
+    restart: always
     ports:
       - "9090:9090"
     volumes:
@@ -17,32 +18,44 @@ services:
 
   nordpool_exporter:
     image: zegl/nordpool_exporter:latest
+    restart: always
     ports:
-      - "100.122.74.99:9367:9367"
+      - "100.100.142.59:9367:9367"
 
   homebridge_exporter:
     image: ghcr.io/seanson/homebridge-prometheus-exporter:latest
+    restart: always
     ports:
-      - "100.122.74.99:5000:5000"
+      - "100.100.142.59:5000:5000"
     environment:
       HOMEBRIDGE_USERNAME: "admin"
       HOMEBRIDGE_PASSWORD: "admin"
-      HOMEBRIDGE_URL: "http://100.89.255.38:8581"
+      HOMEBRIDGE_URL: "http://100.108.125.84:8581"
+
+  yr_exporter:
+    image: zegl/yr_exporter:latest
+    restart: always
+    ports:
+      - "100.100.142.59:9370:9370"
+    command:
+      - "--listen-addr=:9370"
+      - "--lat=59.3377383"
+      - "--lon=18.038323"
 
   mqtt_exporter:
     image: kpetrem/mqtt-exporter
     ports:
       - "9371:9000"
     environment:
-      MQTT_ADDRESS: 100.126.60.12
+      MQTT_ADDRESS: 100.113.94.105
       MQTT_PORT: 1883
       MQTT_TOPIC: "zigbee2mqtt/#"
     restart: always
-  
+
   www:
     image: nginx:alpine
+    restart: always
     ports:
-      - "100.122.74.99:80:80"
+      - "100.100.142.59:80:80"
     volumes:
       - ./www/build:/usr/share/nginx/html
-
