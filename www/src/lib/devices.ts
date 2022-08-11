@@ -41,11 +41,24 @@ export const groups: Group[] = [
 		name: 'Bedroom',
 		size: {
 			cols: 3,
-			rows: 1
+			rows: 3
 		},
 		devices: [
-			{ addr: '0x00158d0007f82461', row: 1, col: 2 }, // Temperature Sensor
-			{ addr: '0x0017880108a1a40c', row: 1, col: 1 } // Window Light
+			{ addr: '0x00158d0007f82461', row: 2, col: 3 }, // Temperature Sensor
+			{ addr: '0x0017880108a1a40c', row: 2, col: 1 }, // Window Light
+			{ addr: '0x003c84fffeb1547a', row: 2, col: 2 }, // Ceiling Light
+		]
+	},
+
+	{
+		name: 'Closet',
+		size: {
+			cols: 3,
+			rows: 3
+		},
+		devices: [
+			{ addr: '0x001788010678a381', row: 2, col: 1 }, // Closet Light
+			{ addr: '0x84ba20fffe2ed631', row: 2, col: 3} // Closet Motion Sensor
 		]
 	},
 

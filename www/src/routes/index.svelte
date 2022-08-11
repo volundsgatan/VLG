@@ -92,16 +92,16 @@
 			/>
 		</div>
 
-		<div class="col-start-4 col-end-6 row-start-2 row-end-4 transition-all duration-500">
+		<div class="col-start-4 col-end-6 row-start-3 row-end-4 transition-all duration-500">
 			<Room name="Hallway" joinRoomName="Entrance" {states} {ws} />
 		</div>
 
-		<div class="col-start-4 col-end-5 row-start-4 row-end-6 transition-all duration-500">
+		<div class="col-start-4 col-end-5 row-start-4 row-end-5 transition-all duration-500">
 			<Room name="Entrance" joinRoomName="Hallway" {states} {ws} />
 		</div>
 
 		<div
-			class="col-start-4 col-end-6 row-start-1 row-end-2 flex flex-col border-b-2 border-black bg-gray-600"
+			class="col-start-5 col-end-6 row-start-1 row-end-1 flex flex-col border-b-2 border-black bg-gray-600"
 		>
 			<Room name="Bathroom" {states} {ws} />
 		</div>
@@ -113,7 +113,13 @@
 		</div>
 
 		<div
-			class="col-start-2 col-end-4 row-start-3 row-end-6 flex flex-col border-r-2 border-black transition-all duration-500"
+			class="col-start-4 col-end-5 row-start-1 row-end-1 flex flex-col border-r-2 border-b-2 border-black bg-gray-600"
+		>
+			<Room name="Closet" {states} {ws} />
+		</div>
+
+		<div
+			class="col-start-2 col-end-4 row-start-3 row-end-5 flex flex-col border-r-2 border-black transition-all duration-500"
 		>
 			<Room
 				name="Kitchen"
@@ -126,7 +132,7 @@
 		</div>
 
 		<div
-			class="col-start-1 col-end-2 row-start-1 row-end-6 border-r-2 border-black bg-lime-700 p-2 text-gray-100"
+			class="col-start-1 col-end-2 row-start-1 row-end-5 border-r-2 border-black bg-lime-700 p-2 text-gray-100"
 		>
 			<Room name="Yard" {states} {ws} />
 		</div>
