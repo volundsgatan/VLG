@@ -51,9 +51,9 @@
 {#if state}
 	<div
 		on:click|stopPropagation={toggle}
-		class="inline-flex h-16 w-16 cursor-pointer items-center justify-center"
+		class="inline-flex h-8 w-8 cursor-pointer items-center justify-center"
 	>
-		<div class={'h-12 w-12 ' + color}>
+		<div class={'h-8 w-8 ' + color}>
 			{#if idx === 0}
 				<BulbOff />
 			{:else if idx === 1}

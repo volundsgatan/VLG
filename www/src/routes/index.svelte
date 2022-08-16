@@ -80,8 +80,8 @@
 	<meta name="description" content="VLG" />
 </svelte:head>
 
-<div class="flex flex-col space-y-2 p-2">
-	<div class="grid-rows-8 grid w-full flex-1 grid-cols-7 text-gray-700">
+<div class="flex  h-full flex-col justify-between space-y-2 p-2">
+	<div class="grid w-full flex-1 grid-cols-7 grid-rows-4 text-gray-700">
 		<div
 			class="col-start-6 col-end-8 row-start-1 row-end-4 flex flex-col space-y-2 border-l-2 border-black transition-all duration-500"
 		>
@@ -95,7 +95,7 @@
 			/>
 		</div>
 
-		<div class="col-start-4 col-end-6 row-start-3 row-end-4 transition-all duration-500">
+		<div class="col-start-4 col-end-6 row-start-2 row-end-4 transition-all duration-500">
 			<Room name="Hallway" joinRoomName="Entrance" {states} {ws} />
 		</div>
 

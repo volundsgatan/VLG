@@ -2,9 +2,7 @@
 	import '../app.css';
 </script>
 
-<main class="h-screen">
-	<slot />
-</main>
+<slot />
 
 <!--
 <footer class="fixed bottom-0 w-full">

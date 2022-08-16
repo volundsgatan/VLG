@@ -29,14 +29,14 @@
 {#if state}
 	<div
 		on:click|stopPropagation={toggle}
-		class="inline-flex h-16 w-16 cursor-pointer items-center justify-center"
+		class="inline-flex h-8 w-8 cursor-pointer items-center justify-center"
 	>
 		{#if on}
-			<div class="h-12 w-12 text-amber-500">
+			<div class="h-8 w-8 text-amber-500">
 				<BulbHigh />
 			</div>
 		{:else}
-			<div class="h-12 w-12 text-stone-400">
+			<div class="h-8 w-8 text-stone-400">
 				<BulbOff />
 			</div>
 		{/if}
