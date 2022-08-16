@@ -4,21 +4,24 @@
 
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { type State } from '../lib/devices';
-	import Room from '../lib/Room.svelte';
-	import Music from '../lib/Music.svelte';
-	import { type Zone, type State as SonosState } from '../lib/sonosApi';
+	import { type State } from '$lib/devices';
+	import Room from '$lib/Room.svelte';
+	import Music from '$lib/Music.svelte';
+	import NowPlaying from '$lib/music/NowPlaying.svelte';
+	import { type Zone, type State as SonosState } from '$lib/sonosApi';
 
 	let states: Record<string, State> = {};
 	let ws: WebSocket;
 
 	let sonos: Record<string, SonosState> = {};
 	let sonosIsUpdating = false;
+	let sonosZones: Array<Zone> = [];
 
 	const fetchSonos = async () => {
 		return fetch('http://vlg-pi.volundsgatan.org.github.beta.tailscale.net:5005/zones')
 			.then((res) => res.json())
 			.then((zones: Array<Zone>) => {
+				sonosZones = zones;
 				for (const zone of zones) {
 					for (const member of zone.members) {
 						sonos[member.roomName] = member.state;
@@ -77,8 +80,8 @@
 	<meta name="description" content="VLG" />
 </svelte:head>
 
-<div class="flex h-full flex-col justify-center space-y-16 p-2">
-	<div class="grid-rows-8 grid w-full grid-cols-7 text-gray-700">
+<div class="flex flex-col space-y-2 p-2">
+	<div class="grid-rows-8 grid w-full flex-1 grid-cols-7 text-gray-700">
 		<div
 			class="col-start-6 col-end-8 row-start-1 row-end-4 flex flex-col space-y-2 border-l-2 border-black transition-all duration-500"
 		>
@@ -136,7 +139,11 @@
 		>
 			<Room name="Yard" {states} {ws} />
 		</div>
+
+		<div class="col-start-5 col-end-8 row-start-4 flex items-center justify-center">
+			<Music on:sonosUpdated={onSonosUpdated} />
+		</div>
 	</div>
 
-	<Music on:sonosUpdated={onSonosUpdated} />
+	<NowPlaying zones={sonosZones} on:sonosUpdated={onSonosUpdated} />
 </div>
