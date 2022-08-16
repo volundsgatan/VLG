@@ -27,7 +27,22 @@
 
 	$: hasTitleAndAlbum =
 		zone.coordinator.state.currentTrack.title && zone.coordinator.state.currentTrack.album;
-	$: image = zone.coordinator.state.currentTrack.absoluteAlbumArtUri;
+
+	const getArt = (z: Zone): string | undefined => {
+		if (zone.coordinator.state.currentTrack.absoluteAlbumArtUri) {
+			let uri = new URL(zone.coordinator.state.currentTrack.absoluteAlbumArtUri);
+
+			if (uri.protocol === 'http:') {
+				uri.host = 'vlg-pi.volundsgatan.org.github.beta.tailscale.net:8081';
+				uri.pathname = `/sonos${uri.pathname}`;
+			}
+
+			return uri.toString();
+		}
+		return undefined;
+	};
+
+	$: albumArt = getArt(zone);
 
 	let volume = 0;
 	onMount(() => {
@@ -45,8 +60,8 @@
 
 <div class="flex items-center rounded-lg bg-stone-600 p-3">
 	<div class="flex w-2/5 items-center space-x-4 overflow-hidden text-ellipsis">
-		{#if image}
-			<img class="h-12 w-12 bg-red-200" src={image} />
+		{#if albumArt}
+			<img class="h-12 w-12 bg-red-200" src={albumArt} />
 		{/if}
 		<div>
 			<div class="text-white">{rooms.join(', ')}</div>
