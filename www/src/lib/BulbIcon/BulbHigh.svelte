@@ -1,6 +1,6 @@
 <svg
 	id="evipW31htId1"
-    fill="currentColor"
+	fill="currentColor"
 	xmlns="http://www.w3.org/2000/svg"
 	xmlns:xlink="http://www.w3.org/1999/xlink"
 	viewBox="0 0 362.027 362.027"

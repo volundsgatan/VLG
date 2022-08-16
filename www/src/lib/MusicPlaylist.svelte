@@ -14,7 +14,9 @@
 	const play = async () => {
 		loading = true;
 
-		return fetch('http://vlg-pi.volundsgatan.org.github.beta.tailscale.net:5005/TV/favourite/' + name)
+		return fetch(
+			'http://vlg-pi.volundsgatan.org.github.beta.tailscale.net:5005/TV/favourite/' + name
+		)
 			.then((res) => res.json())
 
 			.then(async (data) => {
@@ -25,7 +27,9 @@
 			.then(async (data) => {
 				// Join ALL
 				await fetch('http://vlg-pi.volundsgatan.org.github.beta.tailscale.net:5005/Five/join/TV');
-				await fetch('http://vlg-pi.volundsgatan.org.github.beta.tailscale.net:5005/Kitchen/join/TV');
+				await fetch(
+					'http://vlg-pi.volundsgatan.org.github.beta.tailscale.net:5005/Kitchen/join/TV'
+				);
 				dispatch('sonosUpdated', {});
 			})
 
@@ -49,10 +53,10 @@
 	{/if}
 
 	{#if image}
-		<img src={image} class="h-28 w-28 cursor-pointer" on:click|preventDefault={play} />
+		<img src={image} class="h-16 w-16 cursor-pointer" on:click|preventDefault={play} />
 	{:else}
 		<div
-			class="inline-flex h-28 w-28 cursor-pointer items-center justify-center bg-red-200 text-2xl text-red-600"
+			class="inline-flex h-16 w-16 cursor-pointer items-center justify-center bg-red-200 text-2xl text-red-600"
 			on:click|preventDefault={play}
 		>
 			{abbr}

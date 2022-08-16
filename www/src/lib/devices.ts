@@ -30,7 +30,7 @@ export const groups: Group[] = [
 			{ addr: '0x001788010b91f5c1', row: 1, col: 5 }, // Signe Floor Light
 			{ addr: '0x00178801082ec23c', row: 3, col: 4 }, // Table Light
 			{ addr: '0x00158d000802afb1', row: 3, col: 3 }, // Temperature Sensor
-			{addr: "0x003c84fffeb1547a", row: 2, col: 2, dimmable: false}, // Sofa light (fake addr)
+			{ addr: '0x003c84fffeb1547a', row: 2, col: 2, dimmable: false }, // Sofa light (fake addr)
 			// {addr: "0x0017880108096165"}, // Hue Switch
 			{ sonosName: 'TV', row: 5, col: 2 },
 			{ sonosName: 'Five', row: 5, col: 5 }
@@ -46,7 +46,7 @@ export const groups: Group[] = [
 		devices: [
 			{ addr: '0x00158d0007f82461', row: 2, col: 3 }, // Temperature Sensor
 			{ addr: '0x0017880108a1a40c', row: 2, col: 1 }, // Window Light
-			{ addr: '0x003c84fffeb1547a', row: 2, col: 2 }, // Ceiling Light
+			{ addr: '0x003c84fffeb1547a', row: 2, col: 2 } // Ceiling Light
 		]
 	},
 
@@ -58,7 +58,7 @@ export const groups: Group[] = [
 		},
 		devices: [
 			{ addr: '0x001788010678a381', row: 2, col: 1 }, // Closet Light
-			{ addr: '0x84ba20fffe2ed631', row: 2, col: 3} // Closet Motion Sensor
+			{ addr: '0x84ba20fffe2ed631', row: 2, col: 3 } // Closet Motion Sensor
 		]
 	},
 
