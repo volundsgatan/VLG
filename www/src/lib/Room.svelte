@@ -14,6 +14,9 @@
 	export let name: string;
 	export let joinRoomName: string | null = null; // Join light status with this room
 	export let ws: WebSocket;
+	export let bg: string = '';
+	export let topRounded = true;
+	export let bottomLRounded = true;
 
 	const mqttStatesForAddrs = (
 		states: Record<string, State>,
@@ -74,7 +77,9 @@
 </script>
 
 <div
-	class="grid h-full w-full select-none"
+	class="grid h-full w-full select-none rounded-xl {bg}"
+	class:rounded-t-none={!topRounded}
+	class:rounded-bl-none={!bottomLRounded}
 	on:click={toggleLights}
 	class:grid-cols-1={group.size.cols === 1}
 	class:grid-cols-2={group.size.cols === 2}
