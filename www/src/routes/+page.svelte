@@ -46,7 +46,7 @@
 
 	const connectZ2M = () => {
 		if (ws) {
-			ws.close()
+			ws.close();
 		}
 
 		ws = new WebSocket('ws://vlg-pi.volundsgatan.org.github.beta.tailscale.net:8080/api');
@@ -69,21 +69,21 @@
 			states = states;
 		};
 
-		ws.onclose = function(e) {
+		ws.onclose = function (e) {
 			console.log('Socket is closed. Reconnect will be attempted in 1 second.', e.reason);
-			setTimeout(function() {
+			setTimeout(function () {
 				connectZ2M();
 			}, 1000);
 		};
 
-		ws.onerror = function(err) {
+		ws.onerror = function (err) {
 			console.error('Socket encountered error: ', err, 'Closing socket');
 			ws.close();
 		};
-	}
+	};
 
 	onMount(() => {
-		connectZ2M()
+		connectZ2M();
 
 		fetchSonos();
 
