@@ -44,8 +44,13 @@
 		sonosIsUpdating = false;
 	};
 
-	onMount(() => {
+	const connectZ2M = () => {
+		if (ws) {
+			ws.close()
+		}
+
 		ws = new WebSocket('ws://vlg-pi.volundsgatan.org.github.beta.tailscale.net:8080/api');
+
 		ws.onmessage = (event) => {
 			const data: m2qevent = JSON.parse(event.data);
 			if (!data.payload) {
@@ -64,7 +69,24 @@
 			states = states;
 		};
 
+		ws.onclose = function(e) {
+			console.log('Socket is closed. Reconnect will be attempted in 1 second.', e.reason);
+			setTimeout(function() {
+				connectZ2M();
+			}, 1000);
+		};
+
+		ws.onerror = function(err) {
+			console.error('Socket encountered error: ', err, 'Closing socket');
+			ws.close();
+		};
+	}
+
+	onMount(() => {
+		connectZ2M()
+
 		fetchSonos();
+
 		setInterval(() => {
 			fetchSonos();
 		}, 5000);
