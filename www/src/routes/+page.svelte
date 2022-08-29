@@ -2,7 +2,7 @@
 	import { onMount } from 'svelte';
 	import { type State } from '$lib/devices';
 	import Room from '$lib/Room.svelte';
-	import Music from '../lib/music/Music.svelte';
+	import Music from '../lib/music/MusicToolbar.svelte';
 	import NowPlaying from '$lib/music/NowPlaying.svelte';
 	import { type Zone, type State as SonosState } from '$lib/sonosApi';
 
@@ -98,7 +98,7 @@
 	<meta name="description" content="VLG" />
 </svelte:head>
 
-<div class="flex  h-full flex-col justify-between space-y-2 p-2">
+<div class="flex h-full flex-col justify-between space-y-2 p-2">
 	<div class="grid w-full flex-1 grid-cols-7 grid-rows-4 text-gray-700">
 		<div
 			class="col-start-6 col-end-8 row-start-1 row-end-4 flex flex-col space-y-2 border-l-2 border-black transition-all duration-500"
