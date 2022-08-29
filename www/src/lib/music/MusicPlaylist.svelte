@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Spinner from './Spinner.svelte';
+	import Spinner from '../Spinner.svelte';
 
 	import { createEventDispatcher } from 'svelte';
 

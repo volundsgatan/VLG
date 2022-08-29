@@ -2,7 +2,7 @@
 	import { onMount } from 'svelte';
 	import { type State } from '$lib/devices';
 	import Room from '$lib/Room.svelte';
-	import Music from '$lib/Music.svelte';
+	import Music from '../lib/music/Music.svelte';
 	import NowPlaying from '$lib/music/NowPlaying.svelte';
 	import { type Zone, type State as SonosState } from '$lib/sonosApi';
 
