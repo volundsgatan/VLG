@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { Icon, VolumeOff, VolumeUp } from 'svelte-hero-icons';
-	import { type State } from './sonosApi';
+	import { type State } from '../sonosApi';
 	import { createEventDispatcher } from 'svelte';
-	import Spinner from './Spinner.svelte';
+	import Spinner from '../Spinner.svelte';
 
 	const dispatch = createEventDispatcher();
 

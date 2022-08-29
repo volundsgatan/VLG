@@ -1,11 +1,11 @@
 <script lang="ts">
 	import { type DeviceConfig, groups, type State } from './devices';
-	import Temperature from './Temperature.svelte';
-	import Sonos from './Sonos.svelte';
-	import Light from './Light.svelte';
-	import DimmableLight from './DimmableLight.svelte';
-	import Occupancy from './Occupancy.svelte';
-	import Contact from './Contact.svelte';
+	import Temperature from './device/Temperature.svelte';
+	import Sonos from './device/Sonos.svelte';
+	import Light from './device/Light.svelte';
+	import DimmableLight from './device/DimmableLight.svelte';
+	import Occupancy from './device/Occupancy.svelte';
+	import Contact from './device/Contact.svelte';
 	import { type State as SonosState } from './sonosApi';
 
 	export let states: Record<string, State> = {};

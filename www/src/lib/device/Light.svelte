@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { type State } from './devices';
-	import BulbHigh from './BulbIcon/BulbHigh.svelte';
-	import BulbOff from './BulbIcon/BulbOff.svelte';
+	import { type State } from '../devices';
+	import BulbHigh from '../BulbIcon/BulbHigh.svelte';
+	import BulbOff from '../BulbIcon/BulbOff.svelte';
 
 	export let state: State;
 	export let ws: WebSocket;
