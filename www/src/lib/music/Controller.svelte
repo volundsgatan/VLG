@@ -106,23 +106,17 @@
 
 	<div class="flex flex-1 justify-center text-white">
 		<div class="flex items-center space-x-2 text-3xl ">
-			<Button on:click={shuffle} active={isShuffle}>🔀</Button>
 			<Button on:click={previous}>👈</Button>
 			<Button on:click={playpause}>
-				{@html isPlaying ? '⏸' : '🤘'}
+				{isPlaying ? '⏸' : '🤘'}
 			</Button>
 			<Button on:click={next}>👉</Button>
 		</div>
 	</div>
 
-	<div class="flex w-2/5 items-center space-x-2 text-3xl">
-		<div class="flex-1" />
-
-		{#if isPlaying}
-			<Button on:click={broadcast} active={isFullParty}>🪩</Button>
-		{:else}
-			<div class="w-12">&nbsp;</div>
-		{/if}
+	<div class="flex w-2/5 items-center justify-end space-x-2 text-3xl">
+		<Button on:click={shuffle} active={isShuffle}>🔀</Button>
+		<Button on:click={broadcast} active={isFullParty}>🪩</Button>
 
 		<Button on:click={toggleMute}>🔈</Button>
 
