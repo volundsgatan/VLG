@@ -13,6 +13,19 @@
 		{
 			name: 'disco margaritas',
 			image: 'https://i.scdn.co/image/ab67706c0000bebb6dcceb12518c5cb7cccf0f3d'
+		},
+		{
+			name: 'P4 Stockholm',
+			image:
+				'http://vlg-pi.volundsgatan.org.github.beta.tailscale.net:8081/sonos/getaa?s=1&u=x-sonosapi-hls%3achannel%253a701%3fsid%3d235%26flags%3d40%26sn%3d3'
+		},
+		{
+			name: 'VLG',
+			abbr: 'VLG'
+		},
+		{
+			name: '~/playlist',
+			abbr: '~/p'
 		}
 	];
 </script>

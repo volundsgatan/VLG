@@ -15,7 +15,8 @@
 		loading = true;
 
 		return fetch(
-			'http://vlg-pi.volundsgatan.org.github.beta.tailscale.net:5005/TV/favourite/' + name
+			'http://vlg-pi.volundsgatan.org.github.beta.tailscale.net:5005/TV/favourite/' +
+				encodeURIComponent(name)
 		)
 			.then((res) => res.json())
 

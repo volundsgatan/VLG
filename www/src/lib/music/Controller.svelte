@@ -8,6 +8,8 @@
 	export let zone: Zone;
 	$: rooms = zone.members.map((m) => m.roomName);
 
+	const sonoses = ['TV', 'Five', 'Kitchen'];
+
 	const command = (cmd: string) => {
 		return fetch(
 			`http://vlg-pi.volundsgatan.org.github.beta.tailscale.net:5005/${zone.coordinator.roomName}/${cmd}`
@@ -25,14 +27,17 @@
 	const previous = () => {
 		return command('previous');
 	};
-	const isolate = () => {
-		return command('isolate');
-	};
 	const broadcast = () => {
-		const sonoses = ['TV', 'Five', 'Kitchen'];
 		const otherSonoses = sonoses.filter((n) => n !== zone.coordinator.roomName);
 		const joins = otherSonoses.map((n) => command(`add/${n}`));
 		return Promise.all(joins);
+	};
+	const shuffle = () => {
+		if (isShuffle) {
+			return command('shuffle/off');
+		} else {
+			return command('shuffle/on');
+		}
 	};
 
 	$: hasTitleAndAlbum =
@@ -67,8 +72,18 @@
 		return command(`groupVolume/${volume}`);
 	};
 
+	const toggleMute = () => {
+		if (volume === 0) {
+			return command(`groupVolume/10`);
+		} else {
+			return command(`groupVolume/0`);
+		}
+	};
+
 	$: isPartyMode = zone.members.length > 1;
+	$: isFullParty = zone.members.length === sonoses.length;
 	$: isPlaying = zone.coordinator.state.playbackState === 'PLAYING';
+	$: isShuffle = zone.coordinator.state.playMode.shuffle;
 </script>
 
 <div class="flex items-center rounded-lg bg-stone-600 p-3">
@@ -90,33 +105,27 @@
 	</div>
 
 	<div class="flex flex-1 justify-center text-white">
-		<div class="flex items-center space-x-4 text-2xl ">
+		<div class="flex items-center space-x-2 text-3xl ">
+			<Button on:click={shuffle} active={isShuffle}>🔀</Button>
 			<Button on:click={previous}>👈</Button>
 			<Button on:click={playpause}>
-				{isPlaying ? '⏸️' : '▶️'}
+				{@html isPlaying ? '⏸' : '🤘'}
 			</Button>
 			<Button on:click={next}>👉</Button>
 		</div>
 	</div>
 
-	<div class="flex w-2/5 items-center space-x-2">
+	<div class="flex w-2/5 items-center space-x-2 text-3xl">
 		<div class="flex-1" />
 
 		{#if isPlaying}
-			<Button on:click={broadcast}>🪩</Button>
+			<Button on:click={broadcast} active={isFullParty}>🪩</Button>
 		{:else}
 			<div class="w-12">&nbsp;</div>
 		{/if}
 
-		{#if isPartyMode}
-			<Button on:click={isolate}>🙉</Button>
-		{:else}
-			<div class="w-12">&nbsp;</div>
-		{/if}
+		<Button on:click={toggleMute}>🔈</Button>
 
-		<div class="w-8" />
-
-		<span class="text-2xl">🔈</span>
 		<input
 			type="range"
 			id="volume"
