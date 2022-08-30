@@ -1,7 +1,8 @@
 <script lang="ts">
-	import { type Zone } from '../sonosApi';
+	import { type Zone } from '../sonosTypes';
 	import Button from './Button.svelte';
 	import { createEventDispatcher, onDestroy, onMount } from 'svelte';
+	import { sonosRequest } from '../sonos';
 
 	const dispatch = createEventDispatcher();
 
@@ -11,9 +12,7 @@
 	const sonoses = ['TV', 'Five', 'Kitchen'];
 
 	const command = (cmd: string) => {
-		return fetch(
-			`http://vlg-pi.volundsgatan.org.github.beta.tailscale.net:5005/${zone.coordinator.roomName}/${cmd}`
-		)
+		return sonosRequest(`${zone.coordinator.roomName}/${cmd}`)
 			.then((res) => res.json())
 			.then(() => dispatch('sonosUpdated', {}));
 	};

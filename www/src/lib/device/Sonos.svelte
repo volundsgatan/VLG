@@ -1,8 +1,9 @@
 <script lang="ts">
 	import { Icon, VolumeOff, VolumeUp } from 'svelte-hero-icons';
-	import { type State } from '../sonosApi';
+	import { type State } from '../sonosTypes';
 	import { createEventDispatcher } from 'svelte';
 	import Spinner from '../Spinner.svelte';
+	import { sonosRequest } from '../sonos';
 
 	const dispatch = createEventDispatcher();
 
@@ -33,10 +34,7 @@
 
 	const toggle = async () => {
 		if (isPlaying) {
-			return fetch(
-				'http://vlg-pi.volundsgatan.org.github.beta.tailscale.net:5005/' + sonos.name + '/leave'
-			)
-				.then((res) => res.json())
+			return sonosRequest(sonos.name + '/leave')
 				.then(() => {
 					dispatch('sonosUpdated', {});
 				})
@@ -44,10 +42,7 @@
 					console.error(err);
 				});
 		} else {
-			return fetch(
-				'http://vlg-pi.volundsgatan.org.github.beta.tailscale.net:5005/' + sonos.name + '/join/TV'
-			)
-				.then((res) => res.json())
+			return sonosRequest(sonos.name + '/join/TV')
 				.then(() => {
 					dispatch('sonosUpdated', {});
 				})

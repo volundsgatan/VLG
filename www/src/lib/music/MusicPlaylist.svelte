@@ -2,6 +2,7 @@
 	import Spinner from '../Spinner.svelte';
 
 	import { createEventDispatcher } from 'svelte';
+	import { sonosRequest } from '../sonos';
 
 	const dispatch = createEventDispatcher();
 
@@ -14,23 +15,16 @@
 	const play = async () => {
 		loading = true;
 
-		return fetch(
-			'http://vlg-pi.volundsgatan.org.github.beta.tailscale.net:5005/TV/favourite/' +
-				encodeURIComponent(name)
-		)
-			.then((res) => res.json())
-
+		return sonosRequest('TV/favourite/' + encodeURIComponent(name))
 			.then(async (data) => {
-				await fetch('http://vlg-pi.volundsgatan.org.github.beta.tailscale.net:5005/TV/shuffle/on');
-				await fetch('http://vlg-pi.volundsgatan.org.github.beta.tailscale.net:5005/TV/next');
+				await sonosRequest('TV/shuffle/on');
+				await sonosRequest('TV/next');
 			})
 
 			.then(async (data) => {
 				// Join ALL
-				await fetch('http://vlg-pi.volundsgatan.org.github.beta.tailscale.net:5005/Five/join/TV');
-				await fetch(
-					'http://vlg-pi.volundsgatan.org.github.beta.tailscale.net:5005/Kitchen/join/TV'
-				);
+				await sonosRequest('Five/join/TV');
+				await sonosRequest('Kitchen/join/TV');
 				dispatch('sonosUpdated', {});
 			})
 

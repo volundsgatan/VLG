@@ -6,7 +6,7 @@
 	import DimmableLight from './device/DimmableLight.svelte';
 	import Occupancy from './device/Occupancy.svelte';
 	import Contact from './device/Contact.svelte';
-	import { type State as SonosState } from './sonosApi';
+	import { type State as SonosState } from './sonosTypes';
 
 	export let states: Record<string, State> = {};
 	export let sonos: Record<string, SonosState> = {};
