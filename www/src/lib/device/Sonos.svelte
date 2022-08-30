@@ -22,6 +22,7 @@
 			if (uri.protocol === 'http:') {
 				uri.protocol = 'https';
 				uri.host = hostname;
+				uri.port = '443'
 				uri.pathname = `/sonos${uri.pathname}`;
 			}
 
