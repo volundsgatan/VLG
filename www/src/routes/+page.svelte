@@ -1,163 +1,136 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
-	import { type State } from '$lib/devices';
-	import Room from '$lib/Room.svelte';
-	import Music from '../lib/music/MusicPlaylists.svelte';
-	import NowPlaying from '$lib/music/NowPlaying.svelte';
-	import { type Zone, type State as SonosState } from '$lib/sonosApi';
+    import {onMount} from 'svelte';
+    import {type State} from '$lib/devices';
+    import Home from '$lib/Home.svelte';
+    import Spinner from '$lib/Spinner.svelte';
+    import {type State as SonosState, type Zone} from '$lib/sonosApi';
 
-	let states: Record<string, State> = {};
-	let ws: WebSocket;
+    let connected = false;
+    let showNotConnected = false;
 
-	let sonos: Record<string, SonosState> = {};
-	let sonosIsUpdating = false;
-	let sonosZones: Array<Zone> = [];
+    let states: Record<string, State> = {};
+    let ws: WebSocket;
 
-	const fetchSonos = async () => {
-		return fetch('http://vlg-pi.volundsgatan.org.github.beta.tailscale.net:5005/zones')
-			.then((res) => res.json())
-			.then((zones: Array<Zone>) => {
-				sonosZones = zones;
-				for (const zone of zones) {
-					for (const member of zone.members) {
-						sonos[member.roomName] = member.state;
-					}
-				}
-			})
-			.catch((err) => {
-				console.error(err);
-			});
-	};
+    let sonos: Record<string, SonosState> = {};
+    let sonosIsUpdating = false;
+    let sonosZones: Array<Zone> = [];
 
-	type m2qevent = {
-		topic: string;
-		payload?: State | string;
-	};
+    const fetchSonos = async () => {
+        return fetch('http://vlg-pi.volundsgatan.org.github.beta.tailscale.net:5005/zones')
+            .then((res) => res.json())
+            .then((zones: Array<Zone>) => {
+                sonosZones = zones;
+                for (const zone of zones) {
+                    for (const member of zone.members) {
+                        sonos[member.roomName] = member.state;
+                    }
+                }
+            })
+            .catch((err) => {
+                console.error(err);
+            });
+    };
 
-	const onSonosUpdated = async () => {
-		console.log('onSonosUpdated');
-		sonosIsUpdating = true;
-		for (let i = 0; i < 10; i++) {
-			await fetchSonos();
-			await new Promise((f) => setTimeout(f, 100));
-		}
-		sonosIsUpdating = false;
-	};
+    type m2qevent = {
+        topic: string;
+        payload?: State | string;
+    };
 
-	const connectZ2M = () => {
-		if (ws) {
-			ws.close();
-		}
+    const onSonosUpdated = async () => {
+        console.log('onSonosUpdated');
+        sonosIsUpdating = true;
+        for (let i = 0; i < 10; i++) {
+            await fetchSonos();
+            await new Promise((f) => setTimeout(f, 100));
+        }
+        sonosIsUpdating = false;
+    };
 
-		ws = new WebSocket('ws://vlg-pi.volundsgatan.org.github.beta.tailscale.net:8080/api');
+    let connectTimeout;
+    let trafficTimeout;
 
-		ws.onmessage = (event) => {
-			const data: m2qevent = JSON.parse(event.data);
-			if (!data.payload) {
-				return;
-			}
-			if (typeof data.payload === 'string') {
-				return;
-			}
+    const connectZ2M = () => {
+        connected = false
+        states = {}
 
-			if (states[data.topic]) {
-				states[data.topic] = Object.assign(states[data.topic], data.payload);
-			} else {
-				states[data.topic] = data.payload;
-			}
+        ws = new WebSocket('ws://vlg-pi.volundsgatan.org.github.beta.tailscale.net:8080/api');
 
-			states = states;
-		};
+        ws.onmessage = (event) => {
+            connected = true
+            showNotConnected = false
 
-		ws.onclose = function (e) {
-			console.log('Socket is closed. Reconnect will be attempted in 1 second.', e.reason);
-			setTimeout(function () {
-				connectZ2M();
-			}, 1000);
-		};
+            const data: m2qevent = JSON.parse(event.data);
+            if (!data.payload) {
+                return;
+            }
+            if (typeof data.payload === 'string') {
+                return;
+            }
 
-		ws.onerror = function (err) {
-			console.error('Socket encountered error: ', err, 'Closing socket');
-			ws.close();
-		};
-	};
+            if (states[data.topic]) {
+                states[data.topic] = Object.assign(states[data.topic], data.payload);
+            } else {
+                states[data.topic] = data.payload;
+            }
 
-	onMount(() => {
-		connectZ2M();
+            states = states;
 
-		fetchSonos();
+            // no traffic in 120s, disconnect
+            clearTimeout(trafficTimeout)
+            trafficTimeout = setTimeout(function () {
+                ws.close()
+            }, 1000 * 120);
+        };
 
-		setInterval(() => {
-			fetchSonos();
-		}, 5000);
-	});
+        ws.onclose = function (e) {
+            connected = false
+            showNotConnected = true
+            states = {}
+
+            console.log('Socket is closed. Reconnect will be attempted in 1 second.', e.reason);
+            clearTimeout(connectTimeout)
+            connectTimeout = setTimeout(function () {
+                connectZ2M();
+            }, 1000);
+        };
+
+        ws.onerror = function (err) {
+            console.error('Socket encountered error: ', err, 'Closing socket');
+            ws.close();
+        };
+    };
+
+    onMount(() => {
+        connectZ2M();
+
+        fetchSonos();
+
+        setInterval(() => {
+            fetchSonos();
+        }, 5000);
+    });
 </script>
 
 <svelte:head>
-	<title>VLG</title>
-	<meta name="description" content="VLG" />
+    <title>VLG</title>
+    <meta name="description" content="VLG"/>
 </svelte:head>
 
-<div class="flex h-full flex-col justify-between space-y-2 p-2">
-	<div class="grid w-full flex-1 grid-cols-7 grid-rows-4 text-gray-700">
-		<div
-			class="col-start-6 col-end-8 row-start-1 row-end-4 flex flex-col space-y-2 border-l-8 border-black transition-all duration-500"
-		>
-			<Room
-				name="Living Room"
-				on:sonosUpdated={onSonosUpdated}
-				{states}
-				{ws}
-				{sonos}
-				{sonosIsUpdating}
-			/>
-		</div>
 
-		<div class="col-start-4 col-end-6 row-start-2 row-end-4 transition-all duration-500">
-			<Room name="Hallway" joinRoomName="Entrance" {states} {ws} bottomLRounded={false} />
-		</div>
-
-		<div class="col-start-4 col-end-5 row-start-4 row-end-5 transition-all duration-500">
-			<Room name="Entrance" joinRoomName="Hallway" {states} {ws} topRounded={false} />
-		</div>
-
-		<div class="col-start-5 col-end-6 row-start-1 row-end-1 flex flex-col border-b-8 border-black ">
-			<Room name="Bathroom" {states} {ws} bg="bg-gray-600" />
-		</div>
-
-		<div
-			class="col-start-2 col-end-4 row-start-1 row-end-3 border-b-8 border-r-8 border-black transition-all duration-500 "
-		>
-			<Room name="Bedroom" {states} {ws} />
-		</div>
-
-		<div
-			class="col-start-4 col-end-5 row-start-1 row-end-1 flex flex-col border-r-8 border-b-8 border-black"
-		>
-			<Room name="Closet" {states} {ws} />
-		</div>
-
-		<div
-			class="col-start-2 col-end-4 row-start-3 row-end-5 flex flex-col border-r-8 border-black transition-all duration-500"
-		>
-			<Room
-				name="Kitchen"
-				on:sonosUpdated={onSonosUpdated}
-				{states}
-				{ws}
-				{sonos}
-				{sonosIsUpdating}
-			/>
-		</div>
-
-		<div class="col-start-1 col-end-2 row-start-1 row-end-5 border-r-8 border-black  text-gray-100">
-			<Room name="Yard" {states} {ws} bg="bg-lime-700" />
-		</div>
-
-		<div class="col-start-5 col-end-8 row-start-4 flex items-center justify-center">
-			<Music on:sonosUpdated={onSonosUpdated} />
-		</div>
-	</div>
-
-	<NowPlaying zones={sonosZones} on:sonosUpdated={onSonosUpdated} />
-</div>
+{#if connected}
+    <Home {states}
+          {ws}
+          {sonos}
+          {sonosIsUpdating}
+          {sonosZones}
+    />
+{:else}
+    <div class="text-gray-300 flex items-center flex-col min-h-screen justify-center gap-16">
+        <div class="text-8xl">❤️🏠</div>
+        {#if showNotConnected}
+            <div>Nä nu gick något fel hörru! Har du loggat in?</div>
+            {:else}
+            <Spinner />
+        {/if}
+    </div>
+{/if}
