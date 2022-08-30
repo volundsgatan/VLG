@@ -2,6 +2,7 @@
 	import { onMount } from 'svelte';
 	import { type State } from '$lib/devices';
 	import Home from '$lib/Home.svelte';
+	import Fancy from '$lib/Fancy.svelte';
 	import Spinner from '$lib/Spinner.svelte';
 	import { type State as SonosState, type Zone } from '$lib/sonosTypes';
 	import { sonosRequest } from '$lib/sonos';
@@ -117,7 +118,7 @@
 </svelte:head>
 
 {#if connected}
-	<Home {states} {ws} {sonos} {sonosIsUpdating} {sonosZones} />
+	<Fancy {states} {ws} {sonos} {sonosIsUpdating} {sonosZones} />
 {:else}
 	<div class="flex min-h-screen flex-col items-center justify-center gap-16 text-gray-300">
 		<div class="text-8xl">❤️🏠</div>
