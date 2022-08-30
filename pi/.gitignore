@@ -1,2 +1,4 @@
 mosquitto-data
 zigbee2mqtt-data
+*.ts.net.crt
+*.ts.net.key

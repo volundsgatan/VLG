@@ -1,0 +1,15 @@
+vlg-pi.unicorn-alligator.ts.net {
+    tls /tls/vlg-pi.unicorn-alligator.ts.net.crt /tls/vlg-pi.unicorn-alligator.ts.net.key
+    handle /sonos* {
+        uri strip_prefix /sonos
+        reverse_proxy 192.168.86.60:5005
+    }
+    handle /z2m/api  {
+        uri strip_prefix /z2m
+        reverse_proxy zigbee2mqtt:8080
+    }
+    #proxy /z2m zigbee2mqtt:8080 {
+#	transparent
+#        websocket
+#    } 
+}
