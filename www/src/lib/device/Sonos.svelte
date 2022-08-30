@@ -20,7 +20,7 @@
 			let uri = new URL(sonos?.state?.currentTrack?.absoluteAlbumArtUri);
 
 			if (uri.protocol === 'http:') {
-				uri.protocol = 'https'
+				uri.protocol = 'https';
 				uri.host = hostname;
 				uri.pathname = `/sonos${uri.pathname}`;
 			}
