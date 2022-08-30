@@ -1,3 +1,5 @@
-export let sonosRequest = (path: string): Promise<any> => {
-	return fetch(`https://vlg-pi.unicorn-alligator.ts.net/sonos/${path}`).then((res) => res.json());
+export const hostname = 'vlg-pi.unicorn-alligator.ts.net'
+
+export const sonosRequest = (path: string): Promise<any> => {
+    return fetch(`https://${hostname}/sonos/${path}`).then((res) => res.json());
 };

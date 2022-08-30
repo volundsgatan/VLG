@@ -3,7 +3,7 @@
 	import { type State } from '../sonosTypes';
 	import { createEventDispatcher } from 'svelte';
 	import Spinner from '../Spinner.svelte';
-	import { sonosRequest } from '../sonos';
+	import { sonosRequest, hostname } from '../sonos';
 
 	const dispatch = createEventDispatcher();
 
@@ -20,7 +20,8 @@
 			let uri = new URL(sonos?.state?.currentTrack?.absoluteAlbumArtUri);
 
 			if (uri.protocol === 'http:') {
-				uri.host = 'vlg-pi.volundsgatan.org.github.beta.tailscale.net:8081';
+				uri.protocol = 'https'
+				uri.host = hostname;
 				uri.pathname = `/sonos${uri.pathname}`;
 			}
 
