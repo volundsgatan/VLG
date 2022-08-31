@@ -97,7 +97,10 @@ export const groups: Group[] = [
 		},
 		devices: [
 			{ addr: '0x00158d000839a1f9', row: 2, col: 1 }, // Door Sensor
-			{ addr: '0x003c84fffeb6e38b', row: 1, col: 1 } // Door Lamp
+			{ addr: '0x003c84fffeb6e38b', row: 1, col: 1 }, // Door Lamp
+			{ addr: '0x94deb8fffe59db15', row: 3, col: 2 }, // Motion Sensor
+			{ addr: '0x588e81fffe768eef', row: 3, col: 3 }, // Dimmer
+			{ addr: '0x003c84fffeb15921', row: 2, col: 2 } // Dimmer (ceiling lamp)
 		]
 	},
 
@@ -108,11 +111,7 @@ export const groups: Group[] = [
 			cols: 3,
 			rows: 3
 		},
-		devices: [
-			{ addr: '0x94deb8fffe59db15', row: 3, col: 2 }, // Motion Sensor
-			{ addr: '0x588e81fffe768eef', row: 3, col: 3 }, // Dimmer
-			{ addr: '0x003c84fffeb15921', row: 2, col: 2 } // Dimmer (ceiling lamp)
-		]
+		devices: []
 	},
 
 	{
