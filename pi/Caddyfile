@@ -8,8 +8,8 @@ vlg-pi.unicorn-alligator.ts.net {
         uri strip_prefix /z2m
         reverse_proxy zigbee2mqtt:8080
     }
-    #proxy /z2m zigbee2mqtt:8080 {
-#	transparent
-#        websocket
-#    } 
+    location /sonosDevice {
+        uri strip_prefix /sonosDevice
+        reverse_proxy 192.168.86.39:1400
+    }
 }
