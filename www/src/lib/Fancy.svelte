@@ -97,28 +97,32 @@
 		style="background-image: url('{bg}')"
 		class="-mt-16 h-[576px] w-[1024px] bg-[length:1024px_576px] bg-no-repeat text-white transition-all duration-500	"
 	>
+		<!-- Bedroom -->
 		<FancyBrightness
 			room={roomAnyLightOn[0]}
 			{ws}
-			pos="top-[50px]  left-[60px] h-[200px] w-[310px]"
+			pos="top-[50px]  left-[60px] h-[185px] w-[310px]"
 		/>
 
+		<!-- Kitchen -->
 		<FancyBrightness
 			room={roomAnyLightOn[1]}
 			{ws}
-			pos="top-[260px]  left-[60px] h-[160px] w-[330px]"
+			pos="top-[240px] left-[60px] h-[160px] w-[310px]"
 		/>
 
+		<!-- Entrance -->
 		<FancyBrightness
 			room={roomAnyLightOn[2]}
 			{ws}
-			pos="top-[160px]   left-[400px] h-[120px] w-[200px] "
+			pos="top-[160px]   left-[380px] h-[130px] w-[220px] "
 		/>
 
+		<!-- Living Room -->
 		<FancyBrightness
 			room={roomAnyLightOn[3]}
 			{ws}
-			pos=" top-[50px]  left-[630px] h-[200px] w-[320px]"
+			pos=" top-[40px]  left-[630px] h-[190px] w-[320px]"
 		/>
 
 		<!-- Frigde -->

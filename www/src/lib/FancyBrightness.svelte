@@ -41,7 +41,7 @@
 				JSON.stringify({
 					topic: `${addr}/set`,
 					payload: {
-						state: 'ON',
+						state: brightness > 0 ? 'ON' : 'OFF',
 						brightness
 					}
 				})
@@ -52,18 +52,20 @@
 	const onTouchStart = (e: TouchEvent) => {
 		startBrightness = avg(room.brightness);
 		touchStartX = e.touches[0].clientX;
-		final = false;
-		touching = true;
 	};
 
 	const onTouchMove = (e: TouchEvent) => {
 		const end = e.changedTouches[0].clientX;
 		const diff = (end - touchStartX) / 2;
-		brightness = clamp(startBrightness + diff, 0, 254).toFixed(0);
+		if (Math.abs(diff) > 5) {
+			touching = true;
+			brightness = clamp(startBrightness + diff, 0, 254).toFixed(0);
+		} else {
+			touching = false;
+		}
 	};
 
 	const onTouchEnd = (e: TouchEvent) => {
-		final = true;
 		touching = false;
 		setBrightness(brightness);
 	};
@@ -78,7 +80,7 @@
 >
 	{#if touching}
 		<div class="w-32 rounded-lg bg-orange-100 p-8 text-center shadow-lg">
-			{brightness}
+			{((brightness / 254) * 100).toFixed()}%
 		</div>
 	{/if}
 </div>
