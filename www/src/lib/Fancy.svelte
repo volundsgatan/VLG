@@ -27,12 +27,19 @@
 			.filter((s) => deviceSet.has(s.device?.ieeeAddr))
 			.map((s) => s.state === 'ON');
 
+
+		const brightness: boolean[] = Object.values(states)
+				.filter((s) => deviceSet.has(s.device?.ieeeAddr))
+				.filter((s) => s.brightness !== undefined)
+				.map((s) => s.state === 'ON' ? s.brightness : 0);
+
 		const anyOn = deviceStates.some((s) => s === true);
 
 		return {
 			room,
 			devices,
-			anyOn
+			anyOn,
+			brightness
 		};
 	});
 
@@ -66,14 +73,20 @@
 
 	let touchStartX = 0;
 	let brightness = 0;
+	let final = false
 
 	const onTouchStart = (e: TouchEvent) => {
 		touchStartX = e.touches[0].clientX;
+		final = false
 	};
 
 	const onTouchMove = (e: TouchEvent) => {
 		const end = e.changedTouches[0].clientX;
 		brightness = (end - touchStartX) / 3;
+	};
+
+	const onTouchEnd = (e: TouchEvent) => {
+		final = true
 	};
 
 	$: bg = getBg(states);
@@ -107,9 +120,14 @@
 			on:click={() => toggleLights('Bedroom')}
 			on:touchstart={onTouchStart}
 			on:touchmove={onTouchMove}
+			on:touchend={onTouchEnd}
 			class="absolute  top-[50px]  left-[60px] h-[200px] w-[310px] cursor-pointer text-center text-3xl text-red-800"
 		>
-			{brightness.toFixed(0)}
+			<pre>
+{brightness.toFixed(0)}
+final={final}
+{JSON.stringify(roomAnyLightOn[0].brightness)}
+</pre>
 		</div>
 		<div
 			on:click={() => toggleLights('Kitchen')}
