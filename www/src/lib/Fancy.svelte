@@ -4,6 +4,7 @@
 	import { groups, type State } from './devices';
 	import NowPlaying from '$lib/music/NowPlaying.svelte';
 	import Device from '$lib/device/Device.svelte';
+	import MusicPlaylists from '../lib/music/MusicPlaylists.svelte';
 
 	export let states: Record<string, State> = {};
 	export let ws: WebSocket;
@@ -85,7 +86,7 @@
 	<link rel="preload" as="image" href="/floorplan_1111.png" />
 </svelte:head>
 
-<div class="flex h-full flex-col justify-between space-y-2 bg-gray-300">
+<div class="flex h-full flex-col justify-between space-y-2 bg-gray-300 w-[1024px] h-[768px]">
 	<div
 		style="background-image: url('{bg}')"
 		class="-mt-16 h-[576px] w-[1024px] bg-[length:1024px_576px] bg-no-repeat text-white transition-all duration-500	"
@@ -107,21 +108,54 @@
 			class="absolute   top-[50px]  left-[630px] h-[200px] w-[320px] cursor-pointer"
 		/>
 
-		<!-- Door Sensor -->
-		<Device
-			class="absolute top-[400px] left-[350px] text-black"
-			state={getState(states, '0x00158d000839a1f9')}
-		/>
+
+
 		<!-- Frigde -->
 		<Device
-			class="absolute top-[375px] left-[235px] text-black"
-			state={getState(states, '0x00158d0007f82457')}
+				class="absolute top-[375px] left-[235px] text-black"
+				state={getState(states, '0x00158d0007f82457')}
 		/>
+
+		<!-- Bedroom Temperature -->
+		<Device
+				class="absolute top-[28px] left-[200px] text-black"
+				state={getState(states, '0x00158d0007f82461')}
+		/>
+
+		<!-- Living Room Temperature -->
+		<Device
+				class="absolute top-[23px] left-[750px] text-black"
+				state={getState(states, '0x00158d000802afb1')}
+		/>
+
+		<!-- Bathroom Temperature -->
+		<Device
+				class="absolute top-[25px] left-[500px] text-black"
+				state={getState(states, '0x00158d0007f01537')}
+		/>
+
+		<!-- Yard Temperature -->
+		<Device
+				class="absolute top-[150px] left-[0px] text-black -rotate-90"
+				state={getState(states, '0x00158d0007e66b8a')}
+		/>
+
+		<!-- Door Sensor -->
+		<Device
+			class="absolute top-[410px] left-[350px] text-black"
+			state={getState(states, '0x00158d000839a1f9')}
+		/>
+
 		<!-- Window Sensor -->
 		<Device
-			class="absolute top-[130px] left-[945px] text-black"
+			class="absolute top-[140px] left-[950px] text-black"
 			state={getState(states, '0x00158d0008399e95')}
 		/>
+
+
+		<div class="absolute top-[340px] left-[520px] w-[400px]">
+			<MusicPlaylists on:sonosUpdated />
+		</div>
 	</div>
 
 	<div class="p-2">

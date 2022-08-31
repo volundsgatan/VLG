@@ -5,7 +5,7 @@
 </script>
 
 {#if !contact}
-	<Icon solid src={LockOpen} class="h-6 w-6 text-red-600" />
+	<div class="h-2 w-2 rounded-full bg-red-800"></div>
 {:else}
-	<Icon src={LockClosed} class="h-6 w-6" />
+	<div class="h-2 w-2 rounded-full bg-green-800"></div>
 {/if}
