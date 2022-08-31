@@ -1,9 +1,9 @@
 <script lang="ts">
-	import { type State } from '$lib/devices';
 	import { type State as SonosState, type Zone } from './sonosTypes';
 	import { groups, type State } from './devices';
 	import NowPlaying from '$lib/music/NowPlaying.svelte';
 	import Device from '$lib/device/Device.svelte';
+	import Sonos from '$lib/device/Sonos.svelte';
 	import MusicPlaylists from '../lib/music/MusicPlaylists.svelte';
 	import FancyBrightness from '$lib/FancyBrightness.svelte';
 
@@ -51,21 +51,6 @@
 		return `/floorplan_${map}.png`;
 	};
 
-	const toggleLights = (roomName: string) => {
-		const room = roomAnyLightOn.find((r) => r.room === roomName);
-		for (const addr of room.devices) {
-			ws.send(
-				JSON.stringify({
-					topic: `${addr}/set`,
-					payload: {
-						state: room.anyOn ? 'OFF' : 'ON',
-						brightness: 100
-					}
-				})
-			);
-		}
-	};
-
 	const getState = (states, addr: string) => {
 		return Object.values(states).find((s) => s.device?.ieeeAddr === addr);
 	};
@@ -95,7 +80,7 @@
 <div class="flex h-full h-[768px] w-[1024px] flex-col justify-between space-y-2 bg-gray-300">
 	<div
 		style="background-image: url('{bg}')"
-		class="-mt-16 h-[576px] w-[1024px] bg-[length:1024px_576px] bg-no-repeat text-white transition-all duration-500	"
+		class="-mt-16 h-[576px] w-[1004px] bg-[length:1024px_576px] bg-no-repeat text-white transition-all duration-500	"
 	>
 		<!-- Bedroom -->
 		<FancyBrightness
@@ -166,6 +151,17 @@
 			class="absolute top-[140px] left-[950px] text-black"
 			state={getState(states, '0x00158d0008399e95')}
 		/>
+
+		<div class="absolute top-[170px] left-[885px] text-black">
+			<Sonos on:sonosUpdated name="Five" sonos={sonos['Five']} {sonosIsUpdating} />
+		</div>
+		<div class="absolute top-[170px] left-[650px] text-black">
+			<Sonos on:sonosUpdated name="TV" sonos={sonos['TV']} {sonosIsUpdating} />
+		</div>
+
+		<div class="absolute top-[240px] left-[222px] text-black">
+			<Sonos on:sonosUpdated name="Kitchen" sonos={sonos['Kitchen']} {sonosIsUpdating} />
+		</div>
 
 		<div class="absolute top-[340px] left-[520px] w-[400px]">
 			<MusicPlaylists on:sonosUpdated />
