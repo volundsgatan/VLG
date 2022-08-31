@@ -5,6 +5,7 @@
 	import NowPlaying from '$lib/music/NowPlaying.svelte';
 	import Device from '$lib/device/Device.svelte';
 	import MusicPlaylists from '../lib/music/MusicPlaylists.svelte';
+	import FancyBrightness from '$lib/FancyBrightness.svelte';
 
 	export let states: Record<string, State> = {};
 	export let ws: WebSocket;
@@ -27,11 +28,10 @@
 			.filter((s) => deviceSet.has(s.device?.ieeeAddr))
 			.map((s) => s.state === 'ON');
 
-
 		const brightness: boolean[] = Object.values(states)
-				.filter((s) => deviceSet.has(s.device?.ieeeAddr))
-				.filter((s) => s.brightness !== undefined)
-				.map((s) => s.state === 'ON' ? s.brightness : 0);
+			.filter((s) => deviceSet.has(s.device?.ieeeAddr))
+			.filter((s) => s.brightness !== undefined)
+			.map((s) => (s.state === 'ON' ? s.brightness : 0));
 
 		const anyOn = deviceStates.some((s) => s === true);
 
@@ -53,7 +53,6 @@
 
 	const toggleLights = (roomName: string) => {
 		const room = roomAnyLightOn.find((r) => r.room === roomName);
-
 		for (const addr of room.devices) {
 			ws.send(
 				JSON.stringify({
@@ -69,24 +68,6 @@
 
 	const getState = (states, addr: string) => {
 		return Object.values(states).find((s) => s.device?.ieeeAddr === addr);
-	};
-
-	let touchStartX = 0;
-	let brightness = 0;
-	let final = false
-
-	const onTouchStart = (e: TouchEvent) => {
-		touchStartX = e.touches[0].clientX;
-		final = false
-	};
-
-	const onTouchMove = (e: TouchEvent) => {
-		const end = e.changedTouches[0].clientX;
-		brightness = (end - touchStartX) / 3;
-	};
-
-	const onTouchEnd = (e: TouchEvent) => {
-		final = true
 	};
 
 	$: bg = getBg(states);
@@ -116,30 +97,28 @@
 		style="background-image: url('{bg}')"
 		class="-mt-16 h-[576px] w-[1024px] bg-[length:1024px_576px] bg-no-repeat text-white transition-all duration-500	"
 	>
-		<div
-			on:click={() => toggleLights('Bedroom')}
-			on:touchstart={onTouchStart}
-			on:touchmove={onTouchMove}
-			on:touchend={onTouchEnd}
-			class="absolute  top-[50px]  left-[60px] h-[200px] w-[310px] cursor-pointer text-center text-3xl text-red-800"
-		>
-			<pre>
-{brightness.toFixed(0)}
-final={final}
-{JSON.stringify(roomAnyLightOn[0].brightness)}
-</pre>
-		</div>
-		<div
-			on:click={() => toggleLights('Kitchen')}
-			class="absolute  top-[260px]  left-[60px] h-[160px] w-[330px] cursor-pointer hover:bg-stone-300"
+		<FancyBrightness
+			room={roomAnyLightOn[0]}
+			{ws}
+			pos="top-[50px]  left-[60px] h-[200px] w-[310px]"
 		/>
-		<div
-			on:click={() => toggleLights('Entrance')}
-			class="absolute  top-[160px]   left-[400px] h-[120px] w-[200px] cursor-pointer"
+
+		<FancyBrightness
+			room={roomAnyLightOn[1]}
+			{ws}
+			pos="top-[260px]  left-[60px] h-[160px] w-[330px]"
 		/>
-		<div
-			on:click={() => toggleLights('Living Room')}
-			class="absolute   top-[50px]  left-[630px] h-[200px] w-[320px] cursor-pointer"
+
+		<FancyBrightness
+			room={roomAnyLightOn[2]}
+			{ws}
+			pos="top-[160px]   left-[400px] h-[120px] w-[200px] "
+		/>
+
+		<FancyBrightness
+			room={roomAnyLightOn[3]}
+			{ws}
+			pos=" top-[50px]  left-[630px] h-[200px] w-[320px]"
 		/>
 
 		<!-- Frigde -->
