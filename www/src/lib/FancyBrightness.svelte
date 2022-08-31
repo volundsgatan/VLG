@@ -66,10 +66,10 @@
 	};
 
 	const onTouchEnd = (e: TouchEvent) => {
-        if (touching) {
-            touching = false;
-            setBrightness(brightness);
-        }
+		if (touching) {
+			touching = false;
+			setBrightness(brightness);
+		}
 	};
 </script>
 

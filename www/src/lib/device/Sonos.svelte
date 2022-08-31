@@ -7,23 +7,19 @@
 
 	const dispatch = createEventDispatcher();
 
-	type Sonos = {
-		name: string;
-		state?: State;
-	};
-
-	export let sonos: Sonos;
+	export let sonos: State;
+	export let name: string;
 	export let sonosIsUpdating = false;
 
-	const getArt = (sonos: Sonos): string | undefined => {
-		if (sonos?.state?.currentTrack?.absoluteAlbumArtUri) {
-			let uri = new URL(sonos?.state?.currentTrack?.absoluteAlbumArtUri);
+	const getArt = (sonos: State): string | undefined => {
+		if (sonos?.currentTrack?.absoluteAlbumArtUri) {
+			let uri = new URL(sonos?.currentTrack?.absoluteAlbumArtUri);
 
 			if (uri.protocol === 'http:') {
 				uri.protocol = 'https';
 				uri.host = hostname;
 				uri.port = '443';
-				uri.pathname = `/sonos${uri.pathname}`;
+				uri.pathname = `${uri.pathname}`;
 			}
 
 			return uri.toString();
@@ -32,11 +28,11 @@
 	};
 
 	$: albumArt = getArt(sonos);
-	$: isPlaying = sonos?.state?.playbackState === 'PLAYING';
+	$: isPlaying = sonos?.playbackState === 'PLAYING';
 
 	const toggle = async () => {
 		if (isPlaying) {
-			return sonosRequest(sonos.name + '/leave')
+			return sonosRequest(name + '/leave')
 				.then(() => {
 					dispatch('sonosUpdated', {});
 				})
@@ -44,7 +40,7 @@
 					console.error(err);
 				});
 		} else {
-			return sonosRequest(sonos.name + '/join/TV')
+			return sonosRequest(name + '/join/TV')
 				.then(() => {
 					dispatch('sonosUpdated', {});
 				})
@@ -61,11 +57,9 @@
 >
 	{#if !isPlaying && sonosIsUpdating}
 		<Spinner />
-	{:else if !isPlaying}
-		<Icon src={VolumeOff} class="h-6 w-6" />
-	{:else if albumArt}
+	{:else if isPlaying && albumArt}
 		<img src={albumArt} alt="Album Art" class="h-12 w-12" />
-	{:else}
-		<Icon src={VolumeUp} class="h-12 w-12" />
+	{:else if isPlaying}
+		<div class="text-3xl">📺</div>
 	{/if}
 </div>

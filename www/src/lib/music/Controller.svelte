@@ -2,7 +2,7 @@
 	import { type Zone } from '../sonosTypes';
 	import Button from './Button.svelte';
 	import { createEventDispatcher, onDestroy, onMount } from 'svelte';
-	import { sonosRequest } from '../sonos';
+	import { hostname, sonosRequest } from '../sonos';
 
 	const dispatch = createEventDispatcher();
 
@@ -47,8 +47,10 @@
 			let uri = new URL(zone.coordinator.state.currentTrack.absoluteAlbumArtUri);
 
 			if (uri.protocol === 'http:') {
-				uri.host = 'vlg-pi.volundsgatan.org.github.beta.tailscale.net:8081';
-				uri.pathname = `/sonos${uri.pathname}`;
+				uri.protocol = 'https';
+				uri.host = hostname;
+				uri.port = '443';
+				uri.pathname = `${uri.pathname}`;
 			}
 
 			return uri.toString();
