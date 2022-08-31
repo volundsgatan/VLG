@@ -1,15 +1,14 @@
 vlg-pi.unicorn-alligator.ts.net {
     tls /tls/vlg-pi.unicorn-alligator.ts.net.crt /tls/vlg-pi.unicorn-alligator.ts.net.key
-    handle /sonos* {
-        uri strip_prefix /sonos
+    handle /getaa* {
+        reverse_proxy 192.168.86.39:1400 {
+             header_up -Host
+        }
+    }
+    handle_path /sonos/* {
         reverse_proxy 192.168.86.60:5005
     }
-    handle /z2m/api  {
-        uri strip_prefix /z2m
+    handle_path /z2m/*  {
         reverse_proxy zigbee2mqtt:8080
-    }
-    location /sonosDevice {
-        uri strip_prefix /sonosDevice
-        reverse_proxy 192.168.86.39:1400
     }
 }
