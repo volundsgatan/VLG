@@ -64,6 +64,18 @@
 		return Object.values(states).find((s) => s.device?.ieeeAddr === addr);
 	};
 
+	let touchStartX = 0;
+	let brightness = 0;
+
+	const onTouchStart = (e: TouchEvent) => {
+		touchStartX = e.touches[0].clientX;
+	};
+
+	const onTouchMove = (e: TouchEvent) => {
+		const end = e.changedTouches[0].clientX;
+		brightness = (end - touchStartX) / 3;
+	};
+
 	$: bg = getBg(states);
 </script>
 
@@ -86,18 +98,22 @@
 	<link rel="preload" as="image" href="/floorplan_1111.png" />
 </svelte:head>
 
-<div class="flex h-full flex-col justify-between space-y-2 bg-gray-300 w-[1024px] h-[768px]">
+<div class="flex h-full h-[768px] w-[1024px] flex-col justify-between space-y-2 bg-gray-300">
 	<div
 		style="background-image: url('{bg}')"
 		class="-mt-16 h-[576px] w-[1024px] bg-[length:1024px_576px] bg-no-repeat text-white transition-all duration-500	"
 	>
 		<div
 			on:click={() => toggleLights('Bedroom')}
-			class="absolute  top-[50px]  left-[60px] h-[200px] w-[310px] cursor-pointer"
-		/>
+			on:touchstart={onTouchStart}
+			on:touchmove={onTouchMove}
+			class="absolute  top-[50px]  left-[60px] h-[200px] w-[310px] cursor-pointer text-center text-3xl text-red-800"
+		>
+			{brightness.toFixed(0)}
+		</div>
 		<div
 			on:click={() => toggleLights('Kitchen')}
-			class="absolute  top-[260px]  left-[60px] h-[160px] w-[330px] cursor-pointer"
+			class="absolute  top-[260px]  left-[60px] h-[160px] w-[330px] cursor-pointer hover:bg-stone-300"
 		/>
 		<div
 			on:click={() => toggleLights('Entrance')}
@@ -108,36 +124,34 @@
 			class="absolute   top-[50px]  left-[630px] h-[200px] w-[320px] cursor-pointer"
 		/>
 
-
-
 		<!-- Frigde -->
 		<Device
-				class="absolute top-[375px] left-[235px] text-black"
-				state={getState(states, '0x00158d0007f82457')}
+			class="absolute top-[375px] left-[235px] text-black"
+			state={getState(states, '0x00158d0007f82457')}
 		/>
 
 		<!-- Bedroom Temperature -->
 		<Device
-				class="absolute top-[28px] left-[200px] text-black"
-				state={getState(states, '0x00158d0007f82461')}
+			class="absolute top-[28px] left-[200px] text-black"
+			state={getState(states, '0x00158d0007f82461')}
 		/>
 
 		<!-- Living Room Temperature -->
 		<Device
-				class="absolute top-[23px] left-[750px] text-black"
-				state={getState(states, '0x00158d000802afb1')}
+			class="absolute top-[23px] left-[750px] text-black"
+			state={getState(states, '0x00158d000802afb1')}
 		/>
 
 		<!-- Bathroom Temperature -->
 		<Device
-				class="absolute top-[25px] left-[500px] text-black"
-				state={getState(states, '0x00158d0007f01537')}
+			class="absolute top-[25px] left-[500px] text-black"
+			state={getState(states, '0x00158d0007f01537')}
 		/>
 
 		<!-- Yard Temperature -->
 		<Device
-				class="absolute top-[150px] left-[0px] text-black -rotate-90"
-				state={getState(states, '0x00158d0007e66b8a')}
+			class="absolute top-[150px] left-[0px] -rotate-90 text-black"
+			state={getState(states, '0x00158d0007e66b8a')}
 		/>
 
 		<!-- Door Sensor -->
@@ -151,7 +165,6 @@
 			class="absolute top-[140px] left-[950px] text-black"
 			state={getState(states, '0x00158d0008399e95')}
 		/>
-
 
 		<div class="absolute top-[340px] left-[520px] w-[400px]">
 			<MusicPlaylists on:sonosUpdated />
