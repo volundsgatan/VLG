@@ -8,7 +8,7 @@
 
 {#if temperature}
 	<div
-		class="text-sm"
+		class="text-xs"
 		class:text-blue-800={light && temperature < 10}
 		class:text-blue-200={!light && temperature < 10}
 		class:text-red-800={light && temperature > 24}

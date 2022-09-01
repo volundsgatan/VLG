@@ -112,31 +112,31 @@
 
 		<!-- Frigde -->
 		<Device
-			class="absolute top-[423px] left-[235px] text-black"
+			class="absolute top-[423px] left-[238px] text-black"
 			state={getState(states, '0x00158d0007f82457')}
 		/>
 
 		<!-- Bedroom Temperature -->
 		<Device
-			class="absolute top-[25px] left-[200px] text-black"
+			class="absolute top-[27px] left-[200px] text-black"
 			state={getState(states, '0x00158d0007f82461')}
 		/>
 
 		<!-- Bathroom Temperature -->
 		<Device
-				class="absolute top-[22px] left-[500px] text-black"
+				class="absolute top-[23px] left-[500px] text-black"
 				state={getState(states, '0x00158d0007f01537')}
 		/>
 
 		<!-- Living Room Temperature -->
 		<Device
-			class="absolute top-[20px] left-[750px] text-black"
+			class="absolute top-[21px] left-[750px] text-black"
 			state={getState(states, '0x00158d000802afb1')}
 		/>
 
 		<!-- Yard Temperature -->
 		<Device
-			class="absolute top-[220px] left-[0px] -rotate-90 text-black"
+			class="absolute top-[220px] left-[5px] -rotate-90 text-black"
 			state={getState(states, '0x00158d0007e66b8a')}
 		/>
 
