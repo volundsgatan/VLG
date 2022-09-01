@@ -1,9 +1,8 @@
 <script lang="ts">
-	import { Icon, VolumeOff, VolumeUp } from 'svelte-hero-icons';
 	import { type State } from '../sonosTypes';
 	import { createEventDispatcher } from 'svelte';
 	import Spinner from '../Spinner.svelte';
-	import { sonosRequest, hostname } from '../sonos';
+	import { sonosRequest } from '../sonos';
 
 	const dispatch = createEventDispatcher();
 
@@ -11,23 +10,6 @@
 	export let name: string;
 	export let sonosIsUpdating = false;
 
-	const getArt = (sonos: State): string | undefined => {
-		if (sonos?.currentTrack?.absoluteAlbumArtUri) {
-			let uri = new URL(sonos?.currentTrack?.absoluteAlbumArtUri);
-
-			if (uri.protocol === 'http:') {
-				uri.protocol = 'https';
-				uri.host = hostname;
-				uri.port = '443';
-				uri.pathname = `${uri.pathname}`;
-			}
-
-			return uri.toString();
-		}
-		return undefined;
-	};
-
-	$: albumArt = getArt(sonos);
 	$: isPlaying = sonos?.playbackState === 'PLAYING';
 
 	const toggle = async () => {
@@ -57,9 +39,14 @@
 >
 	{#if !isPlaying && sonosIsUpdating}
 		<Spinner />
-	{:else if isPlaying && albumArt}
-		<img src={albumArt} alt="Album Art" class="h-12 w-12" />
 	{:else if isPlaying}
-		<div class="text-3xl">📺</div>
+		<div class="relative">
+			<span class="flex h-4 w-4 items-center justify-around">
+				<span
+					class="absolute inline-flex h-full w-full animate-ping rounded-full bg-orange-300 opacity-75"
+				/>
+				<span class="relative inline-flex h-2 w-2 rounded-full bg-orange-400" />
+			</span>
+		</div>
 	{/if}
 </div>

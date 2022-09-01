@@ -152,14 +152,13 @@
 			state={getState(states, '0x00158d0008399e95')}
 		/>
 
-		<div class="absolute top-[170px] left-[885px] text-black">
+		<div class="absolute top-[130px] left-[885px] text-black">
 			<Sonos on:sonosUpdated name="Five" sonos={sonos['Five']} {sonosIsUpdating} />
 		</div>
-		<div class="absolute top-[170px] left-[650px] text-black">
+		<div class="absolute top-[190px] left-[650px] text-black">
 			<Sonos on:sonosUpdated name="TV" sonos={sonos['TV']} {sonosIsUpdating} />
 		</div>
-
-		<div class="absolute top-[240px] left-[222px] text-black">
+		<div class="absolute top-[220px] left-[240px] text-black">
 			<Sonos on:sonosUpdated name="Kitchen" sonos={sonos['Kitchen']} {sonosIsUpdating} />
 		</div>
 
