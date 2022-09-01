@@ -77,10 +77,10 @@
 	<link rel="preload" as="image" href="/floorplan_2_1111.png" />
 </svelte:head>
 
-<div class="flex h-full h-[768px] w-[1024px] flex-col justify-between space-y-2 bg-gray-300">
+<div class="flex h-full h-[748px] w-[1024px] flex-col justify-between space-y-2 bg-gray-300">
 	<div
 		style="background-image: url('{bg}')"
-		class="-mt-[40px] h-[556px] w-[1024px] bg-[length:1024px_576px] bg-no-repeat text-white transition-all duration-500	"
+		class="-mt-[40px] h-[768px] w-[1024px] bg-[length:1024px_576px] bg-no-repeat text-white transition-all duration-500	"
 	>
 		<!-- Bedroom -->
 		<FancyBrightness
