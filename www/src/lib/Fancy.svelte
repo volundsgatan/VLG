@@ -167,7 +167,9 @@
 		</div>
 	</div>
 
-	<div class="p-2">
+	<div class="backdrop-blur absolute top-[480px] left-0 w-[1024px] h-16"></div>
+
+	<div class="p-2 z-10">
 		<NowPlaying zones={sonosZones} on:sonosUpdated />
 	</div>
 </div>

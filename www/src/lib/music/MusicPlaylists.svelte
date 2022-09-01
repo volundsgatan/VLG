@@ -1,22 +1,26 @@
 <script lang="ts">
 	import MusicPlaylist from './MusicPlaylist.svelte';
 
+	import coffee from './artwork/coffee.jpeg'
+	import margs from './artwork/margs.jpeg'
+	import p4 from './artwork/p4.png'
+
 	const playlists = [
 		{
-			name: 'Gustav Westling’s Station',
-			abbr: 'GW'
-		},
-		{
 			name: 'Your Favorite Coffeehouse',
-			image: 'https://i.scdn.co/image/ab67706f000000035ae7aa0454c9eafdd6505fda'
+			image: coffee,
 		},
 		{
 			name: 'disco margaritas',
-			image: 'https://i.scdn.co/image/ab67706c0000bebb6dcceb12518c5cb7cccf0f3d'
+			image: margs,
 		},
 		{
 			name: 'P4 Stockholm',
-			abbr: 'P4'
+			image: p4,
+		},
+		{
+			name: 'Gustav Westling’s Station',
+			abbr: 'GW'
 		},
 		{
 			name: 'VLG',

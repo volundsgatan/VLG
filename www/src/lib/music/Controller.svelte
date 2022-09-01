@@ -87,7 +87,7 @@
 	$: isShuffle = zone.coordinator.state.playMode.shuffle;
 </script>
 
-<div class="flex items-center rounded-lg bg-stone-600 p-3">
+<div class="flex items-center rounded-lg bg-stone-500 p-3">
 	<div class="flex w-2/5 items-center space-x-4 overflow-hidden text-ellipsis">
 		{#if albumArt}
 			<img class="h-12 w-12 bg-red-200" src={albumArt} />

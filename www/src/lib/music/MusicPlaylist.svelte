@@ -38,7 +38,7 @@
 	};
 </script>
 
-<div class="relative">
+<div class="relative rounded-md overflow-hidden">
 	{#if loading}
 		<div
 			class="absolute top-0 left-0 inline-flex h-full w-full items-center justify-center bg-black text-white opacity-80"
@@ -51,7 +51,7 @@
 		<img src={image} class="h-16 w-16 cursor-pointer" on:click|preventDefault={play} />
 	{:else}
 		<div
-			class="inline-flex h-16 w-16 cursor-pointer items-center justify-center bg-red-200 text-2xl text-red-600"
+			class="inline-flex h-16 w-16 cursor-pointer items-center justify-center bg-stone-500 text-stone-300"
 			on:click|preventDefault={play}
 		>
 			{abbr}
