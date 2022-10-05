@@ -13,11 +13,6 @@ const config = {
 		adapter: adapter({
 			fallback: 'index.html'
 		}),
-
-		// Override http methods in the Todo forms
-		methodOverride: {
-			allowed: ['PATCH', 'DELETE']
-		}
 	}
 };
 
