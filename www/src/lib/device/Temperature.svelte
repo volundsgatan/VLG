@@ -1,6 +1,6 @@
 <script lang="ts">
-	export let temperature: number = 0;
-	export let light: Boolean = true;
+	export let temperature = 0;
+	export let light = true;
 
 	$: whole = temperature.toFixed(0);
 	$: sub = ((temperature % 1) * 10).toString().substring(0, 1);

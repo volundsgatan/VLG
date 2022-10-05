@@ -8,6 +8,7 @@
 		"check": "svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-check --tsconfig ./tsconfig.json --watch",
 		"lint": "prettier --check --plugin-search-dir=. . && eslint .",
+		"lint:fix": "prettier --check --plugin-search-dir=. . && eslint . --fix",
 		"format": "prettier --write --plugin-search-dir=. ."
 	},
 	"devDependencies": {

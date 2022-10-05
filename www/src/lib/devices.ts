@@ -1,5 +1,5 @@
 export type Group = {
-	name: String;
+	name: string;
 	devices: DeviceConfig[];
 	size: RoomSize;
 };

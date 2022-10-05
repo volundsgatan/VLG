@@ -14,7 +14,7 @@
 	export let name: string;
 	export let joinRoomName: string | null = null; // Join light status with this room
 	export let ws: WebSocket;
-	export let bg: string = '';
+	export let bg = '';
 	export let topRounded = true;
 	export let bottomLRounded = true;
 

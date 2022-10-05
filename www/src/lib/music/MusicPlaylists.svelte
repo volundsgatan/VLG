@@ -1,22 +1,22 @@
 <script lang="ts">
 	import MusicPlaylist from './MusicPlaylist.svelte';
 
-	import coffee from './artwork/coffee.jpeg'
-	import margs from './artwork/margs.jpeg'
-	import p4 from './artwork/p4.png'
+	import coffee from './artwork/coffee.jpeg';
+	import margs from './artwork/margs.jpeg';
+	import p4 from './artwork/p4.png';
 
 	const playlists = [
 		{
 			name: 'Your Favorite Coffeehouse',
-			image: coffee,
+			image: coffee
 		},
 		{
 			name: 'disco margaritas',
-			image: margs,
+			image: margs
 		},
 		{
 			name: 'P4 Stockholm',
-			image: p4,
+			image: p4
 		},
 		{
 			name: 'Gustav Westling’s Station',

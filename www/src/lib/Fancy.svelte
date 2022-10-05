@@ -124,8 +124,8 @@
 
 		<!-- Bathroom Temperature -->
 		<Device
-				class="absolute top-[23px] left-[500px] text-black"
-				state={getState(states, '0x00158d0007f01537')}
+			class="absolute top-[23px] left-[500px] text-black"
+			state={getState(states, '0x00158d0007f01537')}
 		/>
 
 		<!-- Living Room Temperature -->
@@ -167,9 +167,9 @@
 		</div>
 	</div>
 
-	<div class="backdrop-blur absolute top-[480px] left-0 w-[1024px] h-16"></div>
+	<div class="absolute top-[480px] left-0 h-16 w-[1024px] backdrop-blur" />
 
-	<div class="p-2 z-10">
+	<div class="z-10 p-2">
 		<NowPlaying zones={sonosZones} on:sonosUpdated />
 	</div>
 </div>

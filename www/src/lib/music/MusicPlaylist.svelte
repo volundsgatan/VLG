@@ -38,7 +38,7 @@
 	};
 </script>
 
-<div class="relative rounded-md overflow-hidden">
+<div class="relative overflow-hidden rounded-md">
 	{#if loading}
 		<div
 			class="absolute top-0 left-0 inline-flex h-full w-full items-center justify-center bg-black text-white opacity-80"

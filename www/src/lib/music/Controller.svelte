@@ -85,20 +85,18 @@
 	$: isFullParty = zone.members.length === sonoses.length;
 	$: isPlaying = zone.coordinator.state.playbackState === 'PLAYING';
 	$: isShuffle = zone.coordinator.state.playMode.shuffle;
-	$: isTurntable = zone.coordinator.state.currentTrack.title === "Turntable"
-	$: isTV = zone.coordinator.state.currentTrack.type === "line_in" && !isTurntable
+	$: isTurntable = zone.coordinator.state.currentTrack.title === 'Turntable';
+	$: isTV = zone.coordinator.state.currentTrack.type === 'line_in' && !isTurntable;
 </script>
 
 <div class="flex items-center rounded-lg bg-stone-500 p-3">
-
-
 	<div class="flex w-2/5 items-center space-x-4 overflow-hidden text-ellipsis">
 		{#if albumArt}
 			<img class="h-12 w-12" src={albumArt} />
 		{:else if isTurntable}
-			<span class="text-4xl w-12 text-center">💽</span>
+			<span class="w-12 text-center text-4xl">💽</span>
 		{:else if isTV}
-			<span class="text-4xl w-12 text-center">📺</span>
+			<span class="w-12 text-center text-4xl">📺</span>
 		{/if}
 		<div>
 			<div class="text-white">{rooms.join(', ')}</div>
