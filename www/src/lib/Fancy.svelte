@@ -79,7 +79,7 @@
 	<link rel="preload" as="image" href="/floorplan_2_1111.png?1" />
 </svelte:head>
 
-<div class="flex h-full w-full flex-col justify-between space-y-2 bg-gray-300">
+<div class="flex h-full w-full flex-col justify-between space-y-2 bg-gray-300 select-none">
 	<div class="md:hidden">
 		<Simple {roomAnyLightOn} {ws} />
 	</div>
