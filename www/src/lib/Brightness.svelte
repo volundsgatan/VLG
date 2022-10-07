@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { onMount, tick } from 'svelte';
+
 	export let ws;
 	export let room;
 	export let pos = '';
@@ -71,6 +73,8 @@
 			setBrightness(brightness);
 		}
 	};
+
+	$: avgRealBrightness = avg(room.brightness);
 </script>
 
 <div
@@ -78,12 +82,20 @@
 	on:touchstart={onTouchStart}
 	on:touchmove={onTouchMove}
 	on:touchend={onTouchEnd}
-	class="absolute inline-flex cursor-pointer items-center justify-around text-center text-3xl text-orange-800 {pos}"
+	class="inline-flex cursor-pointer items-center justify-around text-center  {pos}"
 >
+	<div class="flex w-full justify-start gap-8 py-4 px-8 text-3xl">
+		<span>
+			{#if avgRealBrightness > 0}🌝{:else}🌚{/if}
+		</span>
+		<div>
+			<slot />
+		</div>
+	</div>
+
 	{#if touching}
-		<div class="w-32 rounded-lg bg-orange-100 p-8 text-center shadow-lg">
+		<div class="w-32 rounded-lg bg-orange-100 p-8 text-center text-3xl text-orange-800 shadow-lg">
 			{((brightness / 254) * 100).toFixed()}%
 		</div>
 	{/if}
-	<slot />
 </div>

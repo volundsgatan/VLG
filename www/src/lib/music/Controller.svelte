@@ -92,11 +92,11 @@
 <div class="flex items-center rounded-lg bg-stone-500 p-3">
 	<div class="flex w-2/5 items-center space-x-4 overflow-hidden text-ellipsis">
 		{#if albumArt}
-			<img class="h-12 w-12" src={albumArt} />
+			<img class="hidden h-12 w-12 md:block" src={albumArt} />
 		{:else if isTurntable}
-			<span class="w-12 text-center text-4xl">💽</span>
+			<span class="hidden w-12 text-center text-4xl md:block">💽</span>
 		{:else if isTV}
-			<span class="w-12 text-center text-4xl">📺</span>
+			<span class="hidden w-12 text-center text-4xl md:block">📺</span>
 		{/if}
 		<div>
 			<div class="text-white">{rooms.join(', ')}</div>
@@ -131,6 +131,7 @@
 			type="range"
 			id="volume"
 			name="volume"
+			class="hidden md:block"
 			bind:value={volume}
 			on:change={onSetVolume}
 			min="0"

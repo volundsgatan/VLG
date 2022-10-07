@@ -6,7 +6,8 @@
 	import Sonos from '$lib/device/Sonos.svelte';
 	import MusicPlaylists from '../lib/music/MusicPlaylists.svelte';
 	import FancyBrightness from '$lib/FancyBrightness.svelte';
-	import TemperatureSpark from './TemperatureSpark.svelte'
+	import TemperatureSpark from './TemperatureSpark.svelte';
+	import Simple from './Simple.svelte';
 
 	export let states: Record<string, State> = {};
 	export let ws: WebSocket;
@@ -79,7 +80,11 @@
 </svelte:head>
 
 <div class="flex h-full w-full flex-col justify-between space-y-2 bg-gray-300">
-	<div class="relative mx-auto -mt-[40px] xl:mt-0">
+	<div class="md:hidden">
+		<Simple {roomAnyLightOn} {ws} />
+	</div>
+
+	<div class="relative mx-auto -mt-[40px] hidden md:block xl:mt-0">
 		<div
 			style="background-image: url('{bg}')"
 			class=" h-[536px] w-[1024px] bg-[length:1024px_576px] bg-no-repeat text-white transition-all duration-500	"
@@ -117,7 +122,6 @@
 				name="Fridge"
 				class="absolute top-[463px] left-[210px] text-black"
 				state={getState(states, '0x00158d0007f82457')}
-
 			/>
 
 			<!-- Bedroom Temperature -->
