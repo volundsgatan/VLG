@@ -1,17 +1,15 @@
 <script lang="ts">
 	import { onMount, tick } from 'svelte';
-
-	import sparkline from '@fnando/sparkline';
-
+	import {sparkline} from '@fnando/sparkline';
 	import Device from './device/Device.svelte';
 
 	export let name = 'Outdoor';
-	let className  = "";
+	let className = '';
 	export { className as class };
 	export let height = 24;
 	export let state;
 
-	let sparks : number[];
+	let sparks: number[];
 	let sparkEl;
 	let promState;
 
