@@ -79,10 +79,10 @@
 </svelte:head>
 
 <div class="flex h-full w-full flex-col justify-between space-y-2 bg-gray-300">
-	<div class="relative mx-auto -mt-[40px] xl:mt-0 bg-red-200  ">
+	<div class="relative mx-auto -mt-[40px] xl:mt-0">
 		<div
 			style="background-image: url('{bg}')"
-			class=" h-[536px] bg-red-200 w-[1024px] bg-[length:1024px_576px] bg-no-repeat text-white transition-all duration-500	"
+			class=" h-[536px] w-[1024px] bg-[length:1024px_576px] bg-no-repeat text-white transition-all duration-500	"
 		>
 			<!-- Bedroom -->
 			<FancyBrightness
