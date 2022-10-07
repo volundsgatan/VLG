@@ -89,14 +89,14 @@
 	$: isTV = zone.coordinator.state.currentTrack.type === 'line_in' && !isTurntable;
 </script>
 
-<div class="flex items-center rounded-lg bg-stone-500 p-3">
-	<div class="flex w-2/5 items-center space-x-4 overflow-hidden text-ellipsis">
+<div class="flex md:items-center rounded-lg bg-stone-500 p-3 flex-col md:flex-row">
+	<div class="flex w-full md:w-2/5 items-center space-x-4 overflow-hidden text-ellipsis">
 		{#if albumArt}
-			<img class="hidden h-12 w-12 md:block" src={albumArt} />
+			<img class=" h-12 w-12" src={albumArt} />
 		{:else if isTurntable}
-			<span class="hidden w-12 text-center text-4xl md:block">💽</span>
+			<span class=" w-12 text-center text-4xl ">💽</span>
 		{:else if isTV}
-			<span class="hidden w-12 text-center text-4xl md:block">📺</span>
+			<span class=" w-12 text-center text-4xl ">📺</span>
 		{/if}
 		<div>
 			<div class="text-white">{rooms.join(', ')}</div>
@@ -121,17 +121,16 @@
 		</div>
 	</div>
 
-	<div class="flex w-2/5 items-center justify-end space-x-2 text-3xl">
+	<div class="flex md:w-2/5 items-center justify-center md:justify-end space-x-2 text-3xl">
 		<Button on:click={shuffle} active={isShuffle}>🔀</Button>
 		<Button on:click={broadcast} active={isFullParty}>🪩</Button>
-
 		<Button on:click={toggleMute}>🔈</Button>
 
 		<input
 			type="range"
 			id="volume"
 			name="volume"
-			class="hidden md:block"
+			class="w-full"
 			bind:value={volume}
 			on:change={onSetVolume}
 			min="0"

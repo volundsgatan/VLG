@@ -82,20 +82,20 @@
 	on:touchstart={onTouchStart}
 	on:touchmove={onTouchMove}
 	on:touchend={onTouchEnd}
-	class="inline-flex cursor-pointer items-center justify-around text-center  {pos}"
+	class="inline-flex cursor-pointer items-center justify-around text-center py-4 px-8  {pos}"
 >
-	<div class="flex w-full justify-start gap-8 py-4 px-8 text-3xl">
-		<span>
-			{#if avgRealBrightness > 0}🌝{:else}🌚{/if}
-		</span>
-		<div>
-			<slot />
-		</div>
-	</div>
-
 	{#if touching}
-		<div class="w-32 rounded-lg bg-orange-100 p-8 text-center text-3xl text-orange-800 shadow-lg">
+		<div class="text-center text-3xl text-orange-800">
 			{((brightness / 254) * 100).toFixed()}%
+		</div>
+	{:else}
+		<div class="flex w-full justify-start gap-8 text-3xl">
+			<span>
+				{#if avgRealBrightness > 0}🌝{:else}🌚{/if}
+			</span>
+			<div>
+				<slot />
+			</div>
 		</div>
 	{/if}
 </div>
