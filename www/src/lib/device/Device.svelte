@@ -1,5 +1,5 @@
 <script lang="ts">
-	let className;
+	let className = "";
 	export let state;
 	export { className as class };
 	import Contact from './Contact.svelte';

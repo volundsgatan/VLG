@@ -16,6 +16,7 @@
 		"@sveltejs/kit": "^1.0.0-next.510",
 		"@tailwindcss/aspect-ratio": "^0.4.0",
 		"@types/cookie": "^0.5.1",
+		"@types/fnando__sparkline": "^0.3.4",
 		"@typescript-eslint/eslint-plugin": "^5.27.0",
 		"@typescript-eslint/parser": "^5.27.0",
 		"autoprefixer": "^10.4.7",
@@ -37,6 +38,7 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@fnando/sparkline": "^0.3.10",
 		"@sveltejs/adapter-static": "^1.0.0-next.39",
 		"cookie": "^0.4.1"
 	}

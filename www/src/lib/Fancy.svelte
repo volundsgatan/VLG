@@ -6,6 +6,7 @@
 	import Sonos from '$lib/device/Sonos.svelte';
 	import MusicPlaylists from '../lib/music/MusicPlaylists.svelte';
 	import FancyBrightness from '$lib/FancyBrightness.svelte';
+	import TemperatureSpark from './TemperatureSpark.svelte'
 
 	export let states: Record<string, State> = {};
 	export let ws: WebSocket;
@@ -112,32 +113,38 @@
 			/>
 
 			<!-- Frigde -->
-			<Device
-				class="absolute top-[463px] left-[238px] text-black"
+			<TemperatureSpark
+				name="Fridge"
+				class="absolute top-[463px] left-[210px] text-black"
 				state={getState(states, '0x00158d0007f82457')}
+
 			/>
 
 			<!-- Bedroom Temperature -->
-			<Device
-				class="absolute top-[67px] left-[200px] text-black"
+			<TemperatureSpark
+				name="Bedroom"
+				class="absolute top-[62px] left-[180px] text-black"
 				state={getState(states, '0x00158d0007f82461')}
 			/>
 
 			<!-- Bathroom Temperature -->
-			<Device
-				class="absolute top-[63px] left-[500px] text-black"
+			<TemperatureSpark
+				name="Bathroom"
+				class="absolute top-[60px] left-[470px] text-black"
 				state={getState(states, '0x00158d0007f01537')}
 			/>
 
 			<!-- Living Room Temperature -->
-			<Device
-				class="absolute top-[61px] left-[750px] text-black"
+			<TemperatureSpark
+				name="Living Room"
+				class="absolute top-[55px] left-[730px] text-black"
 				state={getState(states, '0x00158d000802afb1')}
 			/>
 
 			<!-- Yard Temperature -->
-			<Device
-				class="absolute top-[260px] left-[5px] -rotate-90 text-black"
+			<TemperatureSpark
+				name="Outdoor"
+				class="absolute top-[260px] left-[-30px] z-10 -rotate-90 text-black"
 				state={getState(states, '0x00158d0007e66b8a')}
 			/>
 
