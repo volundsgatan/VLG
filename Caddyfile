@@ -1,0 +1,6 @@
+vlg.unicorn-alligator.ts.net {
+    tls /tls/vlg.unicorn-alligator.ts.net.crt /tls/vlg.unicorn-alligator.ts.net.key
+    handle_path /api/v1/* {
+        reverse_proxy 127.0.0.1:9000
+    }
+}
