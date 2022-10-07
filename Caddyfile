@@ -1,6 +1,21 @@
 vlg.unicorn-alligator.ts.net {
     tls /tls/vlg.unicorn-alligator.ts.net.crt /tls/vlg.unicorn-alligator.ts.net.key
-    handle_path /api/v1/* {
-        reverse_proxy 127.0.0.1:9000
+
+    @option {
+        method OPTIONS
+    }
+
+    route {
+        handle @option {
+            header Access-Control-Allow-Origin "*"
+            header Access-Control-Allow-Headers authorization
+            respond 200 {
+                close
+            }
+        }
+
+        handle /api/v1/* {
+            reverse_proxy prometheus:9090
+        }
     }
 }
