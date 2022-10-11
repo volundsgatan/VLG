@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { type State } from '$lib/devices';
-	import Home from '$lib/Home.svelte';
 	import Fancy from '$lib/Fancy.svelte';
 	import Spinner from '$lib/Spinner.svelte';
 	import { type State as SonosState, type Zone } from '$lib/sonosTypes';
