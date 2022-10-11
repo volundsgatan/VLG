@@ -89,8 +89,8 @@
 	$: isTV = zone.coordinator.state.currentTrack.type === 'line_in' && !isTurntable;
 </script>
 
-<div class="flex md:items-center rounded-lg bg-stone-500 p-3 flex-col md:flex-row">
-	<div class="flex w-full md:w-2/5 items-center space-x-4 overflow-hidden text-ellipsis">
+<div class="flex flex-col rounded-lg bg-stone-500 p-3 md:flex-row md:items-center">
+	<div class="flex w-full items-center space-x-4 overflow-hidden text-ellipsis md:w-2/5">
 		{#if albumArt}
 			<img class=" h-12 w-12" src={albumArt} />
 		{:else if isTurntable}
@@ -121,7 +121,7 @@
 		</div>
 	</div>
 
-	<div class="flex md:w-2/5 items-center justify-center md:justify-end space-x-2 text-3xl">
+	<div class="flex items-center justify-center space-x-2 text-3xl md:w-2/5 md:justify-end">
 		<Button on:click={shuffle} active={isShuffle}>🔀</Button>
 		<Button on:click={broadcast} active={isFullParty}>🪩</Button>
 		<Button on:click={toggleMute}>🔈</Button>

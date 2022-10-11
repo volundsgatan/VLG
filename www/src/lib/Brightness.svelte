@@ -82,7 +82,7 @@
 	on:touchstart={onTouchStart}
 	on:touchmove={onTouchMove}
 	on:touchend={onTouchEnd}
-	class="inline-flex cursor-pointer items-center justify-around text-center py-4 px-8  {pos}"
+	class="inline-flex cursor-pointer items-center justify-around py-4 px-8 text-center  {pos}"
 >
 	{#if touching}
 		<div class="text-center text-3xl text-orange-800">
