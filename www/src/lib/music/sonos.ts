@@ -27,7 +27,7 @@ export type State = {
 	trackNo: number;
 	elapsedTime: number;
 	elapsedTimeFormatted: string;
-	playbackState: string;
+	playbackState: "PAUSED_PLAYBACK" | "STOPPED" | "PLAYING";
 	playMode: PlayMode;
 };
 
