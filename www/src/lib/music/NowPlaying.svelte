@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { type Zone } from '../sonosTypes';
+	import type { Zone } from './sonos';
 	import Controller from './Controller.svelte';
 
 	export let zones: Array<Zone> = [];

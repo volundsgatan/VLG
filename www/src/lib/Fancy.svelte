@@ -1,10 +1,10 @@
 <script lang="ts">
-	import { type State as SonosState, type Zone } from './sonosTypes';
+	import type { State as SonosState, Zone } from '$lib/music/sonos';
 	import { groups, type State } from './devices';
 	import NowPlaying from '$lib/music/NowPlaying.svelte';
 	import Device from '$lib/device/Device.svelte';
 	import Sonos from '$lib/device/Sonos.svelte';
-	import MusicPlaylists from '../lib/music/MusicPlaylists.svelte';
+	import MusicPlaylists from '$lib/music/MusicPlaylists.svelte';
 	import FancyBrightness from '$lib/FancyBrightness.svelte';
 	import TemperatureSpark from './TemperatureSpark.svelte';
 	import Simple from './Simple.svelte';

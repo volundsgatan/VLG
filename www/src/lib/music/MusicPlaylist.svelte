@@ -1,8 +1,7 @@
 <script lang="ts">
-	import Spinner from '../Spinner.svelte';
-
+	import Spinner from '$lib/Spinner.svelte';
 	import { createEventDispatcher } from 'svelte';
-	import { sonosRequest } from '../sonos';
+	import { sonosRequest } from './sonos';
 
 	const dispatch = createEventDispatcher();
 

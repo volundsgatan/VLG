@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { type State } from '$lib/devices';
+	import type { State } from '$lib/devices';
 	import Fancy from '$lib/Fancy.svelte';
 	import Spinner from '$lib/Spinner.svelte';
-	import { type State as SonosState, type Zone } from '$lib/sonosTypes';
-	import { sonosRequest } from '$lib/sonos';
+	import type { State as SonosState, Zone } from '$lib/music/sonos';
+	import { sonosRequest } from '$lib/music/sonos';
 
 	let connected = false;
 	let showNotConnected = false;

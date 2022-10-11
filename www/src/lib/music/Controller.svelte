@@ -1,8 +1,7 @@
 <script lang="ts">
-	import { type Zone } from '../sonosTypes';
+	import { type Zone, hostname, sonosRequest } from './sonos';
 	import Button from './Button.svelte';
 	import { createEventDispatcher, onDestroy, onMount } from 'svelte';
-	import { hostname, sonosRequest } from '../sonos';
 
 	const dispatch = createEventDispatcher();
 
