@@ -34,13 +34,6 @@ services:
       - ./sonos/cache:/app/cache
       - ./sonos/presets:/app/presets
 
-  sonos_proxy:
-    restart: always
-    image: nginx:1.23
-    ports:
-      - 8081:80
-    volumes:
-        - ./nginx/nginx.config:/etc/nginx/conf.d/default.conf:ro
   caddy:
     restart: always
     image: caddy:2.5.2-alpine
