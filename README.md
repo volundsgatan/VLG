@@ -2,7 +2,7 @@
 
 > 10 000 IQ HOME
 
-<img width="1022" alt="Screenshot 2022-09-01 at 23 36 04" src="https://user-images.githubusercontent.com/47952/188017383-7aaca3ee-1c23-4a7a-a52e-992410ecc567.png">
+<img width="1140" alt="screenshot" src="https://user-images.githubusercontent.com/47952/195140895-a49f6a92-a993-4b04-88fe-0f50e8c21b43.png">
 
 
 
