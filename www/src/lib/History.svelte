@@ -2,6 +2,7 @@
 	import { onMount, tick } from 'svelte';
 	import Chart from '$lib/graphs/Chart.svelte';
 	import type { ApexOptions } from 'apexcharts';
+	import moment from 'moment';
 
 	let options: ApexOptions = {
 		series: [],
@@ -11,12 +12,30 @@
 				enabled: true
 			},
 			foreColor: '#292524', // stone-800
-			stacked: false
+			stacked: false,
+			toolbar: {
+				tools: {
+					download: false
+				}
+			}
+		},
+
+		tooltip: {
+			enabled: true,
+			enabledOnSeries: [], // Calculated at runtime
+			marker: {
+				show: false
+			}
+		},
+
+		dataLabels: {
+			enabled: false
 		},
 
 		fill: {
 			type: 'solid'
 		},
+
 		grid: { show: true, borderColor: '#90A4AE', strokeDashArray: 0, position: 'front' },
 
 		stroke: {
@@ -41,6 +60,22 @@
 			},
 			axisBorder: {
 				color: '#e7e5e4' // stone-200
+			},
+			labels: {
+				formatter: function (value: string, timestamp?: number, opts?: any) {
+					// fallback for odd inputs
+					if (timestamp < 1000) {
+						return value;
+					}
+					const d = moment(timestamp);
+
+					// hovering, show more exact date
+					if (opts.i === undefined) {
+						return d.format('YYYY-MM-DD HH:mm:ss');
+					}
+
+					return d.format('MMM DD HH:mm');
+				}
 			}
 		},
 
@@ -48,6 +83,12 @@
 			decimalsInFloat: 2,
 			labels: {
 				offsetX: -10
+			},
+			labels: {
+				show: true,
+				formatter: function (val) {
+					return val + '℃';
+				}
 			}
 		},
 
@@ -96,34 +137,13 @@
 		});
 	};
 
-	const colors = [
-		[
-			'#ffedd5', //  orange-100,
-			'#fb923c' // orange-400
-		],
-		[
-			// emerald
-			'#d1fae5', //  100,
-			'#34d399' // 400
-		],
-		[
-			// sky
-			'#e0f2fe', //  100,
-			'#38bdf8' // 400
-		],
-		[
-			// rose
-			'#ffe4e6', //  100,
-			'#fb7185' // 400
-		],
-		[
-			// yellow
-			'#fef9c3', //  100,
-			'#facc15' // 400
-		]
-	];
-
-	let roomColors = [];
+	const roomColors = {
+		Outdoor: '#38bdf8', // Sky 400
+		Bedroom: '#059669', // Emerald 600
+		'Living Room': '#fbbf24', // Amber 400
+		Fridge: '#818cf8', // Indigo 400
+		Bathroom: '#fb7185' // Rose 400
+	};
 
 	const ts = async () => {
 		const topic = selectedRooms.join('|');
@@ -148,30 +168,24 @@
 
 		// Area fill colors
 		options.fill.colors = avg
-			.map((v, idx) => [colors[idx][0], '#d1d5db', colors[idx][1]])
+			.map((v, idx) => [roomColors[v.name], '#d1d5db', roomColors[v.name]])
 			.flatMap((v) => v);
 		options.fill.opacity = avg.map((v, idx) => [0.4, 1, 1]).flatMap((v) => v);
 
 		// Line colors
 		options.colors = avg
-			.map((v, idx) => [colors[idx][1], colors[idx][1], colors[idx][1]])
+			.map((v, idx) => [roomColors[v.name], roomColors[v.name], roomColors[v.name]])
 			.flatMap((v) => v);
 
-		// Room selector button colors
-		roomColors = avg
-			.map((v, idx) => [v.name, colors[idx][1]])
-			.reduce((m, v) => {
-				m[v[0]] = v[1];
-				return m;
-			}, {});
-
+		// Tooltips
+		options.tooltip.enabledOnSeries = avg.map((v, idx) => idx * 3 + 2);
 		options = options;
 	};
 
 	const query = async (
 		query: string
 	): Promise<Array<ApexAxisChartSeries | ApexNonAxisChartSeries>> => {
-		let step = 60 * 30; // 10 minute intervals
+		let step = 3600; // hourly intervals
 
 		const response = await fetch(
 			`https://vlg.unicorn-alligator.ts.net/api/v1/query_range?query=${query}&start=${tsStart}&end=${tsEnd}&step=${step}`,
@@ -208,6 +222,7 @@
 	};
 
 	const reset = () => {
+		// data range to load on page
 		tsStart = +new Date() / 1000 - 60 * 60 * 24 * 180;
 		tsEnd = +new Date() / 1000;
 		ts();
@@ -242,7 +257,6 @@
 
 	const rooms = ['Outdoor', 'Bedroom', 'Living Room', 'Fridge', 'Bathroom'];
 	let selectedRooms = ['Outdoor', 'Living Room'];
-	// let selectedRooms = ['Fridge'];
 	$: selectedRooms, ts();
 </script>
 
@@ -258,10 +272,12 @@
 	<div class="flex gap-4">
 		{#each rooms as room}
 			<label
-				class="whitespace-nowrap rounded-xl bg-gray-200 px-3 py-2 text-stone-800"
-				style="background-color: {roomColors[room] || '#e5e7eb'}"
+				class="whitespace-nowrap rounded-xl border-2 bg-gray-200 px-3 py-2 text-stone-700"
+				class:border-stone-600={selectedRooms.includes(room)}
+				class:border-transparent={!selectedRooms.includes(room)}
+				style="background-color: {roomColors[room]}"
 			>
-				<input type="checkbox" bind:group={selectedRooms} value={room} />
+				<input type="checkbox" class="hidden" bind:group={selectedRooms} value={room} />
 				{room}
 			</label>
 		{/each}
