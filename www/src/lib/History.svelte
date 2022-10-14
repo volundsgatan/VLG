@@ -1,9 +1,5 @@
 <script lang="ts">
 	import { onMount, tick } from 'svelte';
-	import { sparkline } from '@fnando/sparkline';
-	import Device from './device/Device.svelte';
-	import * as Pancake from '@sveltejs/pancake';
-	import { stringify } from 'postcss';
 	import Chart from '$lib/graphs/Chart.svelte';
 	import type { ApexOptions } from 'apexcharts';
 
