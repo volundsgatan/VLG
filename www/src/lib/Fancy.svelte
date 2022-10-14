@@ -68,7 +68,7 @@
 
 	$: bg = getBg(states);
 
-	let showGraphs = true;
+	let showGraphs = false;
 </script>
 
 <svelte:head>
