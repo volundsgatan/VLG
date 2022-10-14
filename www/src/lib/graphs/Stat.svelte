@@ -13,27 +13,32 @@
 	export let unit: string;
 	export let timeSeries: string = 'mqtt_temperature';
 
-	let options: ApexOptions = {
+	const id = Math.floor(Math.random() * 1000).toString();
+
+	const options: ApexOptions = {
 		series: [],
 		chart: {
-			height: 350,
+			height: 250,
 			zoom: {
 				enabled: true
 			},
 			foreColor: '#292524', // stone-800
 			stacked: false,
 			toolbar: {
+				show: false,
 				tools: {
 					download: false
 				}
 			}
+			// id: id,
+			// group: "synced",
 		},
 
 		tooltip: {
-			enabled: true,
-			enabledOnSeries: [], // Calculated at runtime
+			enabled: false,
+			// enabledOnSeries: [], // Calculated at runtime
 			marker: {
-				show: false
+				show: true
 			}
 		},
 
@@ -52,9 +57,10 @@
 		},
 		title: {
 			text: title,
-			align: 'left',
+			align: 'center',
 			style: {
-				fontSize: '18px'
+				fontSize: '14px',
+				color: '#57534e'
 			}
 		},
 
@@ -83,7 +89,7 @@
 						return d.format('YYYY-MM-DD HH:mm:ss');
 					}
 
-					return d.format('MMM DD HH:mm');
+					return d.format('MMM DD'); // "Aug 12"
 				}
 			}
 		},
@@ -143,6 +149,8 @@
 		});
 	};
 
+	let loadedOnce = false;
+
 	const ts = async () => {
 		const topic = selectedRooms.join('|');
 
@@ -178,12 +186,14 @@
 		// Tooltips
 		options.tooltip.enabledOnSeries = avg.map((v, idx) => idx * 3 + 2);
 		options = options;
+
+		loadedOnce = true;
 	};
 
 	const query = async (
 		query: string
 	): Promise<Array<ApexAxisChartSeries | ApexNonAxisChartSeries>> => {
-		let step = 3600; // hourly intervals
+		let step = 3600 * 3; // hourly intervals
 
 		const response = await fetch(
 			`https://vlg.unicorn-alligator.ts.net/api/v1/query_range?query=${query}&start=${tsStart}&end=${tsEnd}&step=${step}`,
@@ -212,6 +222,6 @@
 	$: tsStart, ts();
 </script>
 
-<Chart {options} />
-
-<pre>loading: {isLoading}</pre>
+{#if loadedOnce}
+	<Chart {options} />
+{/if}

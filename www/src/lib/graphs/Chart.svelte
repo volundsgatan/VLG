@@ -12,6 +12,7 @@
 	});
 
 	$: if (chart && options) chart.updateOptions(options);
+	$: options, chart && options && chart.updateOptions(options);
 
 	onDestroy(() => {
 		if (chart) chart.destroy();

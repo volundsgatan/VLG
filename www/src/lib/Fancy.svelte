@@ -92,7 +92,11 @@
 
 <div class="flex h-full w-full select-none flex-col justify-between space-y-2 bg-gray-300">
 	{#if showGraphs}
-		<History />
+		<History
+			on:close={() => {
+				showGraphs = false;
+			}}
+		/>
 	{:else}
 		<div class="md:hidden">
 			<Simple {roomAnyLightOn} {ws} />
@@ -105,7 +109,7 @@
 					class="h-[536px] w-[1024px] bg-[length:1024px_576px] bg-no-repeat text-white transition-all duration-500	"
 				>
 					<div
-						class="absolute top-[50px] right-[0px] cursor-pointer text-3xl"
+						class="absolute top-[460px] left-[600px] cursor-pointer text-3xl"
 						on:click={() => {
 							showGraphs = true;
 						}}
