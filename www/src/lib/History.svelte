@@ -1,9 +1,8 @@
 <script lang="ts">
-	import { onMount, tick } from 'svelte';
-	import Chart from '$lib/graphs/Chart.svelte';
+	import { onMount, createEventDispatcher } from 'svelte';
 	import Stat from '$lib/graphs/Stat.svelte';
-	import type { ApexOptions } from 'apexcharts';
-	import moment from 'moment';
+
+	const dispatch = createEventDispatcher();
 
 	let tsStart = 0;
 	let tsEnd = 0;
@@ -42,24 +41,28 @@
 </script>
 
 <div class="bg-gray-300 p-2">
-	<div class="flex gap-4">
-		{#each rooms as room}
-			<label
-				class="whitespace-nowrap rounded-xl border-2 bg-gray-200 px-3 py-2 text-stone-700"
-				class:border-stone-600={selectedRooms.includes(room)}
-				class:border-transparent={!selectedRooms.includes(room)}
-				style="background-color: {roomColors[room]}"
-			>
-				<input type="checkbox" class="hidden" bind:group={selectedRooms} value={room} />
-				{room}
-			</label>
-		{/each}
-	</div>
+	<div class="flex items-center gap-4">
+		<div class="cursor-pointer text-3xl" on:click={() => dispatch('close', {})}>🏠</div>
 
-	<div class="space-x-4 p-4 text-3xl">
-		<span on:click={back}>⏪</span>
-		<span on:click={forward}>⏩</span>
-		<span on:click={reset}>🔄</span>
+		<div class="flex flex-1 gap-4">
+			{#each rooms as room}
+				<label
+					class="whitespace-nowrap rounded-xl border-2 bg-gray-200 px-3 py-2 text-stone-700"
+					class:border-stone-600={selectedRooms.includes(room)}
+					class:border-transparent={!selectedRooms.includes(room)}
+					style="background-color: {roomColors[room]}"
+				>
+					<input type="checkbox" class="hidden" bind:group={selectedRooms} value={room} />
+					{room}
+				</label>
+			{/each}
+		</div>
+
+		<div class="flex-shrink-0 space-x-4 p-4 text-3xl">
+			<span on:click={back}>⏪</span>
+			<span on:click={forward}>⏩</span>
+			<span on:click={reset}>🔄</span>
+		</div>
 	</div>
 
 	<Stat
