@@ -51,7 +51,7 @@
 	onMount(async () => {
 		ts();
 
-		const interval = setInterval(ts, 10000);
+		const interval = setInterval(ts, 1000 * 60);
 
 		return () => {
 			clearInterval(interval);
