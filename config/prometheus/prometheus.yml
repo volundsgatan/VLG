@@ -3,8 +3,18 @@ scrape_configs:
     static_configs:
       - targets:
           - "nordpool_exporter:9367"
-
-  - job_name: homebridge
+  
+  - job_name: mqtt_exporter
     static_configs:
       - targets:
-          - "homebridge_exporter:5000"
+        - "mqtt_exporter:9000"
+    metric_relabel_configs:
+      - source_labels: [topic]
+        regex: 'zigbee2mqtt_(.*)'
+        replacement: '$1'
+        target_label: vlg_topic
+  
+  - job_name: yr
+    static_configs:
+      - targets:
+        - "yr_exporter:9370"

@@ -22,16 +22,6 @@ services:
     ports:
       - "100.100.142.59:9367:9367"
 
-  homebridge_exporter:
-    image: ghcr.io/seanson/homebridge-prometheus-exporter:latest
-    restart: always
-    ports:
-      - "100.100.142.59:5000:5000"
-    environment:
-      HOMEBRIDGE_USERNAME: "admin"
-      HOMEBRIDGE_PASSWORD: "admin"
-      HOMEBRIDGE_URL: "http://100.108.125.84:8581"
-
   yr_exporter:
     image: zegl/yr_exporter:latest
     restart: always
