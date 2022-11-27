@@ -8,7 +8,7 @@
 	export let zone: Zone;
 	$: rooms = zone.members.map((m) => m.roomName);
 
-	const sonoses = ['TV', 'Five', 'Kitchen'];
+	const sonoses = ['TV', 'Five', 'Kitchen', 'Bedroom'];
 
 	const command = (cmd: string) => {
 		return sonosRequest(`${zone.coordinator.roomName}/${cmd}`)

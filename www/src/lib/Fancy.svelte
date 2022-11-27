@@ -201,6 +201,9 @@
 					<div class="absolute top-[295px] left-[242px] text-black">
 						<Sonos on:sonosUpdated name="Kitchen" sonos={sonos['Kitchen']} {sonosIsUpdating} />
 					</div>
+					<div class="absolute top-[180px] left-[67px] text-black">
+						<Sonos on:sonosUpdated name="Bedroom" sonos={sonos['Bedroom']} {sonosIsUpdating} />
+					</div>
 
 					<div class="absolute top-[350px] left-[650px] w-[300px]">
 						<MusicPlaylists on:sonosUpdated />
