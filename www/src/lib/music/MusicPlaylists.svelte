@@ -5,6 +5,9 @@
 	import margs from './artwork/margs.jpeg';
 	import p4 from './artwork/p4.png';
 
+	import godJul from './artwork/god_jul.jpeg';
+	import nyJulmusik from './artwork/ny_julmusik.jpeg';
+
 	const playlists = [
 		{
 			name: 'Your Favorite Coffeehouse',
@@ -22,13 +25,21 @@
 			name: 'Gustav Westling’s Station',
 			abbr: 'GW'
 		},
+		// {
+		// 	name: 'VLG',
+		// 	abbr: 'VLG'
+		// },
+		// {
+		// 	name: '~/playlist',
+		// 	abbr: '~/p'
+		// },
 		{
-			name: 'VLG',
-			abbr: 'VLG'
+			name: 'God Jul',
+			image: godJul,
 		},
 		{
-			name: '~/playlist',
-			abbr: '~/p'
+			name: 'Ny julmusik',
+			image: nyJulmusik,
 		}
 	];
 </script>
