@@ -10,6 +10,7 @@
 	import Simple from './Simple.svelte';
 	import History from './History.svelte';
 	import { onMount } from 'svelte';
+	import { Gradient } from '$lib/gradient'
 
 	export let states: Record<string, State> = {};
 	export let ws: WebSocket;
@@ -68,7 +69,13 @@
 
 	$: bg = getBg(states);
 
+	const closeAlt = () => {
+		showGraphs = false;
+		showGradient = false;
+	};
+
 	let showGraphs = false;
+	let showGradient = false;
 </script>
 
 <svelte:head>
@@ -92,11 +99,9 @@
 
 <div class="flex h-full w-full select-none flex-col justify-between space-y-2 bg-gray-300">
 	{#if showGraphs}
-		<History
-			on:close={() => {
-				showGraphs = false;
-			}}
-		/>
+		<History on:close={closeAlt} />
+	{:else if showGradient}
+		<Gradient {ws} on:close={closeAlt}  />
 	{:else}
 		<div class="md:hidden">
 			<Simple {roomAnyLightOn} {ws} />
@@ -115,6 +120,16 @@
 						}}
 					>
 						📊
+					</div>
+
+
+					<div
+						class="absolute top-[460px] left-[550px] cursor-pointer text-3xl"
+						on:click={() => {
+							showGradient = true;
+						}}
+					>
+						🎨
 					</div>
 
 					<!-- Bedroom -->
