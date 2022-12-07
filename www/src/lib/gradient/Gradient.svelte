@@ -90,7 +90,7 @@
 
 		sendTimeoutId = setTimeout(() => {
 			const payload = JSON.stringify({
-				topic: `zigbee/Living Room Signe/set`,
+				topic: `Living Room Signe/set`,
 				payload: { colors }
 			});
 
