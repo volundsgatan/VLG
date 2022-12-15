@@ -6,8 +6,8 @@ services:
     volumes:
       - "./mosquitto-data:/mosquitto"
       - "./mosquitto-config:/config"
-      - ./vlg-pi.unicorn-alligator.ts.net.crt:/tls/vlg-pi.unicorn-alligator.ts.net.crt:ro
-      - ./vlg-pi.unicorn-alligator.ts.net.key:/tls/vlg-pi.unicorn-alligator.ts.net.key:ro
+      - ./vlg-pi.unicorn-alligator.ts.net.crt:/tls/vlg-pi.unicorn-alligator.ts.net.crt.pem:ro
+      - ./vlg-pi.unicorn-alligator.ts.net.key:/tls/vlg-pi.unicorn-alligator.ts.net.key.pem:ro
     ports:
       - "1883:1883"
       - "9001:9001"

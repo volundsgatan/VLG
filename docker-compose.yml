@@ -14,7 +14,7 @@ services:
       - "--storage.tsdb.path=/prometheus"
       - "--web.console.libraries=/usr/share/prometheus/console_libraries"
       - "--web.console.templates=/usr/share/prometheus/consoles"
-      -  "--storage.tsdb.retention.time=3000d"
+      - "--storage.tsdb.retention.time=3000d"
 
   nordpool_exporter:
     image: zegl/nordpool_exporter:latest
@@ -37,8 +37,11 @@ services:
     ports:
       - "9371:9000"
     environment:
+      # TODO(gustav): mqtt-exporter does not support TLS :-(
       MQTT_ADDRESS: 100.113.94.105
       MQTT_PORT: 1883
+      MQTT_USERNAME: mqtt-exporter
+      MQTT_PASSWORD: iasud0893hjdfusd7fyh3idsiosdouy8ds
       MQTT_TOPIC: "zigbee2mqtt/#"
     restart: always
 
