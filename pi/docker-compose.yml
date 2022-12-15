@@ -5,10 +5,14 @@ services:
     restart: unless-stopped
     volumes:
       - "./mosquitto-data:/mosquitto"
+      - "./mosquitto-config:/config"
+      - ./vlg-pi.unicorn-alligator.ts.net.crt:/tls/vlg-pi.unicorn-alligator.ts.net.crt:ro
+      - ./vlg-pi.unicorn-alligator.ts.net.key:/tls/vlg-pi.unicorn-alligator.ts.net.key:ro
     ports:
       - "1883:1883"
       - "9001:9001"
-    command: "mosquitto -c /mosquitto-no-auth.conf"
+      - "8883:8883"
+    command: "mosquitto -c /config/mosquitto.conf"
 
   zigbee2mqtt:
     container_name: zigbee2mqtt
