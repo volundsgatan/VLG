@@ -84,16 +84,19 @@
 	<div class="md:hidden">
 		<Simple {roomAnyLightOn} />
 	</div>
+
 	<div class="mx-auto hidden md:block">
 		<div class="relative -mt-12 xl:mt-0">
 			<div
 				style="background-image: url('{bg}')"
 				class="h-[536px] w-[1024px] bg-[length:1024px_576px] bg-no-repeat text-white transition-all duration-500	"
 			>
-				<a class="absolute top-[460px] left-[600px] cursor-pointer text-3xl" href="/graphs"> 📊 </a>
-
-				<a class="absolute top-[460px] left-[550px] cursor-pointer text-3xl" href="/gradient">
+				<a class="absolute top-[440px] left-[600px] cursor-pointer text-3xl" href="/graphs"> 📊 </a>
+				<a class="absolute top-[440px] left-[550px] cursor-pointer text-3xl" href="/gradient">
 					🎨
+				</a>
+				<a class="absolute top-[480px] left-[550px] cursor-pointer text-3xl" href="/dashboard">
+					🎛️
 				</a>
 
 				<!-- Bedroom -->

@@ -24,6 +24,7 @@
 				// Join ALL
 				await sonosRequest('Five/join/TV');
 				await sonosRequest('Kitchen/join/TV');
+				await sonosRequest('Bedroom/join/TV');
 				dispatch('sonosUpdated', {});
 			})
 
