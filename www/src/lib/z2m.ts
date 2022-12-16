@@ -15,6 +15,14 @@ export const sortedDevicesList = derived(devices, ($devices) => {
 	return keys.map((key) => $devices[key]);
 });
 
+export const bridgeDevices = derived(devices, ($devices) => {
+	return $devices['bridge/devices'] ?? {};
+});
+
+export const bridgeInfo = derived(devices, ($devices) => {
+	return $devices['bridge/info'] ?? {};
+});
+
 export const z2mConnected = writable(false);
 export const z2mConnectionError = writable(false);
 

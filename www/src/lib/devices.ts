@@ -132,11 +132,16 @@ export type State = {
 	state?: 'ON' | 'OFF';
 
 	// temperature sensors
-	pressure?: number;
-	battery?: number;
-	humidity?: number;
-	temperature?: number;
-	voltage?: number;
+	pressure?: number; // hPa
+	battery?: number; // %
+	humidity?: number; // %
+	temperature?: number; // C
+
+	// energy
+	voltage?: number; // V
+	current?: number; // A
+	energy?: number; // kWh
+	power?: number; // W
 
 	// open/closed sensors
 	contact?: boolean;
@@ -145,7 +150,7 @@ export type State = {
 	occupancy?: boolean;
 
 	// lamps
-	brightness?: number;
+	brightness?: number; // 0-254
 };
 
 export type Device = {

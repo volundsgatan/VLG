@@ -107,7 +107,7 @@
 
 <div class="flex w-full flex-col items-center p-8">
 	<div class="w-full">
-		<div class="cursor-pointer text-3xl" on:click={() => dispatch('close', {})}>🏠</div>
+		<a class="cursor-pointer text-3xl" href="/">🏠</a>
 	</div>
 
 	<div class="w-[20rem]">
