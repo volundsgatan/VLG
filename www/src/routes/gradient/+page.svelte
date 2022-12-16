@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Gradient from '$lib/Gradient.svelte';
+	import { Gradient } from '$lib/gradient';
 </script>
 
 <Gradient />
