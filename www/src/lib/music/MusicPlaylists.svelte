@@ -35,11 +35,11 @@
 		// },
 		{
 			name: 'God Jul',
-			image: godJul,
+			image: godJul
 		},
 		{
 			name: 'Ny julmusik',
-			image: nyJulmusik,
+			image: nyJulmusik
 		}
 	];
 </script>
