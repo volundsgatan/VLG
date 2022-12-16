@@ -1,8 +1,5 @@
 <script lang="ts">
-	import { onMount, createEventDispatcher } from 'svelte';
 	import Stat from '$lib/graphs/Stat.svelte';
-
-	const dispatch = createEventDispatcher();
 
 	let tsStart = 0;
 	let tsEnd = 0;
@@ -64,7 +61,7 @@
 <div class="flex h-full flex-col justify-between space-y-2 overflow-hidden bg-gray-300 p-2">
 	<div class="rounded-lg bg-stone-500 p-3 px-4">
 		<div class="flex items-center justify-between space-x-4">
-			<div class="cursor-pointer text-3xl" on:click={() => dispatch('close', {})}>🏠</div>
+			<a class="cursor-pointer text-3xl" href="/">🏠</a>
 
 			<div class="flex space-x-4">
 				{#each rooms as room}

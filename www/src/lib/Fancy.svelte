@@ -96,8 +96,6 @@
 <div class="flex h-full w-full select-none flex-col justify-between space-y-2 bg-gray-300">
 	{#if showGraphs}
 		<History on:close={closeAlt} />
-	{:else if showGradient}
-		<Gradient on:close={closeAlt} />
 	{:else}
 		<div class="md:hidden">
 			<Simple {roomAnyLightOn} />
@@ -117,14 +115,9 @@
 						📊
 					</div>
 
-					<div
-						class="absolute top-[460px] left-[550px] cursor-pointer text-3xl"
-						on:click={() => {
-							showGradient = true;
-						}}
-					>
+					<a class="absolute top-[460px] left-[550px] cursor-pointer text-3xl" href="/gradient">
 						🎨
-					</div>
+					</a>
 
 					<!-- Bedroom -->
 					<FancyBrightness
@@ -250,6 +243,6 @@
 	{/if}
 
 	<div class="z-10 p-2">
-		<NowPlaying zones={$sonosZones} on:sonosUpdated />
+		<NowPlaying on:sonosUpdated />
 	</div>
 </div>
