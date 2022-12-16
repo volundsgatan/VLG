@@ -10,13 +10,11 @@
 	import Simple from './Simple.svelte';
 	import History from './History.svelte';
 	import { onMount } from 'svelte';
-	import { Gradient } from '$lib/gradient'
+	import { Gradient } from '$lib/gradient';
+	import { get } from 'svelte/store';
 
-	export let states: Record<string, State> = {};
-	export let ws: WebSocket;
-	export let sonos: Record<string, SonosState> = {};
-	export let sonosIsUpdating = false;
-	export let sonosZones: Array<Zone> = [];
+	import { devices as states } from '$lib/z2m';
+	import { sonos, sonosZones, sonosIsUpdating } from '$lib/sonos';
 
 	onMount(() => {
 		const refresh = setTimeout(window.location.reload, 1000 * 60 * 60);
@@ -35,15 +33,16 @@
 			.filter(Boolean);
 
 		const deviceSet = new Set(devices);
+		// const s2 = get(states);
 
-		const deviceStates: boolean[] = Object.values(states)
+		const deviceStates: boolean[] = Object.values($states)
 			.filter((s) => deviceSet.has(s.device?.ieeeAddr))
 			.map((s) => s.state === 'ON');
 
-		const brightness: boolean[] = Object.values(states)
+		const brightness: number[] = Object.values($states)
 			.filter((s) => deviceSet.has(s.device?.ieeeAddr))
 			.filter((s) => s.brightness !== undefined)
-			.map((s) => (s.state === 'ON' ? s.brightness : 0));
+			.map((s): number => (s.state === 'ON' && s.brightness !== undefined ? s.brightness : 0));
 
 		const anyOn = deviceStates.some((s) => s === true);
 
@@ -55,19 +54,16 @@
 		};
 	});
 
-	const getBg = (states: Record<string, State>): string => {
-		const map = rooms
-			.map((roomName) => roomAnyLightOn.find((r) => r.room === roomName).anyOn)
-			.map((on) => (on ? '1' : '0'))
-			.join('');
-		return `/floorplan_2_${map}.png?1`;
-	};
+	$: bgKey = rooms
+		.map((roomName) => roomAnyLightOn.find((r) => r.room === roomName).anyOn)
+		.map((on) => (on ? '1' : '0'))
+		.join('');
 
-	const getState = (states, addr: string) => {
-		return Object.values(states).find((s) => s.device?.ieeeAddr === addr);
-	};
+	$: bg = `/floorplan_2_${bgKey}.png?1`;
 
-	$: bg = getBg(states);
+	const getState = (addr: string) => {
+		return Object.values($states).find((s) => s.device?.ieeeAddr === addr);
+	};
 
 	const closeAlt = () => {
 		showGraphs = false;
@@ -101,12 +97,11 @@
 	{#if showGraphs}
 		<History on:close={closeAlt} />
 	{:else if showGradient}
-		<Gradient {ws} on:close={closeAlt}  />
+		<Gradient on:close={closeAlt} />
 	{:else}
 		<div class="md:hidden">
-			<Simple {roomAnyLightOn} {ws} />
+			<Simple {roomAnyLightOn} />
 		</div>
-
 		<div class="mx-auto hidden md:block">
 			<div class="relative -mt-12 xl:mt-0">
 				<div
@@ -122,7 +117,6 @@
 						📊
 					</div>
 
-
 					<div
 						class="absolute top-[460px] left-[550px] cursor-pointer text-3xl"
 						on:click={() => {
@@ -135,28 +129,24 @@
 					<!-- Bedroom -->
 					<FancyBrightness
 						room={roomAnyLightOn[0]}
-						{ws}
 						pos="top-[90px]  left-[60px] h-[210px] w-[310px]"
 					/>
 
 					<!-- Kitchen -->
 					<FancyBrightness
 						room={roomAnyLightOn[1]}
-						{ws}
 						pos="top-[310px] left-[60px] h-[190px] w-[310px]"
 					/>
 
 					<!-- Entrance -->
 					<FancyBrightness
 						room={roomAnyLightOn[2]}
-						{ws}
 						pos="top-[210px]   left-[380px] h-[150px] w-[220px] "
 					/>
 
 					<!-- Living Room -->
 					<FancyBrightness
 						room={roomAnyLightOn[3]}
-						{ws}
 						pos=" top-[80px]  left-[630px] h-[220px] w-[320px]"
 					/>
 
@@ -164,60 +154,80 @@
 					<TemperatureSpark
 						name="Fridge"
 						class="absolute top-[463px] left-[210px] text-black"
-						state={getState(states, '0x00158d0007f82457')}
+						state={getState('0x00158d0007f82457')}
 					/>
 
 					<!-- Bedroom Temperature -->
 					<TemperatureSpark
 						name="Bedroom"
 						class="absolute top-[62px] left-[180px] text-black"
-						state={getState(states, '0x00158d0007f82461')}
+						state={getState('0x00158d0007f82461')}
 					/>
 
 					<!-- Bathroom Temperature -->
 					<TemperatureSpark
 						name="Bathroom"
 						class="absolute top-[60px] left-[470px] text-black"
-						state={getState(states, '0x00158d0007f01537')}
+						state={getState('0x00158d0007f01537')}
 					/>
 
 					<!-- Living Room Temperature -->
 					<TemperatureSpark
 						name="Living Room"
 						class="absolute top-[55px] left-[730px] text-black"
-						state={getState(states, '0x00158d000802afb1')}
+						state={getState('0x00158d000802afb1')}
 					/>
 
 					<!-- Yard Temperature -->
 					<TemperatureSpark
 						name="Outdoor"
 						class="absolute top-[260px] left-[-30px] z-10 -rotate-90 text-black"
-						state={getState(states, '0x00158d0007e66b8a')}
+						state={getState('0x00158d0007e66b8a')}
 					/>
 
 					<!-- Door Sensor -->
 					<Device
 						class="absolute top-[505px] left-[350px] text-black"
-						state={getState(states, '0x00158d000839a1f9')}
+						state={getState('0x00158d000839a1f9')}
 					/>
 
 					<!-- Window Sensor -->
 					<Device
 						class="absolute top-[190px] left-[953px] text-black"
-						state={getState(states, '0x00158d0008399e95')}
+						state={getState('0x00158d0008399e95')}
 					/>
 
 					<div class="absolute top-[188px] left-[884px] text-black">
-						<Sonos on:sonosUpdated name="Five" sonos={sonos['Five']} {sonosIsUpdating} />
+						<Sonos
+							on:sonosUpdated
+							name="Five"
+							sonos={$sonos['Five']}
+							sonosIsUpdating={$sonosIsUpdating}
+						/>
 					</div>
 					<div class="absolute top-[250px] left-[650px] text-black">
-						<Sonos on:sonosUpdated name="TV" sonos={sonos['TV']} {sonosIsUpdating} />
+						<Sonos
+							on:sonosUpdated
+							name="TV"
+							sonos={$sonos['TV']}
+							sonosIsUpdating={$sonosIsUpdating}
+						/>
 					</div>
 					<div class="absolute top-[295px] left-[242px] text-black">
-						<Sonos on:sonosUpdated name="Kitchen" sonos={sonos['Kitchen']} {sonosIsUpdating} />
+						<Sonos
+							on:sonosUpdated
+							name="Kitchen"
+							sonos={$sonos['Kitchen']}
+							sonosIsUpdating={$sonosIsUpdating}
+						/>
 					</div>
 					<div class="absolute top-[180px] left-[67px] text-black">
-						<Sonos on:sonosUpdated name="Bedroom" sonos={sonos['Bedroom']} {sonosIsUpdating} />
+						<Sonos
+							on:sonosUpdated
+							name="Bedroom"
+							sonos={$sonos['Bedroom']}
+							sonosIsUpdating={$sonosIsUpdating}
+						/>
 					</div>
 
 					<div class="absolute top-[350px] left-[650px] w-[300px]">
@@ -240,6 +250,6 @@
 	{/if}
 
 	<div class="z-10 p-2">
-		<NowPlaying zones={sonosZones} on:sonosUpdated />
+		<NowPlaying zones={$sonosZones} on:sonosUpdated />
 	</div>
 </div>

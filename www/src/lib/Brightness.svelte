@@ -1,7 +1,8 @@
 <script lang="ts">
 	import { onMount, tick } from 'svelte';
 
-	export let ws;
+	import { rawSocket } from '$lib/z2m';
+
 	export let room;
 	export let pos = '';
 
@@ -25,7 +26,7 @@
 
 	const toggleLights = () => {
 		for (const addr of room.devices) {
-			ws.send(
+			$rawSocket.send(
 				JSON.stringify({
 					topic: `${addr}/set`,
 					payload: {
@@ -39,7 +40,7 @@
 
 	const setBrightness = (brightness: number) => {
 		for (const addr of room.devices) {
-			ws.send(
+			$rawSocket.send(
 				JSON.stringify({
 					topic: `${addr}/set`,
 					payload: {

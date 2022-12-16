@@ -1,12 +1,11 @@
 <script lang="ts">
 	import type { Zone } from './sonos';
 	import Controller from './Controller.svelte';
-
-	export let zones: Array<Zone> = [];
+	import { sonosZones as zones } from '$lib/sonos';
 
 	const showStates = ['PLAYING', 'PAUSED_PLAYBACK'];
 
-	$: showZones = zones.filter((z) => showStates.includes(z.coordinator.state.playbackState));
+	$: showZones = $zones.filter((z) => showStates.includes(z.coordinator.state.playbackState));
 </script>
 
 <div class="flex-shrink-0 space-y-2">

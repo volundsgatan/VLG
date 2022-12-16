@@ -2,9 +2,9 @@
 	import ColorPicker from 'svelte-awesome-color-picker';
 	import Color from 'colorjs.io';
 	import { createEventDispatcher } from 'svelte';
-	const dispatch = createEventDispatcher();
+	import { rawSocket } from '$lib/z2m';
 
-	export let ws: WebSocket;
+	const dispatch = createEventDispatcher();
 
 	type rgba = { r: number; g: number; b: number; a: number };
 
@@ -94,7 +94,7 @@
 				payload: { colors }
 			});
 
-			ws.send(payload);
+			$rawSocket.send(payload);
 		}, 200);
 
 		return;

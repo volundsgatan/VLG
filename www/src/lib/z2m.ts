@@ -18,7 +18,12 @@ export const sortedDevicesList = derived(
   },
 );
 
+export const z2mConnected = writable(false);
+
+export const rawSocket = writable<WebSocket>();
+
 export const connect = () => {
+  z2mConnected.set(false);
   //  connected = false;
   //  states = {};
 
@@ -26,7 +31,10 @@ export const connect = () => {
 
   const ws = new WebSocket("wss://vlg-pi.unicorn-alligator.ts.net/z2m/api");
 
+  rawSocket.set(ws);
+
   ws.onmessage = (event) => {
+    z2mConnected.set(true);
     // connected = true;
     // showNotConnected = false;
 
@@ -39,8 +47,6 @@ export const connect = () => {
     }
 
     devices.update((s) => {
-      console.log(typeof data.payload);
-
       if (s[data.topic]) {
         s[data.topic] = Object.assign(s[data.topic], data.payload);
       } else if (data.payload) {
