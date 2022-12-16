@@ -5,111 +5,19 @@
 	import Spinner from '$lib/Spinner.svelte';
 	import type { State as SonosState, Zone } from '$lib/music/sonos';
 	import { sonosRequest } from '$lib/music/sonos';
-	import { devices, connect } from '$lib/z2m';
+	import { devices, connect, z2mConnected, z2mConnectionError } from '$lib/z2m';
+	import { fetchSonos } from '$lib/sonos';
 
 	import '../app.css';
 
-	let connected = false;
-	let showNotConnected = false;
-
-	let states: Record<string, State> = {};
-	let ws: WebSocket;
-
-	let sonos: Record<string, SonosState> = {};
-	let sonosIsUpdating = false;
-	let sonosZones: Array<Zone> = [];
-
-	const fetchSonos = async () => {
-		return sonosRequest('zones')
-			.then((zones: Array<Zone>) => {
-				sonosZones = zones;
-				for (const zone of zones) {
-					for (const member of zone.members) {
-						sonos[member.roomName] = member.state;
-					}
-				}
-			})
-			.catch((err) => {
-				console.error(err);
-			});
-	};
-
-	const onSonosUpdated = async () => {
-		console.log('onSonosUpdated');
-		sonosIsUpdating = true;
-		for (let i = 0; i < 10; i++) {
-			await fetchSonos();
-			await new Promise((f) => setTimeout(f, 100));
-		}
-		sonosIsUpdating = false;
-	};
-
-	let connectTimeout: NodeJS.Timeout;
-	let trafficTimeout: NodeJS.Timeout;
-
-	const connectZ2M = () => {
-		connected = false;
-		states = {};
-
-		ws = new WebSocket('wss://vlg-pi.unicorn-alligator.ts.net/z2m/api');
-
-		ws.onmessage = (event) => {
-			connected = true;
-			showNotConnected = false;
-
-			const data: m2qevent = JSON.parse(event.data);
-			if (!data.payload) {
-				return;
-			}
-			if (typeof data.payload === 'string') {
-				return;
-			}
-
-			if (states[data.topic]) {
-				states[data.topic] = Object.assign(states[data.topic], data.payload);
-			} else {
-				states[data.topic] = data.payload;
-			}
-
-			states = states;
-
-			// no traffic in 120s, disconnect
-			clearTimeout(trafficTimeout);
-			trafficTimeout = setTimeout(function () {
-				ws.close();
-			}, 1000 * 120);
-		};
-
-		ws.onclose = function (e) {
-			connected = false;
-			showNotConnected = true;
-			states = {};
-
-			console.log('Socket is closed. Reconnect will be attempted in 1 second.', e.reason);
-			clearTimeout(connectTimeout);
-			connectTimeout = setTimeout(function () {
-				connectZ2M();
-			}, 1000);
-		};
-
-		ws.onerror = function (err) {
-			console.error('Socket encountered error: ', err, 'Closing socket');
-			ws.close();
-		};
-	};
-
 	onMount(() => {
 		connect();
-
-		// remove
-		connected = true;
-		/*connectZ2M();
 
 		fetchSonos();
 
 		setInterval(() => {
 			fetchSonos();
-		}, 5000);*/
+		}, 5000);
 	});
 </script>
 
@@ -118,14 +26,12 @@
 	<meta name="description" content="VLG" />
 </svelte:head>
 
-<pre>{JSON.stringify(states)}</pre>
-
-{#if connected}
+{#if z2mConnected}
 	<slot />
 {:else}
 	<div class="flex min-h-screen flex-col items-center justify-center gap-16 text-gray-300">
 		<div class="text-8xl">❤️🏠</div>
-		{#if showNotConnected}
+		{#if z2mConnectionError}
 			<div>Nä nu gick något fel hörru! Har du loggat in?</div>
 		{:else}
 			<Spinner />

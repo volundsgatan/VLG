@@ -19,8 +19,12 @@ export const sortedDevicesList = derived(
 );
 
 export const z2mConnected = writable(false);
+export const z2mConnectionError = writable(false);
 
 export const rawSocket = writable<WebSocket>();
+
+let connectTimeout: NodeJS.Timeout;
+let trafficTimeout: NodeJS.Timeout;
 
 export const connect = () => {
   z2mConnected.set(false);
@@ -35,8 +39,7 @@ export const connect = () => {
 
   ws.onmessage = (event) => {
     z2mConnected.set(true);
-    // connected = true;
-    // showNotConnected = false;
+    z2mConnectionError.set(false);
 
     const data: m2qevent = JSON.parse(event.data);
     if (!data.payload) {
@@ -55,25 +58,17 @@ export const connect = () => {
       return s;
     });
 
-    // if (states[data.topic]) {
-    //   states[data.topic] = Object.assign(states[data.topic], data.payload);
-    // } else {
-    //   states[data.topic] = data.payload;
-    // }
-    //
-    // states = states;
-
     // no traffic in 120s, disconnect
-    // clearTimeout(trafficTimeout);
-    // trafficTimeout = setTimeout(function () {
-    //   ws.close();
-    // }, 1000 * 120);
+    clearTimeout(trafficTimeout);
+    trafficTimeout = setTimeout(function () {
+      ws.close();
+    }, 1000 * 120);
   };
 
-  /*ws.onclose = function (e) {
-    connected = false;
-    showNotConnected = true;
-    states = {};
+  ws.onclose = function (e) {
+    z2mConnected.set(false);
+    z2mConnectionError.set(true);
+    devices.set({});
 
     console.log(
       "Socket is closed. Reconnect will be attempted in 1 second.",
@@ -81,9 +76,9 @@ export const connect = () => {
     );
     clearTimeout(connectTimeout);
     connectTimeout = setTimeout(function () {
-      connectZ2M();
+      connect();
     }, 1000);
-  };*/
+  };
 
   ws.onerror = function (err) {
     console.error("Socket encountered error: ", err, "Closing socket");
