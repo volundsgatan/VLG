@@ -3,6 +3,10 @@
 	import { bridgeDevices, bridgeInfo } from '$lib/z2m';
 	import { Stat } from './index';
 	import MultiStat from './MultiStat.svelte';
+	import ColorXY from './ColorXY.svelte';
+	import ColorHS from './ColorHS.svelte';
+	import ColorTemp from './ColorTemp.svelte';
+	import ColorGradient from './ColorGradient.svelte';
 	export let state: DeviceState;
 
 	$: definition = $bridgeDevices.find((d) => d?.ieee_address === state.device?.ieeeAddr).definition;
@@ -15,6 +19,7 @@
 			const feats = e.features ?? [e];
 			return feats.map((f) => {
 				return {
+					key: f.name,
 					name: f.name ? f.name.replaceAll('_', ' ') : 'Unknown',
 					unit: f.unit,
 					property: f.property,
@@ -31,13 +36,23 @@
 
 	<div class="grid grid-cols-2 gap-x-1 gap-y-0.5 text-gray-200">
 		{#each stats as stat}
-			{#if typeof stat.value === 'object'}
+			{#if stat.key == 'gradient'}
+				<ColorGradient
+					value={stat.value}
+					active={state?.gradient_extras?.color_mode === 'gradient'}
+				/>
+			{:else if stat.key == 'color_xy' && stat.property == 'color'}
+				<ColorXY value={stat.value} active={state['color_mode'] === 'xy'} />
+			{:else if stat.key == 'color_hs' && stat.property == 'color'}
+				<ColorHS value={stat.value} active={state['color_mode'] === 'hs'} />
+			{:else if stat.key == 'color_temp'}
+				<ColorTemp value={stat.value} active={state['color_mode'] === 'color_temp'} />
+			{:else if typeof stat.value === 'object'}
 				<MultiStat name={stat.name} value={stat.value} />
 			{:else}
 				<Stat name={stat.name} value={stat.value} unit={stat.unit} />
 			{/if}
 		{/each}
 	</div>
-
-	<pre>{JSON.stringify(definition, null, '  ')}</pre>
+	<pre>{JSON.stringify(state, null, '  ')}</pre>
 </div>
