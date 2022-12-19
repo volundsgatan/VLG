@@ -1,10 +1,13 @@
 <script lang="ts">
 	let className = '';
-	export let state;
+	export let addr: string;
 	export { className as class };
 	import Contact from './Contact.svelte';
 	import Temperature from './Temperature.svelte';
 	import Occupancy from './Occupancy.svelte';
+	import { sortedDevicesList } from '$lib/z2m';
+
+	$: state = $sortedDevicesList.find((s) => s.device?.ieeeAddr === addr);
 </script>
 
 <div class={className}>

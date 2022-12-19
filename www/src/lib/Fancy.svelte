@@ -21,44 +21,41 @@
 
 	const rooms = ['Bedroom', 'Kitchen', 'Entrance', 'Living Room'];
 
-	$: roomAnyLightOn = rooms.map((room) => {
-		// All devices in a room
-		const devices = groups
-			.find((g) => g.name === room)
-			.devices.map(({ addr }) => addr)
-			.filter(Boolean);
+	$: roomAnyLightOn =
+		rooms.map((room) => {
+			// All devices in a room
+			const devices = groups
+				.find((g) => g?.name === room)
+				.devices.map(({ addr }) => addr)
+				.filter(Boolean);
 
-		const deviceSet = new Set(devices);
+			const deviceSet = new Set(devices);
 
-		const deviceStates: boolean[] = Object.values($states)
-			.filter((s) => deviceSet.has(s.device?.ieeeAddr))
-			.map((s) => s.state === 'ON');
+			const deviceStates: boolean[] = Object.values($states)
+				.filter((s) => deviceSet.has(s.device?.ieeeAddr))
+				.map((s) => s.state === 'ON');
 
-		const brightness: number[] = Object.values($states)
-			.filter((s) => deviceSet.has(s.device?.ieeeAddr))
-			.filter((s) => s.brightness !== undefined)
-			.map((s): number => (s.state === 'ON' && s.brightness !== undefined ? s.brightness : 0));
+			const brightness: number[] = Object.values($states)
+				.filter((s) => deviceSet.has(s.device?.ieeeAddr))
+				.filter((s) => s.brightness !== undefined)
+				.map((s): number => (s.state === 'ON' && s.brightness !== undefined ? s.brightness : 0));
 
-		const anyOn = deviceStates.some((s) => s === true);
+			const anyOn = deviceStates.some((s) => s === true);
 
-		return {
-			room,
-			devices,
-			anyOn,
-			brightness
-		};
-	});
+			return {
+				room,
+				devices,
+				anyOn,
+				brightness
+			};
+		}) || ([] as { room: string; devices: string[]; anyOn: boolean; brightness: number[] }[]);
 
 	$: bgKey = rooms
-		.map((roomName) => roomAnyLightOn.find((r) => r.room === roomName).anyOn)
+		.map((roomName) => roomAnyLightOn?.find((r) => r.room === roomName)?.anyOn)
 		.map((on) => (on ? '1' : '0'))
 		.join('');
 
 	$: bg = `/floorplan_2_${bgKey}.png?1`;
-
-	const getState = (addr: string) => {
-		return Object.values($states).find((s) => s.device?.ieeeAddr === addr);
-	};
 </script>
 
 <svelte:head>
@@ -127,48 +124,42 @@
 				<TemperatureSpark
 					name="Fridge"
 					class="absolute top-[463px] left-[210px] text-black"
-					state={getState('0x00158d0007f82457')}
+					addr="0x00158d0007f82457"
 				/>
 
 				<!-- Bedroom Temperature -->
 				<TemperatureSpark
 					name="Bedroom"
 					class="absolute top-[62px] left-[180px] text-black"
-					state={getState('0x00158d0007f82461')}
+					addr="0x00158d0007f82461"
 				/>
 
 				<!-- Bathroom Temperature -->
 				<TemperatureSpark
 					name="Bathroom"
 					class="absolute top-[60px] left-[470px] text-black"
-					state={getState('0x00158d0007f01537')}
+					addr="0x00158d0007f01537"
 				/>
 
 				<!-- Living Room Temperature -->
 				<TemperatureSpark
 					name="Living Room"
 					class="absolute top-[55px] left-[730px] text-black"
-					state={getState('0x00158d000802afb1')}
+					addr="0x00158d000802afb1"
 				/>
 
 				<!-- Yard Temperature -->
 				<TemperatureSpark
 					name="Outdoor"
 					class="absolute top-[260px] left-[-30px] z-10 -rotate-90 text-black"
-					state={getState('0x00158d0007e66b8a')}
+					addr="0x00158d0007e66b8a"
 				/>
 
 				<!-- Door Sensor -->
-				<Device
-					class="absolute top-[505px] left-[350px] text-black"
-					state={getState('0x00158d000839a1f9')}
-				/>
+				<Device class="absolute top-[505px] left-[350px] text-black" addr="0x00158d000839a1f9" />
 
 				<!-- Window Sensor -->
-				<Device
-					class="absolute top-[190px] left-[953px] text-black"
-					state={getState('0x00158d0008399e95')}
-				/>
+				<Device class="absolute top-[190px] left-[953px] text-black" addr="0x00158d0008399e95" />
 
 				<div class="absolute top-[188px] left-[884px] text-black">
 					<Sonos

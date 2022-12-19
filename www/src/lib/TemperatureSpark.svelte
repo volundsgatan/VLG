@@ -7,7 +7,7 @@
 	let className = '';
 	export { className as class };
 	export let height = 24;
-	export let state;
+	export let addr: string;
 
 	let sparks: number[];
 	let sparkEl;
@@ -72,6 +72,6 @@
 			style="stroke: #c2410c; fill: rgba(255,237,213,0.3);"
 		/>
 	{:else}
-		<Device {state} />
+		<Device {addr} />
 	{/if}
 </div>
