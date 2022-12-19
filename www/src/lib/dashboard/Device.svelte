@@ -14,16 +14,29 @@
 
 	$: name = deviceBridgeInfo?.description ?? state.device?.friendlyName;
 
+	const colorMode = (s: DeviceState): string | undefined => {
+		if (s?.gradient_extras?.color_mode === 'gradient') {
+			return 'gradient';
+		} else if (s?.color_mode) {
+			return s.color_mode;
+		} else {
+			return undefined;
+		}
+	};
+
 	$: stats = definition.exposes
 		.map((e) => {
 			const feats = e.features ?? [e];
 			return feats.map((f) => {
+				const mode = colorMode(state);
+				const active = mode === f.property || `color_${mode}` === f.name;
 				return {
 					key: f.name,
 					name: f.name ? f.name.replaceAll('_', ' ') : 'Unknown',
 					unit: f.unit,
 					property: f.property,
-					value: state[f.property] ?? null
+					value: state[f.property] ?? null,
+					active
 				};
 			});
 		})
@@ -37,16 +50,13 @@
 	<div class="grid grid-cols-2 gap-x-1 gap-y-0.5 text-gray-200">
 		{#each stats as stat}
 			{#if stat.key == 'color_xy' && stat.property == 'color'}
-				<ColorXY value={stat.value} active={state['color_mode'] === 'xy'} />
+				<ColorXY value={stat.value} active={stat.active} />
 			{:else if stat.key == 'color_hs' && stat.property == 'color'}
-				<ColorHS value={stat.value} active={state['color_mode'] === 'hs'} />
+				<ColorHS value={stat.value} active={stat.active} />
 			{:else if stat.key == 'color_temp'}
-				<ColorTemp value={stat.value} active={state['color_mode'] === 'color_temp'} />
+				<ColorTemp value={stat.value} active={stat.active} />
 			{:else if stat.key == 'gradient'}
-				<ColorGradient
-					value={stat.value}
-					active={state?.gradient_extras?.color_mode === 'gradient'}
-				/>
+				<ColorGradient value={stat.value} active={stat.active} />
 			{:else if typeof stat.value === 'object'}
 				<MultiStat name={stat.name} value={stat.value} />
 			{:else}

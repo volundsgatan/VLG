@@ -7,7 +7,7 @@
 	$: hex = rgbToHex(rgb.r, rgb.g, rgb.b);
 </script>
 
-<div class="font-medium capitalize class:underline={active} class:text-gray-500={!active}">
+<div class="font-medium capitalize" class:underline={active} class:text-gray-500={!active}>
 	Color XY
 </div>
 <div class="flex items-center gap-2" class:underline={active} class:text-gray-500={!active}>
