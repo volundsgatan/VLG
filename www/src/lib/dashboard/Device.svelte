@@ -36,17 +36,17 @@
 
 	<div class="grid grid-cols-2 gap-x-1 gap-y-0.5 text-gray-200">
 		{#each stats as stat}
-			{#if stat.key == 'gradient'}
-				<ColorGradient
-					value={stat.value}
-					active={state?.gradient_extras?.color_mode === 'gradient'}
-				/>
-			{:else if stat.key == 'color_xy' && stat.property == 'color'}
+			{#if stat.key == 'color_xy' && stat.property == 'color'}
 				<ColorXY value={stat.value} active={state['color_mode'] === 'xy'} />
 			{:else if stat.key == 'color_hs' && stat.property == 'color'}
 				<ColorHS value={stat.value} active={state['color_mode'] === 'hs'} />
 			{:else if stat.key == 'color_temp'}
 				<ColorTemp value={stat.value} active={state['color_mode'] === 'color_temp'} />
+			{:else if stat.key == 'gradient'}
+				<ColorGradient
+					value={stat.value}
+					active={state?.gradient_extras?.color_mode === 'gradient'}
+				/>
 			{:else if typeof stat.value === 'object'}
 				<MultiStat name={stat.name} value={stat.value} />
 			{:else}
@@ -54,5 +54,4 @@
 			{/if}
 		{/each}
 	</div>
-	<pre>{JSON.stringify(state, null, '  ')}</pre>
 </div>
