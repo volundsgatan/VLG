@@ -1,20 +1,18 @@
 <script lang="ts">
-	import { onMount, tick } from 'svelte';
-
 	import { rawSocket } from '$lib/z2m';
+	import type { room as roomType } from './types';
 
-	export let room;
+	export let room: roomType;
 	export let pos = '';
 
 	let touchStartX = 0;
 	let startBrightness = 0;
 	let brightness = 0;
-	let final = false;
 	let touching = false;
 
-	const avg = (arr) => arr.reduce((acc, v, i, a) => acc + v / a.length, 0);
+	const avg = (arr: number[]) => arr.reduce((acc, v, i, a) => acc + v / a.length, 0);
 
-	const clamp = (val, min, max) => {
+	const clamp = (val: number, min: number, max: number) => {
 		if (val < min) {
 			return min;
 		}
@@ -62,7 +60,7 @@
 		const diff = (end - touchStartX) / 2;
 		if (Math.abs(diff) > 5) {
 			touching = true;
-			brightness = clamp(startBrightness + diff, 0, 254).toFixed(0);
+			brightness = parseInt(clamp(startBrightness + diff, 0, 254).toFixed(0));
 		} else {
 			touching = false;
 		}

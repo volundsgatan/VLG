@@ -1,7 +1,5 @@
 <script lang="ts">
 	import { onMount, tick } from 'svelte';
-	import type { ApexOptions } from 'apexcharts';
-	import moment from 'moment';
 	import { Line } from 'svelte-chartjs';
 	import 'chartjs-adapter-date-fns';
 	import originalFetch from 'isomorphic-fetch';
@@ -45,8 +43,6 @@
 	export let tsEnd: number;
 	export let roomColors: Record<string, string>;
 
-	export let title: string;
-	export let unit: string;
 	export let period: string; // 30m, 2d, etc
 	export let step: number; // seconds per data point
 	export let timeSeries: string = 'mqtt_temperature';

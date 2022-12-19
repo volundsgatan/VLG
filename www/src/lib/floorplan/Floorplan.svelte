@@ -3,12 +3,13 @@
 	import Device from '$lib/device/Device.svelte';
 	import Sonos from '$lib/device/Sonos.svelte';
 	import MusicPlaylists from '$lib/music/MusicPlaylists.svelte';
-	import FancyBrightness from '$lib/floorplan/BrightnessSlider.svelte';
+	import Brightness from '$lib/floorplan/Brightness.svelte';
 	import TemperatureSpark from './TemperatureSpark.svelte';
 	import { onMount } from 'svelte';
 
 	import { devices as states } from '$lib/z2m';
 	import { sonos, sonosIsUpdating } from '$lib/sonos';
+	import type { room as roomType } from './types';
 
 	onMount(() => {
 		const refresh = setTimeout(window.location.reload, 1000 * 60 * 60);
@@ -46,7 +47,7 @@
 				anyOn,
 				brightness
 			};
-		}) || ([] as { room: string; devices: string[]; anyOn: boolean; brightness: number[] }[]);
+		}) || ([] as roomType[]);
 
 	$: bgKey = rooms
 		.map((roomName) => roomAnyLightOn?.find((r) => r.room === roomName)?.anyOn)
@@ -85,19 +86,16 @@
 		<a class="absolute top-[480px] left-[550px] cursor-pointer text-3xl" href="/dashboard"> 🎛️ </a>
 
 		<!-- Bedroom -->
-		<FancyBrightness room={roomAnyLightOn[0]} pos="top-[90px]  left-[60px] h-[210px] w-[310px]" />
+		<Brightness room={roomAnyLightOn[0]} pos="top-[90px]  left-[60px] h-[210px] w-[310px]" />
 
 		<!-- Kitchen -->
-		<FancyBrightness room={roomAnyLightOn[1]} pos="top-[310px] left-[60px] h-[190px] w-[310px]" />
+		<Brightness room={roomAnyLightOn[1]} pos="top-[310px] left-[60px] h-[190px] w-[310px]" />
 
 		<!-- Entrance -->
-		<FancyBrightness
-			room={roomAnyLightOn[2]}
-			pos="top-[210px]   left-[380px] h-[150px] w-[220px] "
-		/>
+		<Brightness room={roomAnyLightOn[2]} pos="top-[210px]   left-[380px] h-[150px] w-[220px] " />
 
 		<!-- Living Room -->
-		<FancyBrightness room={roomAnyLightOn[3]} pos=" top-[80px]  left-[630px] h-[220px] w-[320px]" />
+		<Brightness room={roomAnyLightOn[3]} pos=" top-[80px]  left-[630px] h-[220px] w-[320px]" />
 
 		<!-- Frigde -->
 		<TemperatureSpark
