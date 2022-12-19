@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Stat from '$lib/graphs/Stat.svelte';
+	import Stat from './Stat.svelte';
 
 	let tsStart = 0;
 	let tsEnd = 0;

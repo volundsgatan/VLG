@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount, tick } from 'svelte';
 	import { sparkline } from '@fnando/sparkline';
-	import Device from './device/Device.svelte';
+	import Device from '$lib/device/Device.svelte';
 
 	export let name = 'Outdoor';
 	let className = '';

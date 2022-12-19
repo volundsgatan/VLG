@@ -1,7 +1,7 @@
 <script lang="ts">
 	export let name: string;
 	export let value: string | number | boolean;
-	export let unit: string | null = null;
+	// export let unit: string | null = null;
 </script>
 
 <div class="font-medium capitalize">{name}</div>

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import History from '$lib/History.svelte';
+	import Charts from '$lib/graphs/Charts.svelte';
 </script>
 
-<History />
+<Charts />
