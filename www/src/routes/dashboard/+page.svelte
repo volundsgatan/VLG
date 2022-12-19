@@ -1,12 +1,12 @@
 <script lang="ts">
-	import { devices, sortedDevicesList } from '$lib/z2m';
+	import { sortedDevicesList } from '$lib/z2m';
 	import Device from '$lib/dashboard/Device.svelte';
 	$: namedDevices = $sortedDevicesList.filter((d) => d && d?.device?.friendlyName);
 </script>
 
 <div class="space-y-4 p-4 text-white">
 	<a class="cursor-pointer text-3xl" href="/">🏠</a>
-	<div class="grid grid-cols-2 gap-4 xl:grid-cols-3 ">
+	<div class="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3 ">
 		{#each namedDevices as state}
 			<Device {state} />
 		{/each}

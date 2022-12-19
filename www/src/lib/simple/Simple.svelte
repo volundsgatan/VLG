@@ -44,4 +44,10 @@
 	<Brightness room={roomAnyLightOn[2]}>Entrance</Brightness>
 
 	<Brightness room={roomAnyLightOn[3]}>Living Room</Brightness>
+
+	<div class="flex justify-around pt-16 text-5xl">
+		<a class="cursor-pointer" href="/graphs"> 📊 </a>
+		<a class="cursor-pointer" href="/gradient"> 🎨 </a>
+		<a class="cursor-pointer" href="/dashboard"> 🎛️ </a>
+	</div>
 </div>

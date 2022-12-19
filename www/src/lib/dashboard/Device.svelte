@@ -7,12 +7,14 @@
 	import ColorHS from './ColorHS.svelte';
 	import ColorTemp from './ColorTemp.svelte';
 	import ColorGradient from './ColorGradient.svelte';
+	import OnOff from './OnOff.svelte';
 	export let state: DeviceState;
 
 	$: definition = $bridgeDevices.find((d) => d?.ieee_address === state.device?.ieeeAddr).definition;
 	$: deviceBridgeInfo = $bridgeInfo.config.devices[state.device?.ieeeAddr];
 
 	$: name = deviceBridgeInfo?.description ?? state.device?.friendlyName;
+	$: addr = state.device?.ieeeAddr;
 
 	const colorMode = (s: DeviceState): string | undefined => {
 		if (s?.gradient_extras?.color_mode === 'gradient') {
@@ -57,6 +59,8 @@
 				<ColorTemp value={stat.value} active={stat.active} />
 			{:else if stat.key == 'gradient'}
 				<ColorGradient value={stat.value} active={stat.active} />
+			{:else if stat.key == 'state'}
+				<OnOff value={stat.value} {addr} />
 			{:else if typeof stat.value === 'object'}
 				<MultiStat name={stat.name} value={stat.value} />
 			{:else}

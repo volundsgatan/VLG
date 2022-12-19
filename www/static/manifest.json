@@ -1,0 +1,18 @@
+{
+	"short_name": "VLG",
+	"name": "VLG",
+	"icons": [
+		{
+			"src": "/favicon.png",
+			"type": "image/png",
+			"sizes": "512x512"
+		}
+	],
+	"id": "/",
+	"start_url": "/",
+	"background_color": "#3367D6",
+	"display": "standalone",
+	"scope": "/",
+	"theme_color": "#3367D6",
+	"description": "VLG - 10 000 IQ HOME"
+}

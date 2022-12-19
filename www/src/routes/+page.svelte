@@ -4,7 +4,10 @@
 	import NowPlaying from '$lib/music/NowPlaying.svelte';
 </script>
 
-<div class="flex h-full w-full select-none flex-col justify-between space-y-2 bg-gray-300">
+<div
+	class="flex h-full w-full select-none flex-col justify-between space-y-2 bg-gray-300"
+	style="touch-action: none;"
+>
 	<div class="md:hidden">
 		<Simple />
 	</div>
