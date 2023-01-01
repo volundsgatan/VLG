@@ -1,7 +1,10 @@
 <script lang="ts">
 	import { sortedDevicesList } from '$lib/z2m';
 	import Device from '$lib/dashboard/Device.svelte';
-	$: namedDevices = $sortedDevicesList.filter((d) => d && d?.device?.friendlyName);
+
+	$: namedDevices = $sortedDevicesList.
+		filter((d) => d && d?.device?.friendlyName).
+		filter((d) => d?.device?.friendlyName.indexOf('Switch') === -1);
 </script>
 
 <div class="space-y-4 p-4 text-white">
