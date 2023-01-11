@@ -24,8 +24,6 @@ spec:
       containers:
       - name: mqtt-exporter
         image: kpetrem/mqtt-exporter:latest
-        #ports:
-        #- containerPort: 80
         env:
         - name: MQTT_ADDRESS
           value: "100.113.94.105"

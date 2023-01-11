@@ -1,65 +1,83 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: homebridge
+  name: grafana
 ---
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: homebridge
-  namespace: homebridge
+  name: grafana
+  namespace: grafana
 ---
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: homebridge
-  namespace: homebridge
+  name: grafana
+  namespace: grafana
 spec:
-  serviceName: "homebridge"
+  serviceName: "grafana"
   replicas: 1
   podManagementPolicy: "Parallel"
   updateStrategy:
     type: "RollingUpdate"
   selector:
     matchLabels:
-      app: homebridge
+      app: grafana
   template:
     metadata:
       labels:
-        app: homebridge
+        app: grafana
     spec:
-      serviceAccountName: homebridge
-      hostNetwork: true
+      serviceAccountName: grafana
       initContainers:
       - name: "init-chown-data"
         image: debian:9
         imagePullPolicy: Always
         command: ["chown", "-R", "65534:65534", "/data"]
         volumeMounts:
-        - name: homebridge-data
+        - name: grafana-data
           mountPath: /data
           subPath: ""
       containers:
-        - name: homebridge
-          image: oznu/homebridge:2023-01-08
-          imagePullPolicy: "IfNotPresent"
+        - name: grafana
+          image: grafana/grafana:9.1.0
+          imagePullPolicy: IfNotPresent
           ports:
-            - containerPort: 8581
+            - containerPort: 3000
+              name: http-grafana
+              protocol: TCP
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /robots.txt
+              port: 3000
+              scheme: HTTP
+            initialDelaySeconds: 10
+            periodSeconds: 30
+            successThreshold: 1
+            timeoutSeconds: 2
+          livenessProbe:
+            failureThreshold: 3
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            successThreshold: 1
+            tcpSocket:
+              port: 3000
+            timeoutSeconds: 1
           resources:
             requests:
-              cpu: 2000m
-              memory: 2000Mi
+              cpu: 250m
+              memory: 750Mi
           volumeMounts:
-            - name: homebridge-data
-              mountPath: /homebridge
-              subPath: ""
+            - mountPath: /var/lib/grafana
+              name: grafana-data
 
         - name: ts-sidecar
           imagePullPolicy: Always
           image: "ghcr.io/tailscale/tailscale:latest"
           env:
           - name: TS_KUBE_SECRET
-            value: "tailscale-state-homebridge"
+            value: "tailscale-state-grafana"
           - name: TS_USERSPACE
             value: "false"
           - name: TS_AUTH_KEY
@@ -72,10 +90,12 @@ spec:
             capabilities:
               add:
               - NET_ADMIN
+
       terminationGracePeriodSeconds: 300
+
   volumeClaimTemplates:
   - metadata:
-      name: homebridge-data
+      name: grafana-data
     spec:
       accessModes:
         - ReadWriteOnce
