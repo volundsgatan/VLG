@@ -1,0 +1,21 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: nordpool-exporter
+  namespace: prometheus
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nordpool-exporter
+  template:
+    metadata:
+      labels:
+        app: nordpool-exporter
+      annotations:
+        "prometheus.io/scrape": "true"
+        "prometheus.io/port": "9367"
+    spec:
+      containers:
+      - name: nordpool-exporter
+        image: zegl/nordpool_exporter:latest

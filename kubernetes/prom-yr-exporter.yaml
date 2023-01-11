@@ -1,0 +1,25 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: yr-exporter
+  namespace: prometheus
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: yr-exporter
+  template:
+    metadata:
+      labels:
+        app: yr-exporter
+      annotations:
+        "prometheus.io/scrape": "true"
+        "prometheus.io/port": "9370"
+    spec:
+      containers:
+      - name: yr-exporter
+        image: zegl/yr_exporter:latest
+        args:
+        - "--listen-addr=:9370"
+        - "--lat=59.3377383"
+        - "--lon=18.038323"

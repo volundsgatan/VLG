@@ -1,0 +1,39 @@
+kind: Namespace
+apiVersion: v1
+metadata:
+  name: mqtt
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: mqtt-exporter
+  namespace: mqtt
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mqtt-exporter
+  template:
+    metadata:
+      labels:
+        app: mqtt-exporter
+      annotations:
+        "prometheus.io/scrape": "true"
+        "prometheus.io/port": "9000"
+    spec:
+      containers:
+      - name: mqtt-exporter
+        image: kpetrem/mqtt-exporter:latest
+        #ports:
+        #- containerPort: 80
+        env:
+        - name: MQTT_ADDRESS
+          value: "100.113.94.105"
+        - name: MQTT_PORT
+          value: "1883"
+        - name: MQTT_USERNAME
+          value: mqtt-exporter
+        - name: MQTT_PASSWORD
+          value: iasud0893hjdfusd7fyh3idsiosdouy8ds
+        - name: MQTT_TOPIC
+          value: "zigbee2mqtt/#"
