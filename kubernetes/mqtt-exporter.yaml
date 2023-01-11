@@ -21,7 +21,7 @@ spec:
         image: kpetrem/mqtt-exporter:latest
         env:
         - name: MQTT_ADDRESS
-          value: "100.113.94.105"
+          value: "mqtt.mqtt.svc.cluster.local"
         - name: MQTT_PORT
           value: "1883"
         - name: MQTT_USERNAME

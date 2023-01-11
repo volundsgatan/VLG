@@ -1,0 +1,98 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: zigbee2mqtt
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: zigbee2mqtt
+  namespace: zigbee2mqtt
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: zigbee2mqtt
+  namespace: zigbee2mqtt
+spec:
+  serviceName: "zigbee2mqtt"
+  replicas: 1
+  podManagementPolicy: "Parallel"
+  updateStrategy:
+    type: "RollingUpdate"
+  selector:
+    matchLabels:
+      app: zigbee2mqtt
+  template:
+    metadata:
+      labels:
+        app: zigbee2mqtt
+    spec:
+      serviceAccountName: zigbee2mqtt
+      initContainers:
+      - name: "init-chown-data"
+        image: debian:9
+        imagePullPolicy: Always
+        command: ["chown", "-R", "65534:65534", "/data"]
+        volumeMounts:
+        - name: zigbee2mqtt-data
+          mountPath: /data
+          subPath: ""
+      containers:
+        - name: zigbee2mqtt
+          image: koenkk/zigbee2mqtt:latest-dev
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: TZ
+              value: Europe/Stockholm
+          securityContext:
+            privileged: true
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          volumeMounts:
+            - name: zigbee2mqtt-data
+              mountPath: /app/data
+            - name: zigbee2mqtt-udev
+              mountPath: /run/udev
+            - name: ttyacm
+              mountPath: /dev/ttyACM0
+
+        - name: ts-sidecar
+          imagePullPolicy: Always
+          image: "ghcr.io/tailscale/tailscale:latest"
+          env:
+          - name: TS_KUBE_SECRET
+            value: "tailscale-state-zigbee2mqtt"
+          - name: TS_USERSPACE
+            value: "false"
+          - name: TS_AUTH_KEY
+            valueFrom:
+              secretKeyRef:
+                name: tailscale-auth
+                key: TS_AUTH_KEY
+                optional: true
+          securityContext:
+            capabilities:
+              add:
+              - NET_ADMIN
+
+      terminationGracePeriodSeconds: 300
+
+      volumes:
+      - name: zigbee2mqtt-udev
+        hostPath:
+          path: /run/udev
+      - name: ttyacm
+        hostPath:
+          path: /dev/ttyACM0
+  volumeClaimTemplates:
+  - metadata:
+      name: zigbee2mqtt-data 
+    spec:
+      accessModes:
+        - ReadWriteOnce
+      resources:
+        requests:
+          storage: "5Gi"

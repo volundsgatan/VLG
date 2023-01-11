@@ -46,8 +46,6 @@ spec:
           - "mosquitto"
           - "-c"
           - "/config/mosquitto.conf"
-          #- 
-          #- "-c=/config/mosquitto.conf"
           ports:
             - containerPort: 1883
               name: mqtt-insecure
