@@ -1,0 +1,37 @@
+kind: Namespace
+apiVersion: v1
+metadata:
+  name: sonos
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: sonos-api
+  namespace: sonos
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sonos-api
+  template:
+    metadata:
+      labels:
+        app: sonos-api
+    spec:
+      hostNetwork: true
+      containers:
+      - name: sonos-api
+        image: chrisns/docker-node-sonos-http-api:latest
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: sonos-api
+  namespace: sonos
+spec:
+  selector:
+    app: sonos-api
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 5005
