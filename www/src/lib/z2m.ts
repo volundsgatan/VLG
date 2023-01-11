@@ -35,7 +35,7 @@ export const connect = () => {
 	z2mConnected.set(false);
 	devices.set({});
 
-	const ws = new WebSocket('wss://vlg-pi.unicorn-alligator.ts.net/z2m/api');
+	const ws = new WebSocket('ws://zigbee2mqtt-0:8080/api');
 
 	rawSocket.set(ws);
 
