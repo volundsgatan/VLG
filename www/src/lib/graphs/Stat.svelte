@@ -138,10 +138,9 @@
 		query: string
 	): Promise<Array<ApexAxisChartSeries | ApexNonAxisChartSeries>> => {
 		const response = await fetch(
-			`http://prometheus-0:9090/api/v1/query_range?query=${query}&start=${tsStart}&end=${tsEnd}&step=${step}`,
+			`https://prometheus.unicorn-alligator.ts.net/api/v1/query_range?query=${query}&start=${tsStart}&end=${tsEnd}&step=${step}`,
 			{
 				method: 'GET',
-				headers: { Authorization: 'Basic ' + btoa('admin:ZpmTYyMETHPcDmzbyCqQrxKhgKPxgQ') }
 			}
 		);
 		const data = await response.json();

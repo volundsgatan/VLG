@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { type Zone, hostname, sonosRequest } from './sonos';
+	import { type Zone, sonosRequest } from './sonos';
 	import Button from './Button.svelte';
 	import { createEventDispatcher, onDestroy, onMount } from 'svelte';
 
@@ -47,7 +47,7 @@
 
 			if (uri.protocol === 'http:') {
 				uri.protocol = 'https';
-				uri.host = hostname;
+				uri.host = 'sonos.unicorn-alligator.ts.net';
 				uri.port = '443';
 				uri.pathname = `${uri.pathname}`;
 			}

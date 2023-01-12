@@ -1,7 +1,5 @@
-export const hostname = 'sonos-proxy';
-
 export const sonosRequest = (path: string): Promise<any> => {
-	return fetch(`https://${hostname}/sonos/${path}`).then((res) => res.json());
+	return fetch(`https://sonos.unicorn-alligator.ts.net/${path}`).then((res) => res.json());
 };
 
 export type Zone = {

@@ -25,10 +25,9 @@
 		const query = 'avg_over_time(mqtt_temperature{vlg_topic=%22' + name + '%22}[10m])';
 
 		const response = await fetch(
-			`https://prometheus-0:9090/api/v1/query_range?query=${query}&start=${start}&end=${now}&step=100`,
+			`https://prometheus.unicorn-alligator.ts.net/api/v1/query_range?query=${query}&start=${start}&end=${now}&step=100`,
 			{
 				method: 'GET',
-				headers: { Authorization: 'Basic ' + btoa('admin:ZpmTYyMETHPcDmzbyCqQrxKhgKPxgQ') }
 			}
 		);
 
