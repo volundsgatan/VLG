@@ -17,9 +17,9 @@ spec:
         "prometheus.io/port": "9370"
     spec:
       containers:
-      - name: yr-exporter
-        image: zegl/yr_exporter:latest
-        args:
-        - "--listen-addr=:9370"
-        - "--lat=59.3377383"
-        - "--lon=18.038323"
+        - name: yr-exporter
+          image: zegl/yr_exporter:latest
+          args:
+            - "--listen-addr=:9370"
+            - "--lat=59.3377383"
+            - "--lon=18.038323"

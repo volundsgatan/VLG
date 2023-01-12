@@ -17,5 +17,5 @@ spec:
         "prometheus.io/port": "9367"
     spec:
       containers:
-      - name: nordpool-exporter
-        image: zegl/nordpool_exporter:latest
+        - name: nordpool-exporter
+          image: zegl/nordpool_exporter:latest

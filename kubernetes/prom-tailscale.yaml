@@ -11,14 +11,14 @@ metadata:
   name: tailscale
   namespace: prometheus
 rules:
-- apiGroups: [""] # "" indicates the core API group
-  resources: ["secrets"]
-  # Create can not be restricted to a resource name.
-  verbs: ["create"]
-- apiGroups: [""] # "" indicates the core API group
-  resourceNames: ["tailscale-auth", "tailscale-state-prometheus"]
-  resources: ["secrets"]
-  verbs: ["get", "update", "patch"]
+  - apiGroups: [""] # "" indicates the core API group
+    resources: ["secrets"]
+    # Create can not be restricted to a resource name.
+    verbs: ["create"]
+  - apiGroups: [""] # "" indicates the core API group
+    resourceNames: ["tailscale-auth", "tailscale-state-prometheus"]
+    resources: ["secrets"]
+    verbs: ["get", "update", "patch"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
@@ -26,8 +26,8 @@ metadata:
   name: tailscale
   namespace: prometheus
 subjects:
-- kind: ServiceAccount
-  name: "prometheus"
+  - kind: ServiceAccount
+    name: "prometheus"
 roleRef:
   kind: Role
   name: tailscale
