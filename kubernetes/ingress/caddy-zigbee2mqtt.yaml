@@ -12,6 +12,9 @@ data:
       }
       admin :2019
     }
+    :80 {
+      redir https://zigbee2mqtt.unicorn-alligator.ts.net
+    }
     zigbee2mqtt.unicorn-alligator.ts.net {
       reverse_proxy http://zigbee2mqtt.zigbee2mqtt.svc.cluster.local:80
       tls {
@@ -36,7 +39,7 @@ spec:
       annotations:
         "zigbee2mqtt.io/scrape": "true"
         "zigbee2mqtt.io/port": "2019"
-        bump: v5
+        bump: v6
     spec:
       serviceAccountName: tailscale
       securityContext:

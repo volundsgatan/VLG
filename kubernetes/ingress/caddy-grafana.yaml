@@ -12,6 +12,9 @@ data:
       }
       admin :2019
     }
+    :80 {
+      redir https://grafana.unicorn-alligator.ts.net
+    }
     grafana.unicorn-alligator.ts.net {
       reverse_proxy http://grafana.grafana.svc.cluster.local:80
       tls {
@@ -36,7 +39,7 @@ spec:
       annotations:
         "prometheus.io/scrape": "true"
         "prometheus.io/port": "2019"
-        bump: v5
+        bump: v6
     spec:
       serviceAccountName: tailscale
       securityContext:

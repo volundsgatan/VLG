@@ -12,6 +12,9 @@ data:
       }
       admin :2019
     }
+    :80 {
+      redir https://sonos.unicorn-alligator.ts.net
+    }
     sonos.unicorn-alligator.ts.net {
       reverse_proxy http://sonos.sonos.svc.cluster.local:80
       tls {
@@ -36,7 +39,7 @@ spec:
       annotations:
         "sonos.io/scrape": "true"
         "sonos.io/port": "2019"
-        bump: v5
+        bump: v6
     spec:
       serviceAccountName: tailscale
       securityContext:

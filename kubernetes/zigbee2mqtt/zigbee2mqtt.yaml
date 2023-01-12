@@ -59,25 +59,6 @@ spec:
             - name: ttyacm
               mountPath: /dev/ttyACM0
 
-        - name: ts-sidecar
-          imagePullPolicy: Always
-          image: "ghcr.io/tailscale/tailscale:latest"
-          env:
-            - name: TS_KUBE_SECRET
-              value: "tailscale-state-zigbee2mqtt"
-            - name: TS_USERSPACE
-              value: "false"
-            - name: TS_AUTH_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: tailscale-auth
-                  key: TS_AUTH_KEY
-                  optional: true
-          securityContext:
-            capabilities:
-              add:
-                - NET_ADMIN
-
       terminationGracePeriodSeconds: 300
 
       volumes:

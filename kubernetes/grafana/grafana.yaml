@@ -62,28 +62,7 @@ spec:
           volumeMounts:
             - mountPath: /var/lib/grafana
               name: grafana-data
-
-        - name: ts-sidecar
-          imagePullPolicy: Always
-          image: "ghcr.io/tailscale/tailscale:latest"
-          env:
-            - name: TS_KUBE_SECRET
-              value: "tailscale-state-grafana"
-            - name: TS_USERSPACE
-              value: "false"
-            - name: TS_AUTH_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: tailscale-auth
-                  key: TS_AUTH_KEY
-                  optional: true
-          securityContext:
-            capabilities:
-              add:
-                - NET_ADMIN
-
       terminationGracePeriodSeconds: 300
-
   volumeClaimTemplates:
     - metadata:
         name: grafana-data
@@ -93,29 +72,6 @@ spec:
         resources:
           requests:
             storage: "5Gi"
----
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: grafana
-  namespace: grafana
-  annotations:
-    kubernetes.io/ingress.class: caddy
-spec:
-  rules:
-  - host: grafana.unicorn-alligator.ts.net
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: grafana
-            port:
-              number: 80
-  tls:
-    - hosts:
-        - grafana.unicorn-alligator.ts.net
 ---
 kind: Service
 apiVersion: v1
