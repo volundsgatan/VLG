@@ -9,26 +9,26 @@ metadata:
   name: prometheus
   namespace: prometheus
 ---
-# The ClusterRole grants the Prometheus Service Account permissions to fetch Kubernetes Node information, 
+# The ClusterRole grants the Prometheus Service Account permissions to fetch Kubernetes Node information,
 # as well as information about Services, Endpoints, and Pods in the cluster.
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   name: prometheus
 rules:
-- apiGroups: [""]
-  resources:
-  - nodes
-  - nodes/metrics
-  - services
-  - endpoints
-  - pods
-  verbs: ["get", "list", "watch"]
-- apiGroups: [""]
-  resources: ["configmaps"]
-  verbs: ["get"]
-- nonResourceURLs: ["/metrics", "/metrics/cadvisor"]
-  verbs: ["get"]
+  - apiGroups: [""]
+    resources:
+      - nodes
+      - nodes/metrics
+      - services
+      - endpoints
+      - pods
+    verbs: ["get", "list", "watch"]
+  - apiGroups: [""]
+    resources: ["configmaps"]
+    verbs: ["get"]
+  - nonResourceURLs: ["/metrics", "/metrics/cadvisor"]
+    verbs: ["get"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
@@ -39,9 +39,9 @@ roleRef:
   kind: ClusterRole
   name: prometheus
 subjects:
-- kind: ServiceAccount
-  name: prometheus
-  namespace: prometheus
+  - kind: ServiceAccount
+    name: prometheus
+    namespace: prometheus
 ---
 apiVersion: apps/v1
 kind: StatefulSet
@@ -61,17 +61,20 @@ spec:
     metadata:
       labels:
         app: prometheus
+      annotations:
+        "prometheus.io/scrape": "true"
+        "prometheus.io/port": "9090"
     spec:
       serviceAccountName: prometheus
       initContainers:
-      - name: "init-chown-data"
-        image: debian:9
-        imagePullPolicy: Always
-        command: ["chown", "-R", "65534:65534", "/data"]
-        volumeMounts:
-        - name: prometheus-data
-          mountPath: /data
-          subPath: ""
+        - name: "init-chown-data"
+          image: debian:9
+          imagePullPolicy: Always
+          command: ["chown", "-R", "65534:65534", "/data"]
+          volumeMounts:
+            - name: prometheus-data
+              mountPath: /data
+              subPath: ""
       containers:
         - name: prometheus-server
           image: quay.io/prometheus/prometheus:v2.41.0
@@ -112,20 +115,20 @@ spec:
           imagePullPolicy: Always
           image: "ghcr.io/tailscale/tailscale:latest"
           env:
-          - name: TS_KUBE_SECRET
-            value: "tailscale-state-prometheus"
-          - name: TS_USERSPACE
-            value: "false"
-          - name: TS_AUTH_KEY
-            valueFrom:
-              secretKeyRef:
-                name: tailscale-auth
-                key: TS_AUTH_KEY
-                optional: true
+            - name: TS_KUBE_SECRET
+              value: "tailscale-state-prometheus"
+            - name: TS_USERSPACE
+              value: "false"
+            - name: TS_AUTH_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: tailscale-auth
+                  key: TS_AUTH_KEY
+                  optional: true
           securityContext:
             capabilities:
               add:
-              - NET_ADMIN
+                - NET_ADMIN
 
       terminationGracePeriodSeconds: 300
       volumes:
@@ -135,22 +138,22 @@ spec:
       affinity:
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
-          - labelSelector:
-              matchExpressions:
-              - key: k8s-app
-                operator: In
-                values:
-                - prometheus
-            topologyKey: "kubernetes.io/hostname"
+            - labelSelector:
+                matchExpressions:
+                  - key: k8s-app
+                    operator: In
+                    values:
+                      - prometheus
+              topologyKey: "kubernetes.io/hostname"
   volumeClaimTemplates:
-  - metadata:
-      name: prometheus-data
-    spec:
-      accessModes:
-        - ReadWriteOnce
-      resources:
-        requests:
-          storage: "50Gi"
+    - metadata:
+        name: prometheus-data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: "50Gi"
 ---
 kind: Service
 apiVersion: v1
@@ -538,48 +541,6 @@ data:
         replacement: $1
         action: replace
       - source_labels: [__meta_kubernetes_pod_node_name]
-        separator: ;
-        regex: (.*)
-        target_label: instance
-        replacement: $1
-        action: replace
-    - job_name: prometheus
-      honor_timestamps: true
-      scrape_interval: 15s
-      scrape_timeout: 10s
-      metrics_path: /metrics
-      scheme: http
-      kubernetes_sd_configs:
-      - role: pod
-      relabel_configs:
-      - separator: ;
-        regex: __meta_kubernetes_pod_label_(.+)
-        replacement: $1
-        action: labelmap
-      - source_labels: [__address__]
-        separator: ;
-        regex: ([^:]+)(?::\d+)?
-        target_label: __address__
-        replacement: $1:9090
-        action: replace
-      - source_labels: [__meta_kubernetes_namespace, __meta_kubernetes_pod_label_k8s_app]
-        separator: ;
-        regex: ${NAMESPACE};prometheus
-        replacement: $1
-        action: keep
-      - source_labels: [__meta_kubernetes_namespace]
-        separator: ;
-        regex: (.*)
-        target_label: namespace
-        replacement: $1
-        action: replace
-      - source_labels: [__meta_kubernetes_pod_name]
-        separator: ;
-        regex: (.*)
-        target_label: pod
-        replacement: $1
-        action: replace
-      - source_labels: [__meta_kubernetes_pod_name]
         separator: ;
         regex: (.*)
         target_label: instance

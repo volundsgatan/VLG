@@ -20,8 +20,8 @@ spec:
     spec:
       hostNetwork: true
       containers:
-      - name: sonos-api
-        image: chrisns/docker-node-sonos-http-api:latest
+        - name: sonos-api
+          image: chrisns/docker-node-sonos-http-api:latest
 ---
 kind: Service
 apiVersion: v1

@@ -30,22 +30,22 @@ spec:
     spec:
       serviceAccountName: mqtt
       initContainers:
-      - name: "init-chown-data"
-        image: debian:9
-        imagePullPolicy: Always
-        command: ["chown", "-R", "65534:65534", "/data"]
-        volumeMounts:
-        - name: mosquitto-data
-          mountPath: /data
-          subPath: ""
+        - name: "init-chown-data"
+          image: debian:9
+          imagePullPolicy: Always
+          command: ["chown", "-R", "65534:65534", "/data"]
+          volumeMounts:
+            - name: mosquitto-data
+              mountPath: /data
+              subPath: ""
       containers:
         - name: mqtt
           image: eclipse-mosquitto:2.0.15
           imagePullPolicy: IfNotPresent
           command:
-          - "mosquitto"
-          - "-c"
-          - "/config/mosquitto.conf"
+            - "mosquitto"
+            - "-c"
+            - "/config/mosquitto.conf"
           ports:
             - containerPort: 1883
               name: mqtt-insecure
@@ -68,14 +68,14 @@ spec:
           configMap:
             name: mosquitto-config
   volumeClaimTemplates:
-  - metadata:
-      name: mosquitto-data
-    spec:
-      accessModes:
-        - ReadWriteOnce
-      resources:
-        requests:
-          storage: "5Gi"
+    - metadata:
+        name: mosquitto-data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: "5Gi"
 ---
 kind: Service
 apiVersion: v1

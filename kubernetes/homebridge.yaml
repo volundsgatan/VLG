@@ -31,14 +31,14 @@ spec:
       serviceAccountName: homebridge
       hostNetwork: true
       initContainers:
-      - name: "init-chown-data"
-        image: debian:9
-        imagePullPolicy: Always
-        command: ["chown", "-R", "65534:65534", "/data"]
-        volumeMounts:
-        - name: homebridge-data
-          mountPath: /data
-          subPath: ""
+        - name: "init-chown-data"
+          image: debian:9
+          imagePullPolicy: Always
+          command: ["chown", "-R", "65534:65534", "/data"]
+          volumeMounts:
+            - name: homebridge-data
+              mountPath: /data
+              subPath: ""
       containers:
         - name: homebridge
           image: oznu/homebridge:2023-01-08
@@ -53,32 +53,13 @@ spec:
             - name: homebridge-data
               mountPath: /homebridge
               subPath: ""
-
-        # - name: ts-sidecar
-        #   imagePullPolicy: Always
-        #   image: "ghcr.io/tailscale/tailscale:latest"
-        #   env:
-        #   - name: TS_KUBE_SECRET
-        #     value: "tailscale-state-homebridge"
-        #   - name: TS_USERSPACE
-        #     value: "false"
-        #   - name: TS_AUTH_KEY
-        #     valueFrom:
-        #       secretKeyRef:
-        #         name: tailscale-auth
-        #         key: TS_AUTH_KEY
-        #         optional: true
-        #   securityContext:
-        #     capabilities:
-        #       add:
-        #       - NET_ADMIN
       terminationGracePeriodSeconds: 300
   volumeClaimTemplates:
-  - metadata:
-      name: homebridge-data
-    spec:
-      accessModes:
-        - ReadWriteOnce
-      resources:
-        requests:
-          storage: "5Gi"
+    - metadata:
+        name: homebridge-data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: "5Gi"

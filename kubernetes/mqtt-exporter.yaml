@@ -17,16 +17,16 @@ spec:
         "prometheus.io/port": "9000"
     spec:
       containers:
-      - name: mqtt-exporter
-        image: kpetrem/mqtt-exporter:latest
-        env:
-        - name: MQTT_ADDRESS
-          value: "mqtt.mqtt.svc.cluster.local"
-        - name: MQTT_PORT
-          value: "1883"
-        - name: MQTT_USERNAME
-          value: mqtt-exporter
-        - name: MQTT_PASSWORD
-          value: iasud0893hjdfusd7fyh3idsiosdouy8ds
-        - name: MQTT_TOPIC
-          value: "zigbee2mqtt/#"
+        - name: mqtt-exporter
+          image: kpetrem/mqtt-exporter:latest
+          env:
+            - name: MQTT_ADDRESS
+              value: "mqtt.mqtt.svc.cluster.local"
+            - name: MQTT_PORT
+              value: "1883"
+            - name: MQTT_USERNAME
+              value: mqtt-exporter
+            - name: MQTT_PASSWORD
+              value: iasud0893hjdfusd7fyh3idsiosdouy8ds
+            - name: MQTT_TOPIC
+              value: "zigbee2mqtt/#"
