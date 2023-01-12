@@ -96,3 +96,16 @@ spec:
         resources:
           requests:
             storage: "5Gi"
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: zigbee2mqtt
+  namespace: zigbee2mqtt
+spec:
+  selector:
+    app: zigbee2mqtt
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080

@@ -1,0 +1,39 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: tailscale
+  namespace: caddy-system
+---
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: tailscale
+  namespace: caddy-system
+rules:
+  - apiGroups: [""] # "" indicates the core API group
+    resources: ["secrets"]
+    # Create can not be restricted to a resource name.
+    verbs: ["create"]
+  - apiGroups: [""] # "" indicates the core API group
+    resourceNames: [
+      "tailscale-auth",
+      "tailscale-state-ingress-grafana",
+      "tailscale-state-ingress-prometheus",
+      "tailscale-state-ingress-zigbee2mqtt",
+      "tailscale-state-ingress-sonos",
+      ]
+    resources: ["secrets"]
+    verbs: ["get", "update", "patch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: tailscale
+  namespace: caddy-system
+subjects:
+  - kind: ServiceAccount
+    name: "tailscale"
+roleRef:
+  kind: Role
+  name: tailscale
+  apiGroup: rbac.authorization.k8s.io
