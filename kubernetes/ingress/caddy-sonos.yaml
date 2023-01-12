@@ -23,12 +23,15 @@ data:
     }
 ---
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: caddy-sonos
   namespace: caddy-system
 spec:
   replicas: 1
+  podManagementPolicy: "Parallel"
+  updateStrategy:
+    type: "RollingUpdate"
   selector:
     matchLabels:
       app.kubernetes.io/name: caddy-sonos
