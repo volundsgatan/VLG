@@ -15,12 +15,14 @@ rules:
     # Create can not be restricted to a resource name.
     verbs: ["create"]
   - apiGroups: [""] # "" indicates the core API group
-    resourceNames: [
-      "tailscale-auth",
-      "tailscale-state-ingress-grafana",
-      "tailscale-state-ingress-prometheus",
-      "tailscale-state-ingress-zigbee2mqtt",
-      "tailscale-state-ingress-sonos",
+    resourceNames:
+      [
+        "tailscale-auth",
+        "tailscale-state-ingress-grafana",
+        "tailscale-state-ingress-prometheus",
+        "tailscale-state-ingress-zigbee2mqtt",
+        "tailscale-state-ingress-sonos",
+        "tailscale-state-subnet-router",
       ]
     resources: ["secrets"]
     verbs: ["get", "update", "patch"]

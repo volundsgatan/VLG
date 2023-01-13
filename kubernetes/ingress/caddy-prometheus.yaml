@@ -45,17 +45,16 @@ spec:
         bump: v6
     spec:
       serviceAccountName: tailscale
-      securityContext:
-        {}
+      securityContext: {}
       containers:
         - name: caddy-prometheus
           securityContext:
             allowPrivilegeEscalation: true
             capabilities:
               add:
-              - NET_BIND_SERVICE
+                - NET_BIND_SERVICE
               drop:
-              - ALL
+                - ALL
             runAsGroup: 0
             runAsUser: 0
           image: "caddy:2.6.2-alpine"
@@ -109,6 +108,8 @@ spec:
           volumeMounts:
             - name: run-tailscale
               mountPath: /var/run
+            - name: tailscale-tmp # cache certs
+              mountPath: /tmp
       volumes:
         - name: tmp
           emptyDir: {}
@@ -117,3 +118,12 @@ spec:
         - name: config-volume
           configMap:
             name: caddy-prometheus
+  volumeClaimTemplates:
+    - metadata:
+        name: tailscale-tmp
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: "100Mi"
