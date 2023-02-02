@@ -16,7 +16,7 @@ data:
       redir https://argocd.unicorn-alligator.ts.net
     }
     argocd.unicorn-alligator.ts.net {
-      reverse_proxy http://argocd.argocd.svc.cluster.local:80
+      reverse_proxy http://argocd-server.argocd.svc.cluster.local:80
       tls {
           get_certificate tailscale 
       }
