@@ -42,7 +42,7 @@ spec:
       annotations:
         "prometheus.io/scrape": "true"
         "prometheus.io/port": "2019"
-        bump: v6
+        bump: v7
     spec:
       serviceAccountName: tailscale
       securityContext: {}
