@@ -16,7 +16,13 @@ data:
       redir https://argocd.unicorn-alligator.ts.net
     }
     argocd.unicorn-alligator.ts.net {
-      reverse_proxy https://argocd-server.argocd.svc.cluster.local:443
+      reverse_proxy {
+        to https://argocd-server.argocd.svc.cluster.local:443
+        transport http {
+          tls
+          tls_insecure_skip_verify
+        }
+      }
       tls {
           get_certificate tailscale 
       }
@@ -42,7 +48,7 @@ spec:
       annotations:
         "prometheus.io/scrape": "true"
         "prometheus.io/port": "2019"
-        bump: v8
+        bump: v9
     spec:
       serviceAccountName: tailscale
       securityContext: {}
