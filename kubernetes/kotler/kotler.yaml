@@ -24,7 +24,6 @@ spec:
       labels:
         app: kotler
     spec:
-      hostNetwork: true
       containers:
         - name: kotler
           image: registry.unicorn-alligator.ts.net/kotler:v2
