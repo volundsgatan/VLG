@@ -9829,6 +9829,8 @@ metadata:
     app.kubernetes.io/component: metrics
     app.kubernetes.io/name: argocd-metrics
     app.kubernetes.io/part-of: argocd
+  annotations:
+    "prometheus.io/scrape": "true"
   name: argocd-metrics
 spec:
   ports:
@@ -9877,6 +9879,9 @@ metadata:
     app.kubernetes.io/component: repo-server
     app.kubernetes.io/name: argocd-repo-server
     app.kubernetes.io/part-of: argocd
+  annotations:
+    "prometheus.io/scrape": "true"
+    "prometheus.io/port": "8084"
   name: argocd-repo-server
 spec:
   ports:
