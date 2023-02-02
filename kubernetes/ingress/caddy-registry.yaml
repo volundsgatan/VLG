@@ -40,8 +40,8 @@ spec:
       labels:
         app.kubernetes.io/name: caddy-registry
       annotations:
-        "registry.io/scrape": "true"
-        "registry.io/port": "2019"
+        "prometheus.io/scrape": "true"
+        "prometheus.io/port": "2019"
         bump: v6
     spec:
       serviceAccountName: tailscale

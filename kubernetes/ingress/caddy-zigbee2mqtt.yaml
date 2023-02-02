@@ -40,8 +40,8 @@ spec:
       labels:
         app.kubernetes.io/name: caddy-zigbee2mqtt
       annotations:
-        "zigbee2mqtt.io/scrape": "true"
-        "zigbee2mqtt.io/port": "2019"
+        "prometheus.io/scrape": "true"
+        "prometheus.io/port": "2019"
         bump: v6
     spec:
       serviceAccountName: tailscale

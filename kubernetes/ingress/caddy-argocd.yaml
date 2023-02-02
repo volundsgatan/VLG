@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: caddy-sonos
+  name: caddy-argocd
   namespace: caddy-system
 data:
   Caddyfile: |-
@@ -13,10 +13,10 @@ data:
       admin :2019
     }
     :80 {
-      redir https://sonos.unicorn-alligator.ts.net
+      redir https://argocd.unicorn-alligator.ts.net
     }
-    sonos.unicorn-alligator.ts.net {
-      reverse_proxy http://sonos.sonos.svc.cluster.local:80
+    argocd.unicorn-alligator.ts.net {
+      reverse_proxy http://argocd.argocd.svc.cluster.local:80
       tls {
           get_certificate tailscale 
       }
@@ -25,7 +25,7 @@ data:
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: caddy-sonos
+  name: caddy-argocd
   namespace: caddy-system
 spec:
   replicas: 1
@@ -34,11 +34,11 @@ spec:
     type: "RollingUpdate"
   selector:
     matchLabels:
-      app.kubernetes.io/name: caddy-sonos
+      app.kubernetes.io/name: caddy-argocd
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: caddy-sonos
+        app.kubernetes.io/name: caddy-argocd
       annotations:
         "prometheus.io/scrape": "true"
         "prometheus.io/port": "2019"
@@ -47,7 +47,7 @@ spec:
       serviceAccountName: tailscale
       securityContext: {}
       containers:
-        - name: caddy-sonos
+        - name: caddy-argocd
           securityContext:
             allowPrivilegeEscalation: true
             capabilities:
@@ -81,12 +81,12 @@ spec:
               mountPath: /var/run
             - name: config-volume
               mountPath: /config
-        - name: tailscale-sonos
+        - name: tailscale-argocd
           imagePullPolicy: Always
           image: "ghcr.io/tailscale/tailscale:latest"
           env:
             - name: TS_KUBE_SECRET
-              value: "tailscale-state-ingress-sonos"
+              value: "tailscale-state-ingress-argocd"
             - name: TS_USERSPACE
               value: "false"
             - name: TS_AUTH_KEY
@@ -98,7 +98,7 @@ spec:
             - name: TS_AUTH_ONCE
               value: "true"
             - name: TS_EXTRA_ARGS
-              value: --hostname=sonos
+              value: --hostname=argocd
             - name: TS_SOCKET
               value: /var/run/tailscale/tailscaled.sock
           securityContext:
@@ -117,7 +117,7 @@ spec:
           emptyDir: {}
         - name: config-volume
           configMap:
-            name: caddy-sonos
+            name: caddy-argocd
   volumeClaimTemplates:
     - metadata:
         name: tailscale-tmp
