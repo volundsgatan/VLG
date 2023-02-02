@@ -1,0 +1,52 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: containerd-metrics-proxy
+  namespace: prometheus
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: containerd-metrics-proxy
+  namespace: prometheus
+spec:
+  selector:
+    matchLabels:
+      name: containerd-metrics-proxy
+  template:
+    metadata:
+      labels:
+        name: containerd-metrics-proxy
+      annotations:
+        "prometheus.io/scrape": "true"
+        "prometheus.io/port": "10102"
+        "prometheus.io/path": "/v1/metrics"
+    spec:
+      serviceAccountName: containerd-metrics-proxy
+      hostNetwork: true
+      containers:
+        - name: caddy
+          image: "caddy:2.6.2-alpine"
+          imagePullPolicy: IfNotPresent
+          args:
+            - "caddy"
+            - "run"
+            - "--config=/config/Caddyfile"
+          volumeMounts:
+            - name: config-volume
+              mountPath: /config
+      volumes:
+        - name: config-volume
+          configMap:
+            name: caddy-containerd-proxy
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: caddy-containerd-proxy
+  namespace: prometheus
+data:
+  Caddyfile: |-
+    :10102 {
+      reverse_proxy http://127.0.0.1:1338
+    }
