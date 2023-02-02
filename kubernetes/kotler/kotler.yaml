@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: kotler
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: kotler
+  namespace: kotler
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: kotler
+  namespace: kotler
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: kotler
+  template:
+    metadata:
+      labels:
+        app: kotler
+    spec:
+      hostNetwork: true
+      containers:
+        - name: kotler
+          image: registry.unicorn-alligator.ts.net/kotler:v2
+      imagePullSecrets:
+      - name: regcred
