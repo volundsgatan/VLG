@@ -4,7 +4,7 @@
 	import { connect, z2mConnected, z2mConnectionError } from '$lib/z2m';
 	import { fetchSonos } from '$lib/sonos';
 
-	import '../app.css';
+	import '../../app.css';
 
 	onMount(() => {
 		connect();
