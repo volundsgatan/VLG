@@ -13,9 +13,14 @@
 		row: number;
 		col: number;
 		state?: boolean;
+
+		hilight: boolean;
 	};
 
 	let state: Cell[][] = [];
+
+	let widestRowGuide = guide.rows.map((r) => r.length).sort((a, b) => b - a)[0];
+	let rowGuideWidth = widestRowGuide * 24;
 
 	type State = typeof state;
 
@@ -24,7 +29,9 @@
 		for (let c = 0; c < cols; c++) {
 			col.push({
 				row: row,
-				col: c
+				col: c,
+				state: undefined,
+				hilight: false
 			});
 		}
 		return col;
@@ -69,6 +76,12 @@
 		save();
 	};
 
+	const setCellHilight = (cell: Cell, hilight: boolean) => {
+		cell.hilight = hilight;
+		state[cell.row][cell.col] = cell;
+		save();
+	};
+
 	const isSelected = (cell: Cell, selected: number[]): boolean => {
 		return cell.row === selected[0] && cell.col === selected[1];
 	};
@@ -89,6 +102,11 @@
 
 	const toggleCurrentCell = () => {
 		toggleCell(currentCell());
+	};
+
+	const toggleCurrentCellHilight = () => {
+		const cell = currentCell();
+		setCellHilight(cell, !cell.hilight);
 	};
 
 	const clickCell = (cell: Cell) => {
@@ -159,6 +177,15 @@
 
 		if (e.key === 'Backspace') {
 			setCurrentCell(undefined);
+			const cell = currentCell();
+			setCellHilight(cell, false);
+			e.preventDefault();
+			e.stopPropagation();
+			return;
+		}
+
+		if (e.key === 'z') {
+			toggleCurrentCellHilight();
 			e.preventDefault();
 			e.stopPropagation();
 			return;
@@ -212,12 +239,12 @@
 
 <svelte:window on:keydown={(e) => moveCursor(e)} />
 
-<div class="min-h-full bg-white text-black ">
-	<div class="flex justify-center p-20">
+<div class="flex min-h-full flex-col items-center space-y-4 bg-white p-8 text-black">
+	<div class="flex justify-center">
 		<div class="flex flex-col">
 			<!-- Column Guides -->
 			<div class="flex ">
-				<div class="w-40" />
+				<div style="width: {rowGuideWidth}px" />
 				{#each state[0] as cell}
 					{#if cell.col === 0}
 						<div class="h-full w-[2px]" />
@@ -228,6 +255,8 @@
 						invalid={validatedCols[cell.col] === false}
 						guides={guide.cols[cell.col]}
 						isCol={true}
+						{rowGuideWidth}
+						selected={selected[1] === cell.col}
 					/>
 
 					{#if cell.col % 5 === 4}
@@ -239,7 +268,7 @@
 			{#each state as row}
 				{@const rowNum = row[0].row}
 				{#if rowNum === 0}
-					<div class="ml-40 h-[2px] bg-gray-400" />
+					<div class="h-[2px] bg-gray-400" style="margin-left: {rowGuideWidth}px" />
 				{/if}
 
 				<div class="flex">
@@ -248,6 +277,8 @@
 						valid={validatedRows[rowNum] === true}
 						invalid={validatedRows[rowNum] === false}
 						guides={guide.rows[rowNum]}
+						{rowGuideWidth}
+						selected={selected[0] === rowNum}
 					/>
 
 					{#each row as cell}
@@ -256,7 +287,9 @@
 						{/if}
 
 						<div
-							class="h-8 w-8 border-2 text-center text-gray-800"
+							class="inline-flex h-6 w-6 items-center justify-center border-2"
+							class:bg-yellow-400={cell.hilight && cell.state !== true}
+							class:border-yellow-400={cell.hilight && cell.state === true}
 							class:bg-black={cell.state === true}
 							class:border-white={cell.state === undefined && !isSelected(cell, selected)}
 							class:bg-gray-200={cell.state === undefined}
@@ -264,7 +297,7 @@
 							on:click|stopPropagation|preventDefault={() => clickCell(cell)}
 						>
 							{#if cell.state === false}
-								•
+								<div class="h-1 w-1 rounded-full bg-gray-800" />
 							{/if}
 						</div>
 
@@ -275,7 +308,7 @@
 				</div>
 
 				{#if rowNum % 5 === 4}
-					<div class="ml-40 h-[2px] bg-gray-400" />
+					<div class="h-[2px] bg-gray-400" style="margin-left: {rowGuideWidth}px" />
 				{/if}
 			{/each}
 		</div>
@@ -284,5 +317,11 @@
 				>Validate</button
 			>
 		</div>
+	</div>
+
+	<div>
+		<div><span class="font-mono">[space]</span> – Toggle cell [yes/no/undefined]</div>
+		<div><span class="font-mono">[backspace]</span> – Clear cell</div>
+		<div><span class="font-mono">z</span> – Hilight</div>
 	</div>
 </div>
