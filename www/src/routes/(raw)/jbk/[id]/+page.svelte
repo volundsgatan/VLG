@@ -2,6 +2,7 @@
 	import { onMount } from 'svelte';
 	import type { PageData } from './$types';
 	import Guide from '$lib/jbk/Guide.svelte';
+	import type { _ } from '$env/static/private';
 
 	export let data: PageData;
 
@@ -19,8 +20,11 @@
 
 	let state: Cell[][] = [];
 
+	let tiny = cols >= 25 || rows >= 25;
 	let widestRowGuide = guide.rows.map((r) => r.length).sort((a, b) => b - a)[0];
-	let rowGuideWidth = widestRowGuide * 24;
+	let widestColGuide = guide.cols.map((r) => r.length).sort((a, b) => b - a)[0];
+	let rowGuideWidth = widestRowGuide * (tiny ? 16 : 24);
+	let colsGuideWidth = widestColGuide * (tiny ? 16 : 24);
 
 	type State = typeof state;
 
@@ -41,7 +45,10 @@
 		state.push(makeRow(row));
 	}
 
-	let selected: number[] = [0, 0];
+	type Position = [number, number];
+
+	let cursor: Position = [-1, -1];
+	let selected: Position[] = [];
 
 	const save = () => {
 		localStorage.setItem('state-' + guide.id, JSON.stringify({ state }));
@@ -57,18 +64,6 @@
 		}
 	};
 
-	const toggleCell = (cell: Cell) => {
-		if (cell.state === true) {
-			cell.state = false;
-		} else if (cell.state === false) {
-			cell.state = undefined;
-		} else {
-			cell.state = true;
-		}
-		state[cell.row][cell.col] = cell;
-		save();
-	};
-
 	const setCurrentCell = (val: boolean | undefined) => {
 		const cell = currentCell();
 		cell.state = val;
@@ -82,26 +77,71 @@
 		save();
 	};
 
-	const isSelected = (cell: Cell, selected: number[]): boolean => {
-		return cell.row === selected[0] && cell.col === selected[1];
+	const above = (p: Position): Position => {
+		return [p[0] - 1, p[1]];
 	};
 
-	const clamp = (min: number, max: number, val: number): number => {
-		if (val < min) {
-			return min;
-		}
-		if (val > max) {
-			return max;
-		}
-		return val;
+	const below = (p: Position): Position => {
+		return [p[0] + 1, p[1]];
+	};
+
+	const left = (p: Position): Position => {
+		return [p[0], p[1] - 1];
+	};
+
+	const right = (p: Position): Position => {
+		return [p[0], p[1] + 1];
+	};
+
+	const isCursorAt = (cell: Cell, cursor: Position): boolean => {
+		return cell.row === cursor[0] && cell.col === cursor[1];
+	};
+
+	const isCellSelected = (cell: Cell, selected: Position[]): boolean => {
+		return isPositionSelected([cell.row, cell.col], selected);
+	};
+
+	const isPositionSelected = (p: Position, selected: Position[]): boolean => {
+		return !!selected.find((s) => s[0] === p[0] && s[1] === p[1]);
+	};
+
+	const isAboveSelected = (cell: Cell, selected: Position[]): boolean => {
+		return isPositionSelected(above([cell.row, cell.col]), selected);
+	};
+
+	const isBelowSelected = (cell: Cell, selected: Position[]): boolean => {
+		return isPositionSelected(below([cell.row, cell.col]), selected);
+	};
+
+	const isLeftSelected = (cell: Cell, selected: Position[]): boolean => {
+		return isPositionSelected(left([cell.row, cell.col]), selected);
+	};
+
+	const isRightSelected = (cell: Cell, selected: Position[]): boolean => {
+		return isPositionSelected(right([cell.row, cell.col]), selected);
 	};
 
 	const currentCell = (): Cell => {
-		return state[selected[0]][selected[1]];
+		return state[cursor[0]][cursor[1]];
 	};
 
 	const toggleCurrentCell = () => {
-		toggleCell(currentCell());
+		const c = currentCell();
+		let nextState;
+		if (c.state === true) {
+			nextState = false;
+		} else if (c.state === false) {
+			nextState = undefined;
+		} else {
+			nextState = true;
+		}
+
+		// set all selected to nextState
+		for (const p of selected) {
+			state[p[0]][p[1]].state = nextState;
+		}
+
+		save();
 	};
 
 	const toggleCurrentCellHilight = () => {
@@ -110,7 +150,8 @@
 	};
 
 	const clickCell = (cell: Cell) => {
-		selected = [cell.row, cell.col];
+		cursor = [cell.row, cell.col];
+		selected = [cursor];
 	};
 
 	const validate = () => {
@@ -129,6 +170,64 @@
 		}
 
 		validatedCols = asCols.map((col, idx) => validateRow(guide.cols[idx], col));
+	};
+
+	const clearHighlights = () => {
+		for (let r = 0; r < rows; r++) {
+			for (let c = 0; c < cols; c++) {
+				state[r][c].hilight = false;
+			}
+		}
+		save();
+	};
+
+	const clearAll = () => {
+		if (!confirm('Are you sure? This will delete all progress!')) {
+			return;
+		}
+
+		for (let r = 0; r < rows; r++) {
+			for (let c = 0; c < cols; c++) {
+				state[r][c].state = undefined;
+				state[r][c].hilight = false;
+			}
+		}
+
+		save();
+	};
+
+	const cellClasses = (cell: Cell, selected: Position[]): string => {
+		let res = [];
+
+		if (isCellSelected(cell, selected) && !isAboveSelected(cell, selected)) {
+			res.push('border-t-blue-400/80');
+			res.push('border-t-[4px]');
+		} else {
+			res.push('pt-[4px]');
+		}
+
+		if (isCellSelected(cell, selected) && !isBelowSelected(cell, selected)) {
+			res.push('border-b-blue-400/80');
+			res.push('border-b-[4px]');
+		} else {
+			res.push('pb-[4px]');
+		}
+
+		if (isCellSelected(cell, selected) && !isLeftSelected(cell, selected)) {
+			res.push('border-l-blue-400/80');
+			res.push('border-l-[4px]');
+		} else {
+			res.push('pl-[4px]');
+		}
+
+		if (isCellSelected(cell, selected) && !isRightSelected(cell, selected)) {
+			res.push('border-r-blue-400/80');
+			res.push('border-r-[4px]');
+		} else {
+			res.push('pr-[4px]');
+		}
+
+		return res.join(' ');
 	};
 
 	let validatedRows: boolean[] = [];
@@ -167,7 +266,15 @@
 		return true;
 	};
 
-	const moveCursor = (e: KeyboardEvent) => {
+	const onMouseEnterCell = (e: MouseEvent, cell: Cell) => {
+		if (e.buttons === 1) {
+			cursor = [cell.row, cell.col];
+			selected.push(cursor);
+			selected = selected;
+		}
+	};
+
+	const onWindowKeyDown = (e: KeyboardEvent) => {
 		if (e.code === 'Space') {
 			toggleCurrentCell();
 			e.preventDefault();
@@ -191,6 +298,7 @@
 			return;
 		}
 
+		// Move cursor
 		let dx = 0;
 		let dy = 0;
 
@@ -208,25 +316,33 @@
 				dx = -1;
 				break;
 			default:
-				console.log(e);
 				return;
 		}
 
-		let y = selected[0] + dy;
+		let y = cursor[0] + dy;
 		if (y < 0) {
 			y = rows - 1;
 		} else if (y >= rows) {
 			y = 0;
 		}
 
-		let x = selected[1] + dx;
+		let x = cursor[1] + dx;
 		if (x < 0) {
 			x = cols - 1;
 		} else if (x >= cols) {
 			x = 0;
 		}
 
-		selected = [y, x];
+		cursor = [y, x];
+
+		// add to selection
+		if (e.shiftKey) {
+			selected.push(cursor);
+			selected = selected;
+		} else {
+			// reset selection
+			selected = [cursor];
+		}
 
 		e.preventDefault();
 		e.stopPropagation();
@@ -237,91 +353,114 @@
 	});
 </script>
 
-<svelte:window on:keydown={(e) => moveCursor(e)} />
+<svelte:window on:keydown={(e) => onWindowKeyDown(e)} />
 
-<div class="flex min-h-full flex-col items-center space-y-4 bg-white p-8 text-black">
-	<div class="flex justify-center">
-		<div class="flex flex-col">
-			<!-- Column Guides -->
-			<div class="flex ">
-				<div style="width: {rowGuideWidth}px" />
-				{#each state[0] as cell}
-					{#if cell.col === 0}
-						<div class="h-full w-[2px]" />
-					{/if}
-
-					<Guide
-						valid={validatedCols[cell.col] === true}
-						invalid={validatedCols[cell.col] === false}
-						guides={guide.cols[cell.col]}
-						isCol={true}
-						{rowGuideWidth}
-						selected={selected[1] === cell.col}
-					/>
-
-					{#if cell.col % 5 === 4}
-						<div class="h-full w-[2px] " />
-					{/if}
-				{/each}
-			</div>
-
-			{#each state as row}
-				{@const rowNum = row[0].row}
-				{#if rowNum === 0}
-					<div class="h-[2px] bg-gray-400" style="margin-left: {rowGuideWidth}px" />
-				{/if}
-
-				<div class="flex">
-					<!-- Row Guides -->
-					<Guide
-						valid={validatedRows[rowNum] === true}
-						invalid={validatedRows[rowNum] === false}
-						guides={guide.rows[rowNum]}
-						{rowGuideWidth}
-						selected={selected[0] === rowNum}
-					/>
-
-					{#each row as cell}
+<div class="flex min-h-full flex-col items-center space-y-4 bg-white p-2 text-black">
+	<div>
+		<div class="flex justify-center space-x-4">
+			<div class="flex flex-col">
+				<!-- Column Guides -->
+				<div class="flex ">
+					<div style="width: {rowGuideWidth}px" />
+					{#each state[0] as cell}
 						{#if cell.col === 0}
-							<div class="h-full w-[2px] bg-gray-400" />
+							<div class="h-full w-[2px]" />
 						{/if}
 
-						<div
-							class="inline-flex h-6 w-6 items-center justify-center border-2"
-							class:bg-yellow-400={cell.hilight && cell.state !== true}
-							class:border-yellow-400={cell.hilight && cell.state === true}
-							class:bg-black={cell.state === true}
-							class:border-white={cell.state === undefined && !isSelected(cell, selected)}
-							class:bg-gray-200={cell.state === undefined}
-							class:border-red-800={isSelected(cell, selected)}
-							on:click|stopPropagation|preventDefault={() => clickCell(cell)}
-						>
-							{#if cell.state === false}
-								<div class="h-1 w-1 rounded-full bg-gray-800" />
-							{/if}
-						</div>
+						<Guide
+							valid={validatedCols[cell.col] === true}
+							invalid={validatedCols[cell.col] === false}
+							guides={guide.cols[cell.col]}
+							isCol={true}
+							{rowGuideWidth}
+							selected={cursor[1] === cell.col}
+							{tiny}
+						/>
 
 						{#if cell.col % 5 === 4}
-							<div class="h-full w-[2px] bg-gray-400" />
+							<div class="h-full w-[2px] " />
 						{/if}
 					{/each}
 				</div>
 
-				{#if rowNum % 5 === 4}
-					<div class="h-[2px] bg-gray-400" style="margin-left: {rowGuideWidth}px" />
-				{/if}
-			{/each}
-		</div>
-		<div>
-			<button class="rounded-md border-2 border-purple-800 bg-purple-200 p-2" on:click={validate}
-				>Validate</button
-			>
-		</div>
-	</div>
+				{#each state as row}
+					{@const rowNum = row[0].row}
+					{#if rowNum === 0}
+						<div class="h-[2px] bg-gray-400" style="margin-left: {rowGuideWidth}px" />
+					{/if}
 
-	<div>
-		<div><span class="font-mono">[space]</span> – Toggle cell [yes/no/undefined]</div>
-		<div><span class="font-mono">[backspace]</span> – Clear cell</div>
-		<div><span class="font-mono">z</span> – Hilight</div>
+					<div class="flex">
+						<!-- Row Guides -->
+						<Guide
+							valid={validatedRows[rowNum] === true}
+							invalid={validatedRows[rowNum] === false}
+							guides={guide.rows[rowNum]}
+							{rowGuideWidth}
+							selected={cursor[0] === rowNum}
+							{tiny}
+						/>
+
+						{#each row as cell}
+							{#if cell.col === 0}
+								<div class="h-full w-[2px] bg-gray-400" />
+							{/if}
+
+							<div
+								class=" inline-flex items-center justify-center border-white {cellClasses(
+									cell,
+									selected
+								)}"
+								class:h-6={!tiny}
+								class:w-6={!tiny}
+								class:h-4={tiny}
+								class:w-4={tiny}
+								class:bg-yellow-400={cell.hilight && cell.state !== true}
+								class:bg-black={cell.state === true}
+								class:bg-gray-200={cell.state === undefined}
+								on:mousedown={() => clickCell(cell)}
+								on:keyup|stopPropagation|preventDefault={() => clickCell(cell)}
+								on:mouseenter={(e) => onMouseEnterCell(e, cell)}
+							>
+								{#if cell.state === false}
+									<div class="h-1 w-1 rounded-full bg-gray-800" />
+								{/if}
+							</div>
+
+							{#if cell.col % 5 === 4}
+								<div class="h-full w-[2px] bg-gray-400" />
+							{/if}
+						{/each}
+					</div>
+
+					{#if rowNum % 5 === 4}
+						<div class="h-[2px] bg-gray-400" style="margin-left: {rowGuideWidth}px" />
+					{/if}
+				{/each}
+			</div>
+			<div
+				class="text-md flex flex-col items-start space-y-2 rounded-md bg-green-100 p-2"
+				style="margin-top: {colsGuideWidth}px"
+			>
+				<h1 class="font-bold">{guide.name}</h1>
+				<button class="rounded-md border-2 border-purple-800 bg-purple-200 p-1" on:click={validate}>
+					Validate
+				</button>
+				<button
+					class="rounded-md border-2 border-purple-800 bg-purple-200 p-1"
+					on:click={clearHighlights}
+				>
+					Clear highlights
+				</button>
+				<button class="rounded-md border-2 border-purple-800 bg-purple-200 p-1" on:click={clearAll}>
+					Start over
+				</button>
+			</div>
+		</div>
+
+		<div style="margin-left: {rowGuideWidth}px">
+			<div><span class="font-mono">[space]</span> – Toggle cell [yes/no/undefined]</div>
+			<div><span class="font-mono">[backspace]</span> – Clear cell</div>
+			<div><span class="font-mono">z</span> – Hilight</div>
+		</div>
 	</div>
 </div>
