@@ -115,8 +115,6 @@
 			}
 		}
 
-		console.log(asCols);
-
 		validatedCols = asCols.map((col, idx) => validateRow(guide.cols[idx], col));
 	};
 
@@ -130,14 +128,11 @@
 		for (let cell of cells) {
 			if (cell.state === true) {
 				current++;
-			} else if (cell.state === false) {
+			} else if (cell.state === false || cell.state == undefined) {
 				if (current > 0) {
 					groups.push(current);
 				}
 				current = 0;
-			} else {
-				// not entierely filled in
-				return false;
 			}
 		}
 		// last
@@ -195,7 +190,21 @@
 				return;
 		}
 
-		selected = [clamp(0, rows, selected[0] + dy), clamp(0, cols, selected[1] + dx)];
+		let y = selected[0] + dy;
+		if (y < 0) {
+			y = rows - 1;
+		} else if (y >= rows) {
+			y = 0;
+		}
+
+		let x = selected[1] + dx;
+		if (x < 0) {
+			x = cols - 1;
+		} else if (x >= cols) {
+			x = 0;
+		}
+
+		selected = [y, x];
 
 		e.preventDefault();
 		e.stopPropagation();
