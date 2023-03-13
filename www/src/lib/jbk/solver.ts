@@ -1,3 +1,5 @@
+import { gu } from "date-fns/locale";
+
 export type Cell = {
   state: boolean | undefined;
   hilight?: boolean;
@@ -62,6 +64,7 @@ export const solveOverlaps = (
       cells[idx].state = true;
     }
   }
+
   return cells;
 };
 
@@ -147,28 +150,210 @@ export const solveMinimumEdge = (
   return cells;
 };
 
+type Region = { start: number; end: number; hasTrue: boolean };
+
+const detectRegions = (cells: Cell[]): Region[] => {
+  let regionStart = 0;
+  let regionHasTrue = false;
+
+  const regions: Region[] = [];
+
+  for (const [idx, c] of cells.entries()) {
+    if (c.state === true || c.state === undefined) {
+      if (regionStart === -1) {
+        regionStart = idx;
+      }
+    }
+
+    if (c.state === true) {
+      regionHasTrue = true;
+    }
+
+    if (c.state === false) {
+      if (regionStart > -1) {
+        regions.push({
+          start: regionStart,
+          hasTrue: regionHasTrue,
+          end: idx - 1,
+        });
+      }
+      regionStart = -1;
+      regionHasTrue = false;
+    }
+  }
+  if (regionStart > -1) {
+    regions.push({
+      start: regionStart,
+      hasTrue: regionHasTrue,
+      end: cells.length - 1,
+    });
+  }
+  return regions;
+};
+
 export const solveOutOfReach = (
   guide: number[],
   cells: Cell[],
 ): Cell[] => {
-  let first: number | undefined;
+  const regions = detectRegions(cells);
+  const regionsWithTrue = regions.filter((r) => r.hasTrue);
+  const regionsWithFalse = regions.filter((r) => !r.hasTrue);
 
-  // TODO: support for more then 1 guides
-  if (guide.length === 1) {
-    for (const [idx, c] of cells.entries()) {
-      if (first === undefined && c.state === true) {
-        first = idx;
+  if (regionsWithTrue.length === guide.length) {
+    // fill all non-true regions with false
+    for (const r of regionsWithFalse) {
+      for (let idx = r.start; idx < r.end; idx++) {
+        cells[idx].state = false;
       }
     }
 
-    const g = guide[0];
+    for (const [idx, r] of regionsWithTrue.entries()) {
+      let first = -1;
+      let last = -1;
+      for (let idx = r.start; idx <= r.end; idx++) {
+        if (cells[idx].state === true) {
+          if (first === -1) {
+            first = idx;
+          }
+          last = idx;
+        }
+      }
 
-    for (const [idx] of cells.entries()) {
-      if (first !== undefined) {
-        if (idx <= (first - g)) {
+      // fill between
+      for (let idx = first; idx <= last; idx++) {
+        cells[idx].state = true;
+      }
+
+      // fill false where out of reach
+      const len = last - first + 1;
+      const range = guide[idx] - len;
+
+      for (let idx = r.start; idx <= r.end; idx++) {
+        if (idx < first - range) {
+          cells[idx].state = false;
+        }
+        if (idx > last + range) {
           cells[idx].state = false;
         }
       }
+    }
+  }
+
+  return cells;
+};
+
+const min = (...nums: number[]): number => {
+  let r = nums[0];
+  for (const n of nums) {
+    if (n < r) {
+      r = n;
+    }
+  }
+  return r;
+};
+
+const max = (...nums: number[]): number => {
+  let r = nums[0];
+  for (const n of nums) {
+    if (n > r) {
+      r = n;
+    }
+  }
+  return r;
+};
+
+const blockLength = (cells: Cell[], idx: number): number => {
+  if (cells[idx].state !== true) {
+    return 0;
+  }
+
+  let start = idx;
+
+  while (cells[start - 1] && cells[start - 1].state === true) {
+    start--;
+  }
+
+  let end = idx;
+
+  while (cells[end + 1] && cells[end + 1].state === true) {
+    end++;
+  }
+
+  return end - start + 1;
+};
+
+export const solveOutOfReachWithSlidingStarts = (
+  guide: number[],
+  cells: Cell[],
+): Cell[] => {
+  const firstPossibleStarts = [];
+
+  let idx = 0;
+  for (const [guideIdx, g] of guide.entries()) {
+    firstPossibleStarts.push(idx);
+    idx += g;
+    for (; cells[idx] && cells[idx].state === true; idx++) {
+      // x
+    }
+    idx++;
+
+    // lookahead: if the idx cell is a part of a group thats
+    // longer than the next guide, move ahead..
+
+    if (cells[idx] && cells[idx].state === true) {
+      if (blockLength(cells, idx) > guide[guideIdx + 1]) {
+        // x
+        // idx +=
+        for (; cells[idx] && cells[idx].state === true; idx++) {
+          // x
+        }
+      }
+    }
+  }
+
+  // const debug = arrayEquals(guide, [5, 3, 4]);
+  const debug = arrayEquals(guide, [4, 2, 3]) ||
+    arrayEquals(guide, [4, 5]) ||
+    arrayEquals(guide, [4, 2, 4]) ||
+    arrayEquals(guide, [4, 14]) ||
+    arrayEquals(guide, [10, 3, 6]) ||
+    arrayEquals(guide, [3, 6, 3, 6, 6]);
+
+  let firstStart = -1;
+  let firstEnd = -1;
+  for (const [idx, c] of cells.entries()) {
+    if (c.state === true && firstStart === -1) {
+      firstStart = idx;
+    }
+    if (c.state !== true && firstEnd === -1 && firstStart > 0) {
+      firstEnd = idx - 1;
+      break;
+    }
+  }
+
+  if (
+    firstStart > -1 && firstEnd > -1 && firstStart < firstPossibleStarts[1]
+  ) {
+    const len = firstEnd - firstStart + 1;
+    const range = guide[0] - len;
+
+    const earliestPossibleFirst = max(firstStart - range, 0);
+    const latestPossibleEnd = min(firstEnd + range, cells.length - 1);
+
+    // before
+    for (let idx = 0; idx < earliestPossibleFirst; idx++) {
+      cells[idx].state = false;
+      cells[idx].hilight = true;
+    }
+
+    // after
+    for (
+      let idx = latestPossibleEnd + 1;
+      idx < firstPossibleStarts[1];
+      idx++
+    ) {
+      cells[idx].state = false;
+      cells[idx].hilight = true;
     }
   }
 
@@ -371,6 +556,29 @@ export const solveFirstNoFit = (
   return cells;
 };
 
+export const solveZero = (
+  guide: number[],
+  cells: Cell[],
+): Cell[] => {
+  if (arrayEquals(guide, [0])) {
+    for (const [idx] of cells.entries()) {
+      cells[idx].state = false;
+    }
+  }
+
+  return cells;
+};
+
+export const solveStartGuideTouching = (
+  guide: number[],
+  cells: Cell[],
+): Cell[] => {
+  if (cells[guide[0]] && cells[guide[0]].state === true) {
+    cells[0].state = false;
+  }
+  return cells;
+};
+
 type Trim = {
   guideStart: number;
   cellsStart: number;
@@ -396,13 +604,21 @@ export const solve = (
     { fn: solveOverlaps, reverse: false },
     { fn: solveEdegs, reverse: true },
     { fn: solveMinimumEdge, reverse: true },
-    { fn: solveOutOfReach, reverse: true },
+    { fn: solveOutOfReach, reverse: false },
     { fn: solveNextToBlocked, reverse: true },
     { fn: solveMaxLength, reverse: false },
     { fn: solveNoSpace, reverse: false },
     { fn: solveCompletedRow, reverse: true },
     { fn: solveFirstNoFit, reverse: true },
+    { fn: solveZero, reverse: true },
+    { fn: solveStartGuideTouching, reverse: true },
+    { fn: solveOutOfReachWithSlidingStarts, reverse: true },
   ];
+
+  type Updated = {
+    error: boolean;
+    count: number;
+  };
 
   const updateRowState = (
     name: string,
@@ -410,7 +626,9 @@ export const solve = (
     s: Cell[],
     trim: Trim,
     reversed = false,
-  ) => {
+  ): Updated => {
+    let count = 0;
+
     for (const [idx, v] of s.entries()) {
       let c = idx + trim.cellsStart;
       if (reversed) {
@@ -423,11 +641,15 @@ export const solve = (
           state[r][c].state !== undefined
         ) {
           console.error(
-            `${name} changed [${r}, ${c}] from ${
+            `${name} row=${r} changed [${r}, ${c}] from ${
               state[r][c].state
             } to ${v.state}`,
           );
           state[r][c].hilight = true;
+          return { error: true, count: 0 };
+        }
+        if (state[r][c].state === undefined) {
+          count++;
         }
         state[r][c].state = v.state;
       }
@@ -438,6 +660,8 @@ export const solve = (
         state[r][c].hilight2 = true;
       }
     }
+
+    return { error: false, count };
   };
 
   const updateColState = (
@@ -446,7 +670,8 @@ export const solve = (
     s: Cell[],
     trim: Trim,
     reversed = false,
-  ) => {
+  ): Updated => {
+    let count = 0;
     for (const [idx, v] of s.entries()) {
       let r = idx + trim.cellsStart;
       if (reversed) {
@@ -456,11 +681,15 @@ export const solve = (
       if (v.state === true || v.state === false) {
         if (state[r][c].state !== v.state && state[r][c].state !== undefined) {
           console.error(
-            `${name} changed [${r}, ${c}] from ${
+            `${name} col=${c} changed [${r}, ${c}] from ${
               state[r][c].state
             } to ${v.state}`,
           );
           state[r][c].hilight = true;
+          return { error: true, count: 0 };
+        }
+        if (state[r][c].state === undefined) {
+          count++;
         }
         state[r][c].state = v.state;
       }
@@ -472,6 +701,7 @@ export const solve = (
         state[r][c].hilight2 = true;
       }
     }
+    return { error: false, count };
   };
 
   const copyCells = (cells: Cell[]): Cell[] => {
@@ -490,9 +720,10 @@ export const solve = (
     return res;
   };
 
-  // solve 10 times?
-  for (let it = 0; it < 10; it++) {
+  for (let it = 0; it < 100; it++) {
     console.log("~~ITERATION~~");
+
+    let updates = 0;
 
     // reset hilights
     for (let r = 0; r < guideRows.length; r++) {
@@ -514,7 +745,11 @@ export const solve = (
             guide.slice(trim.guideStart),
             cells.slice(trim.cellsStart),
           );
-          updateRowState(fn.fn.name, r, s, trim);
+          const { error, count } = updateRowState(fn.fn.name, r, s, trim);
+          if (error) {
+            return state;
+          }
+          updates += count;
         }
 
         if (fn.reverse) {
@@ -527,7 +762,17 @@ export const solve = (
               reversedGuide.slice(trim.guideStart),
               reversedCells.slice(trim.cellsStart),
             );
-            updateRowState(fn.fn.name, r, copyCells(s2), trim, true);
+            const { error, count } = updateRowState(
+              fn.fn.name,
+              r,
+              copyCells(s2),
+              trim,
+              true,
+            );
+            if (error) {
+              return state;
+            }
+            updates += count;
           }
         }
       }
@@ -545,7 +790,11 @@ export const solve = (
             guide.slice(trim.guideStart),
             cells.slice(trim.cellsStart),
           );
-          updateColState(fn.fn.name, c, s, trim);
+          const { error, count } = updateColState(fn.fn.name, c, s, trim);
+          if (error) {
+            return state;
+          }
+          updates += count;
         }
 
         if (fn.reverse) {
@@ -558,11 +807,27 @@ export const solve = (
               reversedGuide.slice(trim.guideStart),
               reversedCells.slice(trim.cellsStart),
             );
-            updateColState(fn.fn.name, c, copyCells(s2), trim, true);
+            const { error, count } = updateColState(
+              fn.fn.name,
+              c,
+              copyCells(s2),
+              trim,
+              true,
+            );
+            if (error) {
+              return state;
+            }
+            updates += count;
           }
         }
       }
     }
+
+    if (updates === 0) {
+      console.log(`No changes after ${updates} iterations`);
+      break;
+    }
+    console.log(updates);
   }
 
   return state;
