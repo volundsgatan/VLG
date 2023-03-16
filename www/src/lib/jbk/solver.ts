@@ -4,7 +4,7 @@ export type Cell = {
   hilight2?: boolean;
 };
 
-export const solveOverlaps = (
+export const solveOverlapsBasic = (
   guide: number[],
   cells: Cell[],
 ): Cell[] => {
@@ -354,39 +354,11 @@ export type GuideRange = Range & {
   guideVal: number;
 };
 
-const simpleFirstPossibleStarts = (
-  guide: number[],
-  cells: Cell[],
-): number[] => {
-  const firstPossibleStarts: number[] = [];
-
-  let idx = 0;
-  for (const [guideIdx, g] of guide.entries()) {
-    firstPossibleStarts.push(idx);
-    // idx += g;
-    // for (; cells[idx] && cells[idx].state === true; idx++) {
-    //   // x
-    // }
-    // idx++;
-    // lookahead: if the idx cell is a part of a group thats
-    // longer than the next guide, move ahead..
-    // if (cells[idx] && cells[idx].state === true) {
-    //   if (blockLength(cells, idx) > guide[guideIdx + 1]) {
-    //     // x
-    //     // idx +=
-    //     for (; cells[idx] && cells[idx].state === true; idx++) {
-    //       // x
-    //     }
-    //   }
-    // }
-  }
-
-  return firstPossibleStarts;
-};
-
 const isDebug = (guide: number[]): boolean => {
-  return arrayEquals(guide, [1, 6, 1, 1, 1, 1, 3, 2]) ||
-    arrayEquals(guide, [1, 10, 4]) ||
+  // rrayEquals(guide, [1, 6, 1, 1, 1, 1, 3, 2]) ||
+  // arrayEquals(guide, [1, 10, 4]) ||
+  // arrayEquals(guide, [4, 5, 5]) ||
+  return arrayEquals(guide, [3, 6, 3, 6, 6]) ||
     false;
   // arrayEquals(guide, [1, 10, 4]) ||
   // arrayEquals(guide, [1, 10, 4]);
@@ -400,32 +372,16 @@ export const getGuidePossibleRangesOneDirection = (
   cells: Cell[],
 ): GuideRange[] => {
   const groups = findGroups(cells);
-  const firstPossibleStarts = simpleFirstPossibleStarts(guide, cells);
   const guidePossibleRanges: GuideRange[] = [];
 
   const debug = isDebug(guide);
 
   for (const [idx, guideVal] of guide.entries()) {
-    if (debug) {
-      console.log("~~~ GUIDEVAL ~~~ ", idx, guideVal);
-    }
-
-    /// let start = firstPossibleStarts[idx];
-
     // adjust based on previous numbers, and it's own first possible basic start
     let start = max(
-      firstPossibleStarts[idx],
+      0,
       ...guidePossibleRanges.map((r) => r.start + r.guideVal + 1),
     );
-
-    // if (debug) {
-    //   const exist = guidePossibleRanges.map((r) => r.start + r.guideVal + 1);
-    //   console.log({ guideVal, start, exist });
-    // }
-
-    if (debug) {
-      console.log({ guideVal, start });
-    }
 
     // if guide does not fit after start, push start forwards
     // can not contain any blocked cells within guideSize cells
@@ -602,6 +558,11 @@ export const getGuidePossibleRanges = (
     }
   }
 
+  // set len of all ranges
+  for (const [idx, guide] of combined.entries()) {
+    combined[idx].len = guide.end - guide.start + 1;
+  }
+
   return combined;
 };
 
@@ -648,8 +609,8 @@ export const solveOutOfReachWithSlidingStarts = (
   if (debug) {
     console.log({ guidePossibleRanges });
     for (const r of guidePossibleRanges) {
-      cells[r.start].hilight = true;
-      cells[r.end].hilight2 = true;
+      // cells[r.start].hilight = true;
+      // cells[r.end].hilight = true;
     }
   }
 
@@ -684,11 +645,11 @@ export const solveOutOfReachWithSlidingStarts = (
       // fill len
       // cells[start].hilight = true;
       for (let idx = start; idx < start + guideLen; idx++) {
-        // cells[idx].state = true;
+        cells[idx].state = true;
       }
       // stop
       if (cells[start + guideLen]) {
-        // cells[start + guideLen].state = false;
+        cells[start + guideLen].state = false;
       }
     }
 
@@ -696,41 +657,13 @@ export const solveOutOfReachWithSlidingStarts = (
     if (!cells[end + 1] || cells[end + 1].state === false) {
       // fill len
       for (let idx = end; idx > end - guideLen; idx--) {
-        // cells[idx].state = true;
+        cells[idx].state = true;
       }
       // stop
       if (cells[end - guideLen]) {
-        // cells[end - guideLen].state = false;
+        cells[end - guideLen].state = false;
       }
     }
-    // const range = guidePossibleRanges[guideIdx];
-
-    /*if (containsTrueWithinN(cells, range.start, range.guideVal)) {
-      // find first true
-      let start = -1;
-      for (let idx = range.start;; idx++) {
-        if (cells[idx].state === true) {
-          start = idx;
-          break;
-        }
-      }
-      // cells[start].hilight2 = true;
-      const fillLen = range.guideVal - (start - range.start);
-
-      for (let offset = 0; offset < fillLen; offset++) {
-        if (debug) {
-          // console.log("waaaah", { guide });
-          cells[start + offset].hilight2 = true;
-        }
-        // if (cells[start + offset].hilight2 === false) {
-        //console.log("waaaaah", { guide });
-        // }
-        // else cells[start + offset].hilight = true;
-        // cells[start + offset].state = true;
-      }
-    }*/
-
-    //
   }
 
   return cells;
@@ -835,29 +768,30 @@ export const solveMaxLength = (
   guide: number[],
   cells: Cell[],
 ): Cell[] => {
-  let max = guide[0];
-  for (const g of guide) {
-    if (g > max) {
-      max = g;
-    }
-  }
+  const guideRanges = getGuidePossibleRanges(guide, cells);
+  const groups = findGroups(cells);
+  const debug = isDebug(guide);
 
-  let count = 0;
-  for (const [idx, c] of cells.entries()) {
-    if (c.state === true) {
-      count++;
-      if (count === max) {
-        // mark start and end
-        if (cells[idx + 1]) {
-          cells[idx + 1].state = false;
-        }
-        if (cells[idx - max]) {
-          cells[idx - max].state = false;
-        }
-      }
+  for (const g of groups) {
+    // all ranges that overlap with this group
+    const overlappingGuideVal = guideRanges.filter((r) => {
+      return r.start <= g.start && r.end >= g.end;
+    }).map((g) => g.guideVal || 0);
+
+    const maxLen = max(...overlappingGuideVal);
+
+    if (debug) {
+      console.log("maxLen", { grplen: g.len, maxLen });
     }
-    if (c.state === undefined || c.state === false) {
-      count = 0;
+
+    if (g.len && g.len === maxLen) {
+      // is done, wrap with edges
+      if (cells[g.start - 1]) {
+        cells[g.start - 1].state = false;
+      }
+      if (cells[g.end + 1]) {
+        cells[g.end + 1].state = false;
+      }
     }
   }
 
@@ -955,6 +889,37 @@ export const solveStartGuideTouching = (
   return cells;
 };
 
+const solveOverlapsSlidingRanges = (
+  guide: number[],
+  cells: Cell[],
+): Cell[] => {
+  // guide ranges that doesn't overlap with other guide ranges
+  const ranges = getGuidePossibleRanges(guide, cells);
+
+  for (const [idx, r] of ranges.entries()) {
+    const overlapping = ranges.filter((other, otherIdx) => {
+      return other.start <= r.end && other.end >= r.start && idx !== otherIdx;
+    });
+
+    if (overlapping.length > 0) {
+      continue;
+    }
+
+    const end = r.start + r.guideVal - 1;
+    const start = r.end - r.guideVal + 1;
+
+    if (end >= start) {
+      for (let i = start; i <= end; i++) {
+        if (cells[i]) {
+          cells[i].state = true;
+        }
+      }
+    }
+  }
+
+  return cells;
+};
+
 const copyCells = (cells: Cell[]): Cell[] => {
   const res: Cell[] = [];
   for (const c of cells) {
@@ -993,18 +958,19 @@ export const solve = (
   }
 
   const funcs = [
-    { fn: solveOverlaps, reverse: false },
-    { fn: solveEdegs, reverse: true },
-    { fn: solveMinimumEdge, reverse: true },
+    { fn: solveOverlapsBasic, reverse: false },
+    // { fn: solveEdegs, reverse: true },
+    // { fn: solveMinimumEdge, reverse: true },
     { fn: solveOutOfReach, reverse: false },
-    { fn: solveNextToBlocked, reverse: true },
+    //{ fn: solveNextToBlocked, reverse: true },
     { fn: solveMaxLength, reverse: false },
-    { fn: solveNoSpace, reverse: false },
+    // { fn: solveNoSpace, reverse: false },
     { fn: solveCompletedRow, reverse: true },
     { fn: solveFirstNoFit, reverse: true },
     { fn: solveZero, reverse: true },
     { fn: solveStartGuideTouching, reverse: true },
-    { fn: solveOutOfReachWithSlidingStarts, reverse: false },
+    { fn: solveOutOfReachWithSlidingStarts, reverse: true },
+    { fn: solveOverlapsSlidingRanges, reverse: true },
   ];
 
   type Updated = {

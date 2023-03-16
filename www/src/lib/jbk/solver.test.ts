@@ -7,9 +7,7 @@ import {
   solveEdegs,
   solveMinimumEdge,
   solveNextToBlocked,
-  solveNoSpace,
-  solveOutOfReach,
-  solveOverlaps,
+  solveOverlapsBasic,
   trimLeft,
 } from "./solver";
 
@@ -145,39 +143,7 @@ describe("solver", () => {
     expect(res).toStrictEqual(expected);
   });
 
-  /*test("solveOutOfReach", () => {
-    const guide = [3];
-    const cells: Cell[] = Array(15);
-
-    for (let i = 0; i < 15; i++) {
-      cells[i] = { state: undefined };
-    }
-    cells[8].state = true;
-
-    const res = solveOutOfReach(guide, cells);
-
-    const expected: Cell[] = [
-      { state: false },
-      { state: false },
-      { state: false },
-      { state: false },
-      { state: false },
-      { state: false },
-      { state: undefined },
-      { state: undefined },
-      { state: true },
-      { state: undefined },
-      { state: undefined },
-      { state: undefined },
-      { state: undefined },
-      { state: undefined },
-      { state: undefined },
-    ];
-
-    expect(res).toStrictEqual(expected);
-  });*/
-
-  test("solveOverlaps", () => {
+  test("solveOverlapsBasic", () => {
     const guide = [10];
     const cells: Cell[] = Array(15);
 
@@ -185,7 +151,7 @@ describe("solver", () => {
       cells[i] = { state: undefined };
     }
 
-    const res = solveOverlaps(guide, cells);
+    const res = solveOverlapsBasic(guide, cells);
 
     const expected: Cell[] = [
       { state: undefined },
@@ -210,7 +176,7 @@ describe("solver", () => {
     expect(res).toStrictEqual(expected);
   });
 
-  test("solveOverlaps/withExisting", () => {
+  test("solveOverlapsBasic/withExisting", () => {
     const guide = [1, 6, 1];
 
     const cells: Cell[] = [
@@ -231,7 +197,7 @@ describe("solver", () => {
       { state: false },
     ];
 
-    const res = solveOverlaps(guide, cells);
+    const res = solveOverlapsBasic(guide, cells);
 
     const expected: Cell[] = [
       { state: false },
@@ -443,6 +409,7 @@ describe("solver", () => {
         end: 5,
         guideIdx: 0,
         guideVal: 1,
+        len: 6,
       },
 
       {
@@ -450,6 +417,7 @@ describe("solver", () => {
         end: 16, // 34 - 4 - 1
         guideIdx: 1,
         guideVal: 10,
+        len: 10,
       },
 
       {
@@ -457,6 +425,7 @@ describe("solver", () => {
         end: 34,
         guideIdx: 2,
         guideVal: 4,
+        len: 17,
       },
     ];
 
@@ -493,6 +462,7 @@ describe("solver", () => {
         end: 5,
         guideIdx: 0,
         guideVal: 1,
+        len: 6,
       },
 
       {
@@ -500,6 +470,7 @@ describe("solver", () => {
         end: 16, // 34 - 4 - 1
         guideIdx: 1,
         guideVal: 10,
+        len: 10,
       },
 
       {
@@ -507,6 +478,7 @@ describe("solver", () => {
         end: 34,
         guideIdx: 2,
         guideVal: 4,
+        len: 17,
       },
     ];
 
