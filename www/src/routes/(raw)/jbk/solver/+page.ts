@@ -12,6 +12,7 @@ export const load: PageLoad = () => {
   // const id = "slippery-conditions";
   // const id = "candle";
   const id = "mr-cool";
+  // const id = "exported";
   const guide = guides.find((g) => g.id === id);
 
   if (!guide) {
