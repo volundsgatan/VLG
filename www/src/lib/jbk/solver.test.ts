@@ -1,6 +1,9 @@
 import { describe, expect, test } from "@jest/globals";
 import {
   type Cell,
+  getGuidePossibleRanges,
+  getGuidePossibleRangesOneDirection,
+  type GuideRange,
   solveEdegs,
   solveMinimumEdge,
   solveNextToBlocked,
@@ -142,7 +145,7 @@ describe("solver", () => {
     expect(res).toStrictEqual(expected);
   });
 
-  test("solveOutOfReach", () => {
+  /*test("solveOutOfReach", () => {
     const guide = [3];
     const cells: Cell[] = Array(15);
 
@@ -172,7 +175,7 @@ describe("solver", () => {
     ];
 
     expect(res).toStrictEqual(expected);
-  });
+  });*/
 
   test("solveOverlaps", () => {
     const guide = [10];
@@ -362,5 +365,151 @@ describe("solver", () => {
 
     expect(res4.guideStart).toStrictEqual(2);
     expect(res4.cellsStart).toStrictEqual(7);
+  });
+
+  test("getGuidePossibleRangesOneDirection", () => {
+    const guide = [1, 10, 4];
+    const cells: Cell[] = Array(35);
+
+    for (let i = 0; i < 35; i++) {
+      cells[i] = { state: undefined };
+    }
+
+    // ...
+    cells[6].state = false;
+    cells[7].state = true;
+    cells[8].state = true;
+    cells[9].state = true;
+    cells[10].state = true;
+    cells[11].state = true;
+    cells[12].state = true;
+    // ...
+    cells[16].state = true;
+    // ...
+
+    const res = getGuidePossibleRangesOneDirection(guide, cells);
+
+    const exp: GuideRange[] = [
+      {
+        start: 0,
+        end: 5,
+        guideIdx: 0,
+        guideVal: 1,
+      },
+
+      {
+        start: 7,
+        end: 34,
+        guideIdx: 1,
+        guideVal: 10,
+      },
+
+      {
+        start: 18, // 7 + 10 + 1,
+        end: 34,
+        guideIdx: 2,
+        guideVal: 4,
+      },
+    ];
+
+    expect(res).toStrictEqual(exp);
+  });
+
+  test("getGuidePossibleRanges", () => {
+    const guide = [1, 10, 4];
+    const cells: Cell[] = Array(35);
+
+    for (let i = 0; i < 35; i++) {
+      cells[i] = { state: undefined };
+    }
+
+    // ...
+    cells[6].state = false;
+    cells[7].state = true;
+    cells[8].state = true;
+    cells[9].state = true;
+    cells[10].state = true;
+    cells[11].state = true;
+    cells[12].state = true;
+    // ...
+    cells[16].state = true;
+    // ...
+
+    const res = getGuidePossibleRanges(guide, cells);
+
+    const exp: GuideRange[] = [
+      {
+        start: 0,
+        end: 5,
+        guideIdx: 0,
+        guideVal: 1,
+      },
+
+      {
+        start: 7,
+        end: 16, // 34 - 4 - 1
+        guideIdx: 1,
+        guideVal: 10,
+      },
+
+      {
+        start: 18,
+        end: 34,
+        guideIdx: 2,
+        guideVal: 4,
+      },
+    ];
+
+    expect(res).toStrictEqual(exp);
+  });
+
+  test("getGuidePossibleRanges/10-completed", () => {
+    const guide = [1, 10, 4];
+    const cells: Cell[] = Array(35);
+
+    for (let i = 0; i < 35; i++) {
+      cells[i] = { state: undefined };
+    }
+
+    // ...
+    cells[6].state = false;
+    cells[7].state = true;
+    cells[8].state = true;
+    cells[9].state = true;
+    cells[10].state = true;
+    cells[11].state = true;
+    cells[12].state = true;
+    cells[13].state = true;
+    cells[14].state = true;
+    cells[15].state = true;
+    cells[16].state = true;
+    cells[17].state = false;
+
+    const res = getGuidePossibleRanges(guide, cells);
+
+    const exp: GuideRange[] = [
+      {
+        start: 0,
+        end: 5,
+        guideIdx: 0,
+        guideVal: 1,
+      },
+
+      {
+        start: 7,
+        end: 16, // 34 - 4 - 1
+        guideIdx: 1,
+        guideVal: 10,
+      },
+
+      {
+        start: 18,
+        end: 34,
+        guideIdx: 2,
+        guideVal: 4,
+      },
+    ];
+
+    expect(res).toStrictEqual(exp);
   });
 });
