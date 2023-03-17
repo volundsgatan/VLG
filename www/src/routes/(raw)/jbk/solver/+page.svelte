@@ -42,64 +42,24 @@
 		state.push(makeRow(row));
 	}
 
-	const validate = () => {
-		// validate rows
-		validatedRows = state.map((row, idx) => validateRow(guide.rows[idx], row));
+	// let solved: SolverCell[][] = [];
+	let maxUsedIterations = 1;
+	let stopAfterIteration = 0;
 
-		// rotate
-		const asCols: Cell[][] = [];
-		for (let r = 0; r < rows; r++) {
-			for (let c = 0; c < cols; c++) {
-				if (asCols[c] === undefined) {
-					asCols.push([]);
-				}
-				asCols[c].push(state[r][c]);
-			}
-		}
-
-		validatedCols = asCols.map((col, idx) => validateRow(guide.cols[idx], col));
+	const changeIteration = (delta: number) => {
+		console.log('xx');
+		stopAfterIteration = stopAfterIteration + delta;
+		runSolver(stopAfterIteration);
 	};
 
-	let validatedRows: boolean[] = [];
-	let validatedCols: boolean[] = [];
+	const runSolver = (stopAfter: number) => {
+		const res = solve(guide.rows, guide.cols, stopAfter, true);
+		const solved = res.cells;
 
-	const validateRow = (guide: number[], cells: Cell[]): boolean => {
-		let current = 0;
-		const groups = [];
-
-		for (let cell of cells) {
-			if (cell.state === true) {
-				current++;
-			} else if (cell.state === false || cell.state == undefined) {
-				if (current > 0) {
-					groups.push(current);
-				}
-				current = 0;
-			}
+		// LOL magic number
+		if (stopAfter === 1000) {
+			maxUsedIterations = res.iterations;
 		}
-		// last
-		if (current > 0) {
-			groups.push(current);
-		}
-
-		// compare guide with groups
-		if (guide.length !== groups.length) {
-			return false;
-		}
-
-		for (let i = 0; i < guide.length; i++) {
-			if (guide[i] !== groups[i]) {
-				return false;
-			}
-		}
-
-		return true;
-	};
-
-	let solved: SolverCell[][] = [];
-
-	onMount(() => {
-		solved = solve(guide.rows, guide.cols);
 
 		for (let r = 0; r < rows; r++) {
 			for (let c = 0; c < cols; c++) {
@@ -108,10 +68,42 @@
 				state[r][c].hilight2 = solved[r][c].hilight2 === true;
 			}
 		}
+	};
+
+	onMount(() => {
+		runSolver(1000);
 	});
 </script>
 
 <div class="flex min-h-full flex-col items-center space-y-4 bg-white p-2 text-black">
+	<div>
+		{#if stopAfterIteration > 0}
+			Iteration {stopAfterIteration} / {maxUsedIterations}
+			<button
+				on:click={() => changeIteration(-1)}
+				type="button"
+				class="rounded bg-white py-1 px-2 text-xs font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+			>
+				-
+			</button>
+			<button
+				on:click={() => changeIteration(1)}
+				type="button"
+				class="rounded bg-white py-1 px-2 text-xs font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+			>
+				+
+			</button>
+		{:else}
+			<button
+				on:click={() => changeIteration(1)}
+				type="button"
+				class="rounded bg-white py-1 px-2 text-xs font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+			>
+				Show step by step
+			</button>
+		{/if}
+	</div>
+
 	<div>
 		<div class="flex justify-center space-x-4">
 			<div class="flex flex-col">
@@ -124,8 +116,6 @@
 						{/if}
 
 						<Guide
-							valid={validatedCols[cell.col] === true}
-							invalid={validatedCols[cell.col] === false}
 							guides={guide.cols[cell.col]}
 							isCol={true}
 							{rowGuideWidth}
@@ -147,14 +137,7 @@
 
 					<div class="flex">
 						<!-- Row Guides -->
-						<Guide
-							valid={validatedRows[rowNum] === true}
-							invalid={validatedRows[rowNum] === false}
-							guides={guide.rows[rowNum]}
-							{rowGuideWidth}
-							selected={false}
-							{tiny}
-						/>
+						<Guide guides={guide.rows[rowNum]} {rowGuideWidth} selected={false} {tiny} />
 
 						{#each row as cell}
 							{#if cell.col === 0}

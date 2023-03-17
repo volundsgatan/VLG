@@ -450,7 +450,6 @@ export const getGuidePossibleRangesOneDirection = (
       for (const g of groups) {
         if (g.len && g.start >= start) {
           if (cumSum + g.len > guideVal) {
-            // console.log("getting too big", cumSum + g.len, guideVal);
             end = g.start - 1;
             break;
           }
@@ -602,17 +601,7 @@ export const solveOutOfReachWithSlidingStarts = (
     return cells;
   }
 
-  const debug = isDebug(guide);
-
   const guidePossibleRanges = getGuidePossibleRanges(guide, cells);
-
-  if (debug) {
-    console.log({ guidePossibleRanges });
-    for (const r of guidePossibleRanges) {
-      // cells[r.start].hilight = true;
-      // cells[r.end].hilight = true;
-    }
-  }
 
   const singleGuideGroups = detectSingleGuideGroups(
     groups,
@@ -770,7 +759,6 @@ export const solveMaxLength = (
 ): Cell[] => {
   const guideRanges = getGuidePossibleRanges(guide, cells);
   const groups = findGroups(cells);
-  const debug = isDebug(guide);
 
   for (const g of groups) {
     // all ranges that overlap with this group
@@ -779,10 +767,6 @@ export const solveMaxLength = (
     }).map((g) => g.guideVal || 0);
 
     const maxLen = max(...overlappingGuideVal);
-
-    if (debug) {
-      console.log("maxLen", { grplen: g.len, maxLen });
-    }
 
     if (g.len && g.len === maxLen) {
       // is done, wrap with edges
@@ -941,10 +925,17 @@ type Trim = {
   cellsStart: number;
 };
 
+type SolveResult = {
+  cells: Cell[][];
+  iterations: number;
+};
+
 export const solve = (
   guideRows: number[][],
   guideCols: number[][],
-): Cell[][] => {
+  maxIterations: number = 100,
+  highlightChanges: boolean = false,
+): SolveResult => {
   console.clear();
 
   const state: Cell[][] = [];
@@ -1008,6 +999,9 @@ export const solve = (
         }
         if (state[r][c].state === undefined) {
           count++;
+          if (highlightChanges) {
+            state[r][c].hilight = true;
+          }
         }
         state[r][c].state = v.state;
       }
@@ -1048,6 +1042,9 @@ export const solve = (
         }
         if (state[r][c].state === undefined) {
           count++;
+          if (highlightChanges) {
+            state[r][c].hilight = true;
+          }
         }
         state[r][c].state = v.state;
       }
@@ -1062,7 +1059,7 @@ export const solve = (
     return { error: false, count };
   };
 
-  for (let it = 0; it < 100; it++) {
+  for (let it = 0; it < maxIterations; it++) {
     console.log("~~ITERATION~~");
 
     let updates = 0;
@@ -1089,7 +1086,7 @@ export const solve = (
           );
           const { error, count } = updateRowState(fn.fn.name, r, s, trim);
           if (error) {
-            return state;
+            return { cells: state, iterations: it };
           }
           updates += count;
         }
@@ -1112,7 +1109,7 @@ export const solve = (
               true,
             );
             if (error) {
-              return state;
+              return { cells: state, iterations: it };
             }
             updates += count;
           }
@@ -1134,7 +1131,7 @@ export const solve = (
           );
           const { error, count } = updateColState(fn.fn.name, c, s, trim);
           if (error) {
-            return state;
+            return { cells: state, iterations: it };
           }
           updates += count;
         }
@@ -1157,7 +1154,7 @@ export const solve = (
               true,
             );
             if (error) {
-              return state;
+              return { cells: state, iterations: it };
             }
             updates += count;
           }
@@ -1167,10 +1164,11 @@ export const solve = (
 
     if (updates === 0) {
       console.log(`No changes after ${it} iterations`);
-      break;
+      return { cells: state, iterations: it };
+      // break;
     }
     console.log(updates);
   }
 
-  return state;
+  return { cells: state, iterations: -1 };
 };
