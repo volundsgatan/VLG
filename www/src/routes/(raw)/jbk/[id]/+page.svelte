@@ -383,7 +383,7 @@
 				{#each state as row}
 					{@const rowNum = row[0].row}
 					{#if rowNum === 0}
-						<div class="h-[2px] bg-gray-400" style="margin-left: {rowGuideWidth}px" />
+						<div class="h-[2px] bg-black" style="margin-left: {rowGuideWidth}px" />
 					{/if}
 
 					<div class="flex">
@@ -399,11 +399,11 @@
 
 						{#each row as cell}
 							{#if cell.col === 0}
-								<div class="h-full w-[2px] bg-gray-400" />
+								<div class="h-full w-[2px] bg-black" />
 							{/if}
 
 							<div
-								class=" inline-flex items-center justify-center border-white {cellClasses(
+								class="border-[1px] border-black/30 inline-flex items-center justify-center border-white {cellClasses(
 									cell,
 									selected
 								)}"
@@ -424,13 +424,13 @@
 							</div>
 
 							{#if cell.col % 5 === 4}
-								<div class="h-full w-[2px] bg-gray-400" />
+								<div class="h-full w-[2px] bg-black" />
 							{/if}
 						{/each}
 					</div>
 
 					{#if rowNum % 5 === 4}
-						<div class="h-[2px] bg-gray-400" style="margin-left: {rowGuideWidth}px" />
+						<div class="h-[2px] bg-black" style="margin-left: {rowGuideWidth}px" />
 					{/if}
 				{/each}
 			</div>
