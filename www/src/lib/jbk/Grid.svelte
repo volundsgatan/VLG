@@ -2,10 +2,12 @@
 	import { onMount } from 'svelte';
 	import Guide from '$lib/jbk/Guide.svelte';
 
-	export let guide: {
-		cols: number[][];
-		rows: number[][];
-	};
+	export let guide:
+		| {
+				cols: number[][];
+				rows: number[][];
+		  }
+		| undefined = undefined;
 	export let name: string;
 	export let id: string;
 	export let saveState = false;
@@ -13,9 +15,12 @@
 	export let showInstructions = false;
 	export let showSidebar = false;
 	export let mutable = false;
+	export let inputCols: number | undefined = undefined;
+	export let inputRows: number | undefined = undefined;
+	export let showGuide = false;
 
-	$: cols = guide?.cols.length;
-	$: rows = guide?.rows.length;
+	$: cols = inputCols || guide?.cols.length || 0;
+	$: rows = inputRows || guide?.rows.length || 0;
 
 	type Cell = {
 		row: number;
@@ -28,8 +33,8 @@
 	let state: Cell[][] = [];
 
 	$: tiny = cols >= 25 || rows >= 25;
-	$: widestRowGuide = guide.rows.map((r) => r.length).sort((a, b) => b - a)[0];
-	$: widestColGuide = guide.cols.map((r) => r.length).sort((a, b) => b - a)[0];
+	$: widestRowGuide = guide?.rows.map((r) => r.length).sort((a, b) => b - a)[0] || 0;
+	$: widestColGuide = guide?.cols.map((r) => r.length).sort((a, b) => b - a)[0] || 0;
 	$: rowGuideWidth = widestRowGuide * (tiny ? 16 : 24);
 	$: colsGuideWidth = widestColGuide * (tiny ? 16 : 24);
 
@@ -161,7 +166,13 @@
 		}
 
 		const cell = currentCell();
-		setCellHilight(cell, !cell.hilight);
+
+		for (const p of selected) {
+			// state[p[0]][p[1]].state = undefined;
+			state[p[0]][p[1]].hilight = !cell.hilight;
+		}
+
+		// setCellHilight(cell, !cell.hilight);
 	};
 
 	const clickCell = (cell: Cell) => {
@@ -419,30 +430,32 @@
 			<div class="flex justify-center space-x-4">
 				<div class="flex flex-col">
 					<!-- Column Guides -->
-					<div class="flex ">
-						<div style="width: {rowGuideWidth}px" />
-						{#if state[0]}
-							{#each state[0] as cell}
-								{#if cell.col === 0}
-									<div class="h-full w-[2px]" />
-								{/if}
+					{#if showGuide}
+						<div class="flex ">
+							<div style="width: {rowGuideWidth}px" />
+							{#if state[0]}
+								{#each state[0] as cell}
+									{#if cell.col === 0}
+										<div class="h-full w-[2px]" />
+									{/if}
 
-								<Guide
-									valid={validatedCols[cell.col] === true}
-									invalid={validatedCols[cell.col] === false}
-									guides={guide.cols[cell.col]}
-									isCol={true}
-									{rowGuideWidth}
-									selected={cursor[1] === cell.col}
-									{tiny}
-								/>
+									<Guide
+										valid={validatedCols[cell.col] === true}
+										invalid={validatedCols[cell.col] === false}
+										guides={guide.cols[cell.col]}
+										isCol={true}
+										{rowGuideWidth}
+										selected={cursor[1] === cell.col}
+										{tiny}
+									/>
 
-								{#if cell.col % 5 === 4}
-									<div class="h-full w-[2px] " />
-								{/if}
-							{/each}
-						{/if}
-					</div>
+									{#if cell.col % 5 === 4}
+										<div class="h-full w-[2px] " />
+									{/if}
+								{/each}
+							{/if}
+						</div>
+					{/if}
 
 					{#each state as row}
 						{@const rowNum = row[0].row}
@@ -451,15 +464,17 @@
 						{/if}
 
 						<div class="flex">
-							<!-- Row Guides -->
-							<Guide
-								valid={validatedRows[rowNum] === true}
-								invalid={validatedRows[rowNum] === false}
-								guides={guide.rows[rowNum]}
-								{rowGuideWidth}
-								selected={cursor[0] === rowNum}
-								{tiny}
-							/>
+							{#if showGuide}
+								<!-- Row Guides -->
+								<Guide
+									valid={validatedRows[rowNum] === true}
+									invalid={validatedRows[rowNum] === false}
+									guides={guide.rows[rowNum]}
+									{rowGuideWidth}
+									selected={cursor[0] === rowNum}
+									{tiny}
+								/>
+							{/if}
 
 							{#each row as cell}
 								{#if cell.col === 0}

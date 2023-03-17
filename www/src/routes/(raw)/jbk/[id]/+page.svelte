@@ -9,7 +9,7 @@
 	let { guide } = data;
 </script>
 
-<div class="flex min-h-full flex-col items-center space-y-4 bg-white p-2 text-black">
+<div class="flex min-h-full flex-col items-center space-y-8 bg-white p-2 text-black">
 	<Grid
 		{guide}
 		name={guide.name}
@@ -17,5 +17,8 @@
 		mutable={true}
 		showInstructions={true}
 		showSidebar={true}
+		showGuide={true}
 	/>
+
+	<div class="text-gray-400">Gjord med 🧠 av GW och EC</div>
 </div>

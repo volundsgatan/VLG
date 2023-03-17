@@ -4,6 +4,7 @@
 	import Guide from '$lib/jbk/Guide.svelte';
 	import type { _ } from '$env/static/private';
 	import Solver from '$lib/jbk/Solver.svelte';
+	import Grid from '$lib/jbk/Grid.svelte';
 
 	let cols = 20;
 	let rows = 20;
@@ -445,6 +446,8 @@
 				</div>
 			</div>
 		</div>
+
+		<Grid inputCols={cols} inputRows={rows} name="designer" id="designer" mutable={true} />
 
 		<Solver guide={guideFromDesign} />
 	</div>
