@@ -5,9 +5,6 @@
 	import type { _ } from '$env/static/private';
 	import Solver from '$lib/jbk/Solver.svelte';
 
-	// export let data: PageData;
-	// let { guide } = data;
-
 	let cols = 20;
 	let rows = 20;
 
@@ -451,6 +448,6 @@
 
 		<Solver guide={guideFromDesign} />
 	</div>
-	
+
 	<textarea cols="100" rows="10">{exportAsInput}</textarea>
 </div>

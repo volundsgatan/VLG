@@ -64,13 +64,6 @@
 		}
 	};
 
-	const setCurrentCell = (val: boolean | undefined) => {
-		const cell = currentCell();
-		cell.state = val;
-		state[cell.row][cell.col] = cell;
-		save();
-	};
-
 	const setCellHilight = (cell: Cell, hilight: boolean) => {
 		cell.hilight = hilight;
 		state[cell.row][cell.col] = cell;
@@ -91,10 +84,6 @@
 
 	const right = (p: Position): Position => {
 		return [p[0], p[1] + 1];
-	};
-
-	const isCursorAt = (cell: Cell, cursor: Position): boolean => {
-		return cell.row === cursor[0] && cell.col === cursor[1];
 	};
 
 	const isCellSelected = (cell: Cell, selected: Position[]): boolean => {
@@ -139,6 +128,16 @@
 		// set all selected to nextState
 		for (const p of selected) {
 			state[p[0]][p[1]].state = nextState;
+		}
+
+		save();
+	};
+
+	const clearSelected = () => {
+		// set all selected to nextState
+		for (const p of selected) {
+			state[p[0]][p[1]].state = undefined;
+			state[p[0]][p[1]].hilight = false;
 		}
 
 		save();
@@ -283,9 +282,7 @@
 		}
 
 		if (e.key === 'Backspace') {
-			setCurrentCell(undefined);
-			const cell = currentCell();
-			setCellHilight(cell, false);
+			clearSelected();
 			e.preventDefault();
 			e.stopPropagation();
 			return;
@@ -348,52 +345,6 @@
 		e.stopPropagation();
 	};
 
-	let exportAsInput = '';
-
-	const findGroupsLen = (cells: Cell[]): number[] => {
-		const res: number[] = [];
-
-		let start = -1;
-		for (const [idx, c] of cells.entries()) {
-			if (c.state === true && start === -1) {
-				start = idx;
-			}
-			if (c.state !== true && start > -1) {
-				res.push(idx - start);
-				start = -1;
-			}
-		}
-		if (start > -1) {
-			res.push(cells.length - start);
-		}
-
-		return res;
-	};
-
-	const onExport = () => {
-		// rotate
-		const asCols: Cell[][] = [];
-		for (let r = 0; r < rows; r++) {
-			for (let c = 0; c < cols; c++) {
-				if (asCols[c] === undefined) {
-					asCols.push([]);
-				}
-				asCols[c].push(state[r][c]);
-			}
-		}
-
-		exportAsInput = JSON.stringify(
-			{
-				name: 'exported',
-				id: 'exported',
-				rows: state.map((r) => findGroupsLen(r)).map((l) => (l.length === 0 ? [0] : l)),
-				cols: asCols.map((r) => findGroupsLen(r)).map((l) => (l.length === 0 ? [0] : l))
-			},
-			2,
-			4
-		);
-	};
-
 	onMount(() => {
 		restore();
 	});
@@ -402,8 +353,7 @@
 <svelte:window on:keydown={(e) => onWindowKeyDown(e)} />
 
 <div class="flex min-h-full flex-col items-center space-y-4 bg-white p-2 text-black">
-	<div>
-		<textarea cols="100" rows="10">{exportAsInput}</textarea>
+	<div class="flex flex-col space-y-4">
 		<div class="flex justify-center space-x-4">
 			<div class="flex flex-col">
 				<!-- Column Guides -->
@@ -501,9 +451,11 @@
 				<button class="rounded-md border-2 border-purple-800 bg-purple-200 p-1" on:click={clearAll}>
 					Start over
 				</button>
-				<button class="rounded-md border-2 border-purple-800 bg-purple-200 p-1" on:click={onExport}>
-					Export
-				</button>
+				<div>
+					<a class="text-black underline" href="https://sv.wikipedia.org/wiki/Japanskt_bildkryss">
+						Regler
+					</a>
+				</div>
 			</div>
 		</div>
 
