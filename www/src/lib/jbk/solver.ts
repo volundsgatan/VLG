@@ -535,7 +535,9 @@ export const getGuidePossibleRanges = (guide: number[], cells: Cell[]): GuideRan
 
 	const groups = findGroups(cells);
 
-	for (let it = 0; it < 10; it++) {
+	for (let it = 0; it < 100; it++) {
+		const preCombined = JSON.stringify(combined);
+
 		// if there are groups that are only within one guide, adjust that guide to the group (plus surrounding)
 		const singleGuideGroups = detectSingleGuideGroups(groups, combined, cells);
 
@@ -592,6 +594,12 @@ export const getGuidePossibleRanges = (guide: number[], cells: Cell[]): GuideRan
 		// set len of all ranges
 		for (const [idx, guide] of combined.entries()) {
 			combined[idx].len = guide.end - guide.start + 1;
+		}
+
+		// no changes
+		const postCombined = JSON.stringify(combined);
+		if (postCombined === preCombined) {
+			break;
 		}
 	}
 
