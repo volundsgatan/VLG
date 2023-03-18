@@ -17,7 +17,8 @@
 		col: number;
 		state?: boolean;
 		hilight: boolean;
-		hilight2: boolean;
+		hilightRed?: boolean;
+		hilightGreen?: boolean;
 	};
 
 	let state: Cell[][] = [];
@@ -29,8 +30,7 @@
 				row: row,
 				col: c,
 				state: undefined,
-				hilight: false,
-				hilight2: false
+				hilight: false
 			});
 		}
 		return col;
@@ -65,7 +65,8 @@
 			for (let c = 0; c < cols; c++) {
 				state[r][c].state = solved[r][c].state;
 				state[r][c].hilight = solved[r][c].hilight === true;
-				state[r][c].hilight2 = solved[r][c].hilight2 === true;
+				state[r][c].hilightGreen = solved[r][c].hilightGreen === true;
+				state[r][c].hilightRed = solved[r][c].hilightRed === true;
 			}
 		}
 
@@ -118,5 +119,5 @@
 		{/if}
 	</div>
 
-	<Grid {guide} withState={state} name="solver" id="solver" showGuide={true} />
+	<Grid {guide} withState={state} name="solver" id="solver" showGuide={true} mutable={true} />
 </div>

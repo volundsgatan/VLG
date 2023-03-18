@@ -1,27 +1,28 @@
-import type { PageLoad } from "./$types";
+import type { PageLoad } from './$types';
 
 export const prerender = false;
 
-import guides from "$lib/jbk/guides.json";
-import { redirect } from "@sveltejs/kit";
+import guides from '$lib/jbk/guides.json';
+import { redirect } from '@sveltejs/kit';
 
 export const load: PageLoad = () => {
-  const id = "och-smasha";
-  // const id = "nalle";
-  //const id = "med-langa-ben";
-  // const id = "slippery-conditions";
-  // const id = "candle";
-  // const id = "mr-cool";
-  // const id = "sötisblötis";
-  // const id = "JW";
-  //const id = "ubuntu";
-  const guide = guides.find((g) => g.id === id);
+	let id = '';
+	id = 'slippery-conditions';
+	id = 'med-langa-ben';
+	id = 'nalle';
+	// const id = "candle";
+	// const id = "sötisblötis";
+	// const id = "JW";
+	id = 'ubuntu';
+	id = 'mr-cool';
+	id = 'och-smasha';
+	const guide = guides.find((g) => g.id === id);
 
-  if (!guide) {
-    throw redirect(302, "/jbk");
-  }
+	if (!guide) {
+		throw redirect(302, '/jbk');
+	}
 
-  return {
-    guide: guide,
-  };
+	return {
+		guide: guide
+	};
 };

@@ -31,6 +31,8 @@
 		state?: boolean;
 
 		hilight: boolean;
+		hilightRed?: boolean;
+		hilightGreen?: boolean;
 	};
 
 	let state: Cell[][] = [];
@@ -538,6 +540,9 @@
 									class:w-6={!tiny}
 									class:h-4={tiny}
 									class:w-4={tiny}
+									class:border-red-800={cell.hilightRed}
+									class:border-green-800={cell.hilightGreen}
+									class:!border-4={cell.hilightRed || cell.hilightGreen}
 									class:bg-yellow-400={cell.hilight && cell.state !== true}
 									class:bg-black={cell.state === true}
 									class:bg-gray-200={cell.state === undefined}
