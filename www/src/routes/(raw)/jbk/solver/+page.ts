@@ -16,6 +16,7 @@ export const load: PageLoad = () => {
 	id = 'med-langa-ben';
 	id = 'slippery-conditions';
 	id = 'och-smasha';
+	id = 'skogens-konung';
 	const guide = guides.find((g) => g.id === id);
 
 	if (!guide) {

@@ -444,7 +444,6 @@ const moveStart = (
 
 		if (arrayEquals(guide, [1, 1, 3, 1])) {
 			const strictGroups = findStrictlySeparatedGroups(cells);
-			// console.log({ guideIdx, guideVal, strictGroups });
 			for (const strictGroup of strictGroups) {
 				const len = strictGroup.end - strictGroup.start + 1;
 				// if can not fit

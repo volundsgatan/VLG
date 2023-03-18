@@ -119,5 +119,5 @@
 		{/if}
 	</div>
 
-	<Grid {guide} withState={state} name="solver" id="solver" showGuide={true} mutable={true} />
+	<Grid {guide} withState={state} name="solver" id="solver" showGuide={true} mutable={false} />
 </div>
