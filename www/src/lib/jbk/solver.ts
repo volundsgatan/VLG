@@ -618,6 +618,16 @@ export const solveOutOfReachWithSlidingStarts = (guide: number[], cells: Cell[])
 
 	const singleGuideGroups = detectSingleGuideGroups(groups, guidePossibleRanges);
 
+	// Cells with no overlapping range
+	for (const [idx, c] of cells.entries()) {
+		const ranges = guidePossibleRanges.filter((r) => r.start <= idx && r.end >= idx);
+		if (ranges.length === 0) {
+			cells[idx].state = false;
+		}
+	}
+
+	// TODO: Is the thing below even used?
+
 	for (const [guideIdx, groups] of Object.entries(singleGuideGroups)) {
 		let start = groups[0].start;
 		let end = groups[0].end;
@@ -878,15 +888,9 @@ const solveOverlapsSlidingRanges = (guide: number[], cells: Cell[]): Cell[] => {
 		const start = r.end - r.guideVal + 1;
 
 		if (end >= start) {
-			if (isDebug(guide)) {
-				console.log({ overlapping, end, start });
-				console.log({ ranges });
-			}
-
 			for (let i = start; i <= end; i++) {
 				if (cells[i]) {
-					// cells[i].state = true;
-					cells[i].hilightRed = true;
+					cells[i].state = true;
 				}
 			}
 		}
@@ -942,11 +946,11 @@ export const solve = (
 	const funcs = [
 		{ fn: solveOverlapsBasic, reverse: false },
 		{ fn: solveEdegs, reverse: true },
-		// { fn: solveMinimumEdge, reverse: true },
+		{ fn: solveMinimumEdge, reverse: true },
 		{ fn: solveOutOfReach, reverse: false },
-		//{ fn: solveNextToBlocked, reverse: true },
+		{ fn: solveNextToBlocked, reverse: true },
 		{ fn: solveMaxLength, reverse: false },
-		// { fn: solveNoSpace, reverse: false },
+		{ fn: solveNoSpace, reverse: false },
 		{ fn: solveCompletedRow, reverse: true },
 		{ fn: solveFirstNoFit, reverse: true },
 		{ fn: solveZero, reverse: true },
