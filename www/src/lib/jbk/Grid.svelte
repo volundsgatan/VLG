@@ -429,6 +429,10 @@
 	});
 
 	const fixGridSize = () => {
+		if (!inputCols || !inputRows) {
+			return;
+		}
+
 		// remove rows
 		if (state.length > rows) {
 			state = state.slice(0, rows);
@@ -463,7 +467,6 @@
 	};
 
 	$: cols, fixGridSize();
-
 	$: rows, fixGridSize();
 </script>
 
