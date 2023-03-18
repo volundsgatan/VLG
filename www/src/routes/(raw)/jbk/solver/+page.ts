@@ -13,8 +13,8 @@ export const load: PageLoad = () => {
 	// const id = "candle";
 	// const id = "sötisblötis";
 	// const id = "JW";
-	id = 'ubuntu';
 	id = 'mr-cool';
+	id = 'ubuntu';
 	id = 'och-smasha';
 	const guide = guides.find((g) => g.id === id);
 

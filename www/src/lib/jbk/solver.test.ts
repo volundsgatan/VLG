@@ -8,7 +8,8 @@ import {
 	solveMinimumEdge,
 	solveNextToBlocked,
 	solveOverlapsBasic,
-	trimLeft
+	trimLeft,
+	groupPossibleSizes
 } from './solver';
 
 describe('solver', () => {
@@ -615,5 +616,79 @@ describe('solver', () => {
 		];
 
 		expect(res).toStrictEqual(exp);
+	});
+
+	test('getGuidePossibleRanges/4-2', () => {
+		const guide = [4, 2];
+		const cells: Cell[] = Array(20);
+
+		for (let i = 0; i < 20; i++) {
+			cells[i] = { state: undefined };
+		}
+
+		cells[7].state = false;
+		cells[8].state = false;
+		cells[9].state = false;
+		cells[10].state = true;
+		// gap
+		cells[12].state = true;
+
+		/* (adjusted)
+        01234 56789 01234 56789
+                FFF T T
+    0:  XXXXX XXXXX XXXXX XX
+    1:        XXXXX XXXXX XXXXX
+    */
+
+		const res = getGuidePossibleRanges(guide, cells);
+
+		const exp: GuideRange[] = [
+			{ start: 10, end: 13, guideIdx: 0, guideVal: 4, len: 4 },
+			{ start: 15, end: 19, guideIdx: 1, guideVal: 2, len: 5 }
+		];
+
+		expect(res).toStrictEqual(exp);
+	});
+
+	test('groupPossibleSizes', () => {
+		const cells: Cell[] = Array(20);
+
+		for (let i = 0; i < 20; i++) {
+			cells[i] = { state: undefined };
+		}
+
+		cells[2].state = false;
+
+		cells[4].state = true;
+		cells[5].state = true;
+
+		cells[7].state = false;
+		cells[8].state = false;
+		cells[9].state = false;
+		cells[10].state = true;
+		// gap
+		cells[12].state = true;
+
+		cells[14].state = true;
+		cells[15].state = true;
+		cells[16].state = true;
+
+		const sortNum = (a: number, b: number): number => {
+			return a - b;
+		};
+
+		expect([...groupPossibleSizes(10, 10, cells)].sort(sortNum)).toStrictEqual([1, 3, 7, 8, 9, 10]);
+		expect([...groupPossibleSizes(12, 12, cells)].sort(sortNum)).toStrictEqual([
+			1, 3, 5, 6, 7, 8, 9, 10
+		]);
+		expect([...groupPossibleSizes(10, 12, cells)].sort(sortNum)).toStrictEqual([3, 7, 8, 9, 10]);
+
+		expect([...groupPossibleSizes(14, 16, cells)].sort(sortNum)).toStrictEqual([
+			3, 4, 5, 6, 7, 8, 9, 10
+		]);
+
+		expect([...groupPossibleSizes(1, 1, cells)].sort(sortNum)).toStrictEqual([1, 2]);
+
+		expect([...groupPossibleSizes(4, 5, cells)].sort(sortNum)).toStrictEqual([2, 3, 4]);
 	});
 });

@@ -351,14 +351,101 @@ const isDebug = (guide: number[]): boolean => {
 	// return arrayEquals(guide, [1, 10, 4]);
 };
 
+const moveStart = (
+	start: number,
+	guideIdx: number,
+	guideVal: number,
+	guide: number[],
+	cells: Cell[]
+): number => {
+	const groups = findGroups(cells);
+	do {
+		let preIterationStart = start;
+
+		// fix guide positions based on already solved blocks
+		const groupsAfterStart = groups.filter((g) => g.start >= start);
+		const guidesAfterCurrent = guide.slice(guideIdx + 1);
+		const largestGuideAfterCurrent = max(-1, ...guidesAfterCurrent);
+
+		// push start after groups that are too big
+		for (const grp of groupsAfterStart) {
+			if (grp.len && grp.len > guideVal && grp.len > largestGuideAfterCurrent) {
+				if (grp.end > start) {
+					start = grp.end + 1;
+				}
+			}
+		}
+
+		// push forward start... again
+		while (true) {
+			if (containsBlockedWithinN(cells, start, guideVal)) {
+				start++;
+			} else {
+				break;
+			}
+		}
+
+		while (true) {
+			// not start on blocked
+			if (cells[start] && cells[start].state === false) {
+				start++;
+				continue;
+			}
+			// not start directly after other block
+			if (cells[start - 1] && cells[start - 1].state === true) {
+				start++;
+				continue;
+			}
+			break;
+		}
+
+		// if start is touching or a part of an existing, group that is bigger than guideVal, move start to after the group
+		for (const g of groups) {
+			if (g.start - 1 <= start && g.end + 1 >= start) {
+				let hypotheticalLen = max(start, g.end) - min(start, g.start);
+				if (hypotheticalLen > guideVal) {
+					start = g.end + 2;
+					break;
+				}
+			}
+		}
+
+		if (start === preIterationStart) {
+			return start;
+		}
+	} while (true);
+};
+
+const moveEnd = (end: number, cells: Cell[]): number => {
+	do {
+		let preIterationEnd = end;
+
+		while (true) {
+			// not end on blocked
+			if (cells[end] && cells[end].state === false) {
+				end--;
+				continue;
+			}
+			// not end directly before other block
+			if (cells[end + 1] && cells[end + 1].state === true) {
+				end--;
+				continue;
+			}
+			break;
+		}
+
+		if (end === preIterationEnd) {
+			return end;
+		}
+	} while (true);
+};
+
 export const getGuidePossibleRangesOneDirection = (
 	guide: number[],
 	cells: Cell[]
 ): GuideRange[] => {
-	const groups = findGroups(cells);
 	const guidePossibleRanges: GuideRange[] = [];
-
-	const debug = isDebug(guide);
+	const groups = findGroups(cells);
 
 	for (const [idx, guideVal] of guide.entries()) {
 		// adjust based on previous numbers, and it's own first possible basic start
@@ -374,6 +461,8 @@ export const getGuidePossibleRangesOneDirection = (
 			}
 		}
 
+		start = moveStart(start, idx, guideVal, guide, cells);
+
 		// if end is blocked, move backwards to non blocked
 		// for (; cells[end] && cells[end].state === false; end--) {
 		//   //xx
@@ -386,68 +475,6 @@ export const getGuidePossibleRangesOneDirection = (
 		//   end = startAt[0].end;
 		// }
 		// }
-
-		do {
-			let preIterationStart = start;
-
-			// fix guide positions based on already solved blocks
-			const groupsAfterStart = groups.filter((g) => g.start >= start);
-			const guidesAfterCurrent = guide.slice(idx + 1);
-			const largestGuideAfterCurrent = max(-1, ...guidesAfterCurrent);
-
-			// push start after groups that are too big
-			for (const grp of groupsAfterStart) {
-				if (grp.len && grp.len > guideVal && grp.len > largestGuideAfterCurrent) {
-					if (grp.end > start) {
-						start = grp.end + 1;
-					}
-				}
-			}
-
-			// push forward start... again
-			while (true) {
-				if (containsBlockedWithinN(cells, start, guideVal)) {
-					start++;
-				} else {
-					break;
-				}
-			}
-
-			while (true) {
-				// not start on blocked
-				if (cells[start] && cells[start].state === false) {
-					start++;
-					continue;
-				}
-				// not start directly after other block
-				if (cells[start - 1] && cells[start - 1].state === true) {
-					start++;
-					continue;
-				}
-				break;
-			}
-
-			// if start is touching or a part of an existing, group that is bigger than guideVal, move start to after the group
-			for (const g of groups) {
-				console.log('touching?', { idx, start, g });
-				if (g.start - 1 <= start && g.end + 1 >= start) {
-					let hypotheticalLen = max(start, g.end) - min(start, g.start);
-					console.log('touched!', { hypotheticalLen });
-					if (hypotheticalLen > guideVal) {
-						start = g.end + 2;
-						console.log('THIS HAPPENED');
-						break;
-					}
-				}
-			}
-
-			if (start === preIterationStart) {
-				console.log('DONE', { idx, guideVal, start });
-				break;
-			} else {
-				console.log('RUNNING AGAIN', { idx, guideVal, start });
-			}
-		} while (true);
 
 		let end = cells.length - 1;
 
@@ -473,19 +500,7 @@ export const getGuidePossibleRangesOneDirection = (
 			}
 		}
 
-		while (true) {
-			// not end on blocked
-			if (cells[end] && cells[end].state === false) {
-				end--;
-				continue;
-			}
-			// not end directly before other block
-			if (cells[end + 1] && cells[end + 1].state === true) {
-				end--;
-				continue;
-			}
-			break;
-		}
+		end = moveEnd(end, cells);
 
 		guidePossibleRanges.push({
 			start,
@@ -506,9 +521,6 @@ export const getGuidePossibleRanges = (guide: number[], cells: Cell[]): GuideRan
 	const revCells = copyCells(cells).reverse();
 	const second = getGuidePossibleRangesOneDirection(revGuide, revCells).reverse();
 
-	console.log('first', first);
-	console.log('second', second);
-
 	// adjust ends of first based on starts of second
 	const combined = first.map((range, idx) => {
 		const r = { ...range };
@@ -521,68 +533,124 @@ export const getGuidePossibleRanges = (guide: number[], cells: Cell[]): GuideRan
 		return r;
 	});
 
-	console.log('combined', combined);
-
 	const groups = findGroups(cells);
 
-	// if there are groups that are only within one guide, adjust that guide to the group (plus surrounding)
-	// TODO: Are we adjusting here???!
-	const singleGuideGroups = detectSingleGuideGroups(groups, combined);
+	for (let it = 0; it < 10; it++) {
+		// if there are groups that are only within one guide, adjust that guide to the group (plus surrounding)
+		const singleGuideGroups = detectSingleGuideGroups(groups, combined, cells);
 
-	for (const [idx, guide] of combined.entries()) {
-		if (singleGuideGroups[idx]) {
-			const groups = singleGuideGroups[idx];
+		for (const [idx, guide] of combined.entries()) {
+			if (singleGuideGroups[idx]) {
+				const groups = singleGuideGroups[idx];
 
-			if (groups) {
-				const minGroupStart = min(...groups.map((g) => g.start));
-				const maxGroupEnd = max(...groups.map((g) => g.end));
+				if (groups) {
+					const minGroupStart = min(...groups.map((g) => g.start));
+					const maxGroupEnd = max(...groups.map((g) => g.end));
 
-				const singleGroupLen = maxGroupEnd - minGroupStart + 1;
+					const singleGroupLen = maxGroupEnd - minGroupStart + 1;
 
-				let delta = 0;
-				if (singleGroupLen < guide.guideVal) {
-					delta = guide.guideVal - singleGroupLen;
+					let delta = 0;
+					if (singleGroupLen < guide.guideVal) {
+						delta = guide.guideVal - singleGroupLen;
+					}
+
+					const nStart = max(0, minGroupStart - delta, guide.start);
+					const nEnd = min(cells.length - 1, maxGroupEnd + delta, guide.end);
+
+					combined[idx] = {
+						...guide,
+						start: nStart,
+						end: nEnd
+					};
 				}
-
-				const nStart = max(0, minGroupStart - delta);
-				const nEnd = min(cells.length - 1, maxGroupEnd + delta);
-
-				combined[idx] = {
-					...guide,
-					start: nStart,
-					end: nEnd
-				};
 			}
 		}
-	}
 
-	// adjust start
-	for (const [idx, guide] of combined.entries()) {
-		if (combined[idx - 1]) {
-			combined[idx].start = max(combined[idx - 1].start + 2, guide.start);
+		// adjust start
+		for (const [idx, guide] of combined.entries()) {
+			if (combined[idx - 1]) {
+				combined[idx].start = max(
+					combined[idx - 1].start + combined[idx - 1].guideVal + 1,
+					guide.start
+				);
+			}
 		}
-	}
 
-	// adjust ends
-	for (let idx = combined.length - 1; idx >= 0; idx--) {
-		if (combined[idx + 1]) {
-			combined[idx].end = min(combined[idx + 1].end - 2, combined[idx].end);
+		// adjust ends
+		for (let idx = combined.length - 1; idx >= 0; idx--) {
+			if (combined[idx + 1]) {
+				combined[idx].end = min(combined[idx + 1].end - 2, combined[idx].end);
+			}
 		}
-	}
 
-	// TODO! after start and end have been adjusted, apply same rules as in getGuidePossibleRangesOneDirection for moving them
+		// after start and end have been adjusted, apply same rules as in getGuidePossibleRangesOneDirection for moving them
+		for (const [idx, range] of combined.entries()) {
+			combined[idx].start = moveStart(range.start, idx, range.guideVal, guide, cells);
+			combined[idx].end = moveEnd(range.end, cells);
+		}
 
-	// set len of all ranges
-	for (const [idx, guide] of combined.entries()) {
-		combined[idx].len = guide.end - guide.start + 1;
+		// set len of all ranges
+		for (const [idx, guide] of combined.entries()) {
+			combined[idx].len = guide.end - guide.start + 1;
+		}
 	}
 
 	return combined;
 };
 
+const groupPossibleSizesMemo: Map<string, Set<number>> = new Map();
+
+export const groupPossibleSizes = (start: number, end: number, cells: Cell[]): Set<number> => {
+	const key = JSON.stringify({ start, end, cells });
+
+	const fromCache = groupPossibleSizesMemo.get(key);
+	if (fromCache) {
+		return fromCache;
+	}
+
+	// absorb to the left if true
+	while (true) {
+		if (cells[start - 1] && cells[start - 1].state === true) {
+			start--;
+		} else {
+			break;
+		}
+	}
+
+	// absorb to the right if true
+	while (true) {
+		if (cells[end + 1] && cells[end + 1].state === true) {
+			end++;
+		} else {
+			break;
+		}
+	}
+
+	const len = end - start + 1;
+
+	let res = new Set([len]);
+
+	// if not blocked to left
+	if (cells[start - 1] && cells[start - 1].state !== false) {
+		groupPossibleSizes(start - 1, end, cells).forEach((v) => {
+			res.add(v);
+		});
+	}
+
+	// if not blocked to right
+	if (cells[end + 1] && cells[end + 1].state !== false) {
+		groupPossibleSizes(start, end + 1, cells).forEach((v) => res.add(v));
+	}
+
+	groupPossibleSizesMemo.set(key, res);
+
+	return res;
+};
+
 const detectSingleGuideGroups = (
 	groups: Range[],
-	guidePossibleRanges: GuideRange[]
+	guidePossibleRanges: GuideRange[],
+	cells: Cell[]
 ): Record<number, Range[]> => {
 	const singleGuideGroups: Record<number, Range[]> = {};
 
@@ -592,7 +660,14 @@ const detectSingleGuideGroups = (
 	for (const g of groups) {
 		const groupPossibleGuides = guidePossibleRanges.filter((r) => {
 			const len = g.end - g.start + 1;
-			return r.start <= g.start && r.end >= g.end && r.guideVal >= len;
+			return (
+				r.start <= g.start &&
+				r.end >= g.end &&
+				r.guideVal >= len &&
+				// groupCanBeOfSizeExpanding(g, r.guideVal, cells)
+				groupPossibleSizes(g.start, g.end, cells).has(r.guideVal)
+				// true
+			);
 		});
 
 		if (groupPossibleGuides.length === 1) {
@@ -616,7 +691,7 @@ export const solveOutOfReachWithSlidingStarts = (guide: number[], cells: Cell[])
 
 	const guidePossibleRanges = getGuidePossibleRanges(guide, cells);
 
-	const singleGuideGroups = detectSingleGuideGroups(groups, guidePossibleRanges);
+	const singleGuideGroups = detectSingleGuideGroups(groups, guidePossibleRanges, cells);
 
 	// Cells with no overlapping range
 	for (const [idx, c] of cells.entries()) {
