@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
+	import { createEventDispatcher, onMount } from 'svelte';
 	import Guide from '$lib/jbk/Guide.svelte';
 
 	export let guide:
@@ -18,6 +18,9 @@
 	export let inputCols: number | undefined = undefined;
 	export let inputRows: number | undefined = undefined;
 	export let showGuide = false;
+	export let allowFalseState = true;
+
+	const dispatch = createEventDispatcher();
 
 	$: cols = inputCols || guide?.cols.length || 0;
 	$: rows = inputRows || guide?.rows.length || 0;
@@ -35,8 +38,8 @@
 	$: tiny = cols >= 25 || rows >= 25;
 	$: widestRowGuide = guide?.rows.map((r) => r.length).sort((a, b) => b - a)[0] || 0;
 	$: widestColGuide = guide?.cols.map((r) => r.length).sort((a, b) => b - a)[0] || 0;
-	$: rowGuideWidth = widestRowGuide * (tiny ? 16 : 24);
-	$: colsGuideWidth = widestColGuide * (tiny ? 16 : 24);
+	$: rowGuideWidth = showGuide ? widestRowGuide * (tiny ? 16 : 24) : 0;
+	$: colsGuideWidth = showGuide ? widestColGuide * (tiny ? 16 : 24) : 0;
 
 	$: {
 		if (withState) {
@@ -56,6 +59,10 @@
 			return;
 		}
 		localStorage.setItem('state-' + id, JSON.stringify({ state }));
+
+		dispatch('stateChanged', {
+			state
+		});
 	};
 
 	const restore = () => {
@@ -68,15 +75,11 @@
 			const js: { state: State } = JSON.parse(ls);
 			if (js) {
 				state = js.state;
-				console.log('restored state');
+				dispatch('stateChanged', {
+					state
+				});
 			}
 		}
-	};
-
-	const setCellHilight = (cell: Cell, hilight: boolean) => {
-		cell.hilight = hilight;
-		state[cell.row][cell.col] = cell;
-		save();
 	};
 
 	const above = (p: Position): Position => {
@@ -131,7 +134,11 @@
 		const c = currentCell();
 		let nextState;
 		if (c.state === true) {
-			nextState = false;
+			if (allowFalseState) {
+				nextState = false;
+			} else {
+				nextState = undefined;
+			}
 		} else if (c.state === false) {
 			nextState = undefined;
 		} else {
@@ -392,21 +399,21 @@
 		e.stopPropagation();
 	};
 
+	const makeRow = (row: number): Cell[] => {
+		const col: Cell[] = [];
+		for (let c = 0; c < cols; c++) {
+			col.push({
+				row: row,
+				col: c,
+				state: undefined,
+				hilight: false
+			});
+		}
+		return col;
+	};
+
 	onMount(() => {
 		if (!withState) {
-			const makeRow = (row: number): Cell[] => {
-				const col: Cell[] = [];
-				for (let c = 0; c < cols; c++) {
-					col.push({
-						row: row,
-						col: c,
-						state: undefined,
-						hilight: false
-					});
-				}
-				return col;
-			};
-
 			for (let row = 0; row < rows; row++) {
 				state.push(makeRow(row));
 			}
@@ -420,6 +427,44 @@
 
 		restore();
 	});
+
+	const fixGridSize = () => {
+		// remove rows
+		if (state.length > rows) {
+			state = state.slice(0, rows);
+		}
+		// add rows
+		if (state.length < rows) {
+			for (let row = state.length; row < rows; row++) {
+				state.push(makeRow(row));
+			}
+		}
+
+		for (let [rowIdx, row] of state.entries()) {
+			if (row.length > cols) {
+				row = row.slice(0, cols);
+			}
+			if (row.length < cols) {
+				for (let col = row.length; col < cols; col++) {
+					row.push({
+						row: rowIdx,
+						col: col,
+						state: undefined,
+						hilight: false
+					});
+				}
+			}
+
+			state[rowIdx] = row;
+		}
+
+		state = state;
+		save();
+	};
+
+	$: cols, fixGridSize();
+
+	$: rows, fixGridSize();
 </script>
 
 <svelte:window on:keydown={(e) => onWindowKeyDown(e)} />

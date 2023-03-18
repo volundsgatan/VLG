@@ -76,19 +76,10 @@
 		runSolver(1000);
 	});
 
-	function useSolver(node, param) {
-		return {
-			update(param) {
-				runSolver(1000);
-				// console.log("useSolver updated????")
-			}
-		};
-	}
-
 	$: guide, runSolver(1000);
 </script>
 
-<div use:useSolver={guide} class="flex flex-col items-center space-y-4">
+<div class="flex flex-col items-center space-y-4">
 	<div>
 		{#if stopAfterIteration > 0}
 			Iteration {stopAfterIteration} / {maxUsedIterations}
@@ -106,6 +97,16 @@
 			>
 				+
 			</button>
+			<button
+				on:click={() => {
+					stopAfterIteration = 0;
+					runSolver(1000);
+				}}
+				type="button"
+				class="rounded bg-white py-1 px-2 text-xs font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+			>
+				Full
+			</button>
 		{:else}
 			<button
 				on:click={() => changeIteration(1)}
@@ -117,5 +118,5 @@
 		{/if}
 	</div>
 
-	<Grid {guide} withState={state} name="solver" id="solver" />
+	<Grid {guide} withState={state} name="solver" id="solver" showGuide={true} />
 </div>
