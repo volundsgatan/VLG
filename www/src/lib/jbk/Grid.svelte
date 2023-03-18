@@ -547,13 +547,13 @@
 									{/if}
 								</div>
 
-								{#if cell.col % 5 === 4}
+								{#if cell.col % 5 === 4 || cell.col === row.length - 1}
 									<div class="h-full w-[2px] bg-black" />
 								{/if}
 							{/each}
 						</div>
 
-						{#if rowNum % 5 === 4}
+						{#if rowNum % 5 === 4 || rowNum === state.length - 1}
 							<div class="h-[2px] bg-black" style="margin-left: {rowGuideWidth}px" />
 						{/if}
 					{/each}
