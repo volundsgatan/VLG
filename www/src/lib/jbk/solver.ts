@@ -315,6 +315,38 @@ const findGroups = (cells: Cell[]): Range[] => {
 	return res;
 };
 
+// groups that are separated by false blocks, that never could become the same group
+const findStrictlySeparatedGroups = (cells: Cell[]): Range[] => {
+	const res = [];
+
+	for (let idx = 0; idx < cells.length; idx++) {
+		if (cells[idx].state === true) {
+			let start = idx;
+
+			while (true) {
+				if (!cells[start - 1] || cells[start - 1].state === false) {
+					break;
+				}
+				start--;
+			}
+
+			let end = idx;
+			while (true) {
+				if (!cells[end + 1] || cells[end + 1].state === false) {
+					break;
+				}
+				end++;
+			}
+
+			res.push({ start, end });
+
+			idx = end + 1;
+		}
+	}
+
+	return res;
+};
+
 const containsBlockedWithinN = (cells: Cell[], start: number, n: number): boolean => {
 	for (let offset = 0; offset < n; offset++) {
 		if (cells[start + offset] && cells[start + offset].state === false) {
@@ -406,6 +438,18 @@ const moveStart = (
 				if (hypotheticalLen > guideVal) {
 					start = g.end + 2;
 					break;
+				}
+			}
+		}
+
+		if (arrayEquals(guide, [1, 1, 3, 1])) {
+			const strictGroups = findStrictlySeparatedGroups(cells);
+			// console.log({ guideIdx, guideVal, strictGroups });
+			for (const strictGroup of strictGroups) {
+				const len = strictGroup.end - strictGroup.start + 1;
+				// if can not fit
+				if (len < guideVal && strictGroup.start >= start) {
+					start = strictGroup.end + 2;
 				}
 			}
 		}

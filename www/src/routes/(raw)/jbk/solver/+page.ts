@@ -7,14 +7,14 @@ import { redirect } from '@sveltejs/kit';
 
 export const load: PageLoad = () => {
 	let id = '';
-	id = 'slippery-conditions';
-	id = 'med-langa-ben';
-	id = 'nalle';
 	// const id = "candle";
 	// const id = "sötisblötis";
 	// const id = "JW";
 	id = 'ubuntu';
 	id = 'mr-cool';
+	id = 'nalle';
+	id = 'med-langa-ben';
+	id = 'slippery-conditions';
 	id = 'och-smasha';
 	const guide = guides.find((g) => g.id === id);
 
