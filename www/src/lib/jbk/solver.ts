@@ -76,38 +76,6 @@ export const solveEdges = (guide: number[], cells: Cell[]): Cell[] => {
 	return cells;
 };
 
-export const trimLeft = (
-	guide: number[],
-	cells: Cell[]
-): {
-	guideStart: number;
-	cellsStart: number;
-} => {
-	let guideStart = 0;
-	let cellsStart = 0;
-	return { guideStart: 0, cellsStart: 0 };
-
-	for (const [idx, c] of cells.entries()) {
-		if (c.state === false && idx > 0 && cells[idx - 1].state === true) {
-			cellsStart = idx;
-			guideStart++;
-		}
-		if (c.state === undefined) {
-			break;
-		}
-	}
-
-	// keep going as long as false
-	while (cells[cellsStart] && cells[cellsStart].state === false) {
-		cellsStart++;
-	}
-
-	return {
-		guideStart,
-		cellsStart
-	};
-};
-
 export const solveMinimumEdge = (guide: number[], cells: Cell[]): Cell[] => {
 	// remove completed guides from left
 
@@ -241,34 +209,6 @@ const max = (...nums: number[]): number => {
 	return r;
 };
 
-const sum = (...nums: number[]): number => {
-	let r = 0;
-	for (const n of nums) {
-		r += n;
-	}
-	return r;
-};
-
-const blockLength = (cells: Cell[], idx: number): number => {
-	if (cells[idx].state !== true) {
-		return 0;
-	}
-
-	let start = idx;
-
-	while (cells[start - 1] && cells[start - 1].state === true) {
-		start--;
-	}
-
-	let end = idx;
-
-	while (cells[end + 1] && cells[end + 1].state === true) {
-		end++;
-	}
-
-	return end - start + 1;
-};
-
 type Range = {
 	start: number;
 	end: number;
@@ -357,19 +297,6 @@ const containsTrueWithinN = (cells: Cell[], start: number, n: number): boolean =
 export type GuideRange = Range & {
 	guideIdx: number;
 	guideVal: number;
-};
-
-const isDebug = (guide: number[]): boolean => {
-	// rrayEquals(guide, [1, 6, 1, 1, 1, 1, 3, 2]) ||
-	// arrayEquals(guide, [1, 10, 4]) ||
-	// arrayEquals(guide, [4, 5, 5]) ||
-	return arrayEquals(guide, [3, 6, 3, 6, 6]) || arrayEquals(guide, [3, 1, 1, 3]);
-	false;
-	// arrayEquals(guide, [1, 10, 4]) ||
-	// arrayEquals(guide, [1, 10, 4]);
-	// arrayEquals(guide, [3, 7, 11, 1]);
-	//   arrayEquals(guide, [1, 11, 7, 3]);
-	// return arrayEquals(guide, [1, 10, 4]);
 };
 
 const moveStart = (
@@ -496,19 +423,6 @@ export const getGuidePossibleRangesOneDirection = (
 		}
 
 		start = moveStart(start, idx, guideVal, guide, cells);
-
-		// if end is blocked, move backwards to non blocked
-		// for (; cells[end] && cells[end].state === false; end--) {
-		//   //xx
-		// }
-
-		// if is completed, adjust start and end
-		// if (debug) {
-		// const startAt = groups.filter((g) => g.start === start);
-		// if (startAt.length === 1 && startAt[0].len === guideVal) {
-		//   end = startAt[0].end;
-		// }
-		// }
 
 		let end = cells.length - 1;
 
@@ -706,9 +620,7 @@ const detectSingleGuideGroups = (
 				r.start <= g.start &&
 				r.end >= g.end &&
 				r.guideVal >= len &&
-				// groupCanBeOfSizeExpanding(g, r.guideVal, cells)
 				groupPossibleSizes(g.start, g.end, cells).has(r.guideVal)
-				// true
 			);
 		});
 
@@ -769,7 +681,6 @@ export const solveOutOfReachWithSlidingStarts = (guide: number[], cells: Cell[])
 		// if start touching a blocker or edge, fill the rest
 		if (!cells[start - 1] || cells[start - 1].state === false) {
 			// fill len
-			// cells[start].hilight = true;
 			for (let idx = start; idx < start + guideLen; idx++) {
 				cells[idx].state = true;
 			}

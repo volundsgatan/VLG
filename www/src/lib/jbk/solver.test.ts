@@ -8,7 +8,6 @@ import {
 	solveMinimumEdge,
 	solveNextToBlocked,
 	solveOverlapsBasic,
-	trimLeft,
 	groupPossibleSizes,
 	solveOverlapsSlidingRanges,
 	solve
