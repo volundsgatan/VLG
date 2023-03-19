@@ -724,11 +724,11 @@ export const solve = (
 	}
 
 	const funcs = [
-		{ fn: solveOverlapsBasic, reverse: false },
-		{ fn: solveMaxLength, reverse: false },
-		{ fn: solveZero, reverse: false },
-		{ fn: solveOutOfReachWithSlidingStarts, reverse: false },
-		{ fn: solveOverlapsSlidingRanges, reverse: false }
+		{ fn: solveOverlapsBasic },
+		{ fn: solveMaxLength },
+		{ fn: solveZero },
+		{ fn: solveOutOfReachWithSlidingStarts },
+		{ fn: solveOverlapsSlidingRanges }
 	];
 
 	type Updated = {
@@ -736,14 +736,11 @@ export const solve = (
 		count: number;
 	};
 
-	const updateRowState = (name: string, r: number, s: Cell[], reversed = false): Updated => {
+	const updateRowState = (name: string, r: number, s: Cell[]): Updated => {
 		let count = 0;
 
 		for (const [idx, v] of s.entries()) {
 			let c = idx;
-			if (reversed) {
-				c = state[r].length - 1 - idx;
-			}
 
 			if (v.state === true || v.state === false) {
 				if (state[r][c].state !== v.state && state[r][c].state !== undefined) {
@@ -775,13 +772,10 @@ export const solve = (
 		return { error: false, count };
 	};
 
-	const updateColState = (name: string, c: number, s: Cell[], reversed = false): Updated => {
+	const updateColState = (name: string, c: number, s: Cell[]): Updated => {
 		let count = 0;
 		for (const [idx, v] of s.entries()) {
 			let r = idx;
-			if (reversed) {
-				r = state.length - 1 - idx;
-			}
 
 			if (v.state === true || v.state === false) {
 				if (state[r][c].state !== v.state && state[r][c].state !== undefined) {
@@ -837,18 +831,6 @@ export const solve = (
 					return { cells: state, iterations: it };
 				}
 				updates += count;
-
-				if (fn.reverse) {
-					const reversedGuide = copyGuide(guideRows[r]).reverse();
-					const reversedCells = copyCells(state[r]).reverse();
-
-					const s2 = fn.fn(reversedGuide, reversedCells);
-					const { error, count } = updateRowState(fn.fn.name, r, copyCells(s2), true);
-					if (error) {
-						return { cells: state, iterations: it };
-					}
-					updates += count;
-				}
 			}
 		}
 
@@ -864,18 +846,6 @@ export const solve = (
 					return { cells: state, iterations: it };
 				}
 				updates += count;
-
-				if (fn.reverse) {
-					const reversedGuide = copyGuide(guideCols[c]).reverse();
-					const reversedCells = copyCells(cells).reverse();
-
-					const s2 = fn.fn(reversedGuide, reversedCells);
-					const { error, count } = updateColState(fn.fn.name, c, copyCells(s2), true);
-					if (error) {
-						return { cells: state, iterations: it };
-					}
-					updates += count;
-				}
 			}
 		}
 
