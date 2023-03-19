@@ -12,15 +12,8 @@ export const solveOverlapsBasic = (guide: number[], cells: Cell[]): Cell[] => {
 	let pos = 0;
 	for (const [idx, g] of guide.entries()) {
 		// if already blocked, skip
-
-		if (!cells[pos]) {
-			// break;
-		}
-		for (; cells[pos] && cells[pos].state === false; pos++) {
-			//xx
-		}
-		if (!cells[pos]) {
-			// break;
+		while (cells[pos] && cells[pos].state === false) {
+			pos++;
 		}
 
 		// move with g
@@ -36,14 +29,8 @@ export const solveOverlapsBasic = (guide: number[], cells: Cell[]): Cell[] => {
 	pos = cells.length - 1;
 
 	for (let idx = guide.length - 1; idx >= 0; idx--) {
-		if (!cells[pos]) {
-			//  break;
-		}
-		for (; cells[pos] && cells[pos].state === false; pos--) {
-			//xx
-		}
-		if (!cells[pos]) {
-			// break;
+		while (cells[pos] && cells[pos].state === false) {
+			pos--;
 		}
 
 		const g = guide[idx];
@@ -67,9 +54,10 @@ export const solveOverlapsBasic = (guide: number[], cells: Cell[]): Cell[] => {
 export const solveEdges = (guide: number[], cells: Cell[]): Cell[] => {
 	let offset = 0;
 
-	for (; cells[offset] && cells[offset].state === false; offset++) {
-		// advance
+	while (cells[offset] && cells[offset].state === false) {
+		offset++;
 	}
+
 	if (!cells[offset]) {
 		return cells;
 	}
@@ -125,8 +113,8 @@ export const solveMinimumEdge = (guide: number[], cells: Cell[]): Cell[] => {
 	let any = false;
 
 	let offset = 0;
-	for (; cells[offset] && cells[offset].state === false; offset++) {
-		// xx
+	while (cells[offset] && cells[offset].state === false) {
+		offset++;
 	}
 	if (!cells[offset]) {
 		return cells;
@@ -442,16 +430,16 @@ const moveStart = (
 			}
 		}
 
-		if (arrayEquals(guide, [1, 1, 3, 1])) {
-			const strictGroups = findStrictlySeparatedGroups(cells);
-			for (const strictGroup of strictGroups) {
-				const len = strictGroup.end - strictGroup.start + 1;
-				// if can not fit
-				if (len < guideVal && strictGroup.start >= start) {
-					start = strictGroup.end + 2;
-				}
-			}
-		}
+		//if (arrayEquals(guide, [1, 1, 3, 1])) {
+		//	const strictGroups = findStrictlySeparatedGroups(cells);
+		//	for (const strictGroup of strictGroups) {
+		//		const len = strictGroup.end - strictGroup.start + 1;
+		//		// if can not fit
+		//		if (len < guideVal && strictGroup.start >= start) {
+		//			start = strictGroup.end + 2;
+		//		}
+		//	}
+		//}
 
 		if (start === preIterationStart) {
 			return start;
@@ -1010,6 +998,10 @@ export const solveOverlapsSlidingRanges = (guide: number[], cells: Cell[]): Cell
 			continue;
 		}
 
+		if (r.guideVal === 0) {
+			continue;
+		}
+
 		const end = r.start + r.guideVal - 1;
 		const start = r.end - r.guideVal + 1;
 
@@ -1268,7 +1260,6 @@ export const solve = (
 		if (updates === 0) {
 			console.log(`No changes after ${it} iterations`);
 			return { cells: state, iterations: it };
-			// break;
 		}
 		console.log(updates);
 	}

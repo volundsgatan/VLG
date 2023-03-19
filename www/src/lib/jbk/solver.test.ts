@@ -718,7 +718,7 @@ describe('solver', () => {
 		const exp: GuideRange[] = [
 			{ start: 3, end: 3, guideIdx: 0, guideVal: 1, len: 1 },
 			{ start: 6, end: 8, guideIdx: 1, guideVal: 3, len: 3 },
-			{ start: 10, end: 10, guideIdx: 2, guideVal: 3, len: 1 },
+			{ start: 10, end: 10, guideIdx: 2, guideVal: 1, len: 1 },
 			{ start: 12, end: 12, guideIdx: 3, guideVal: 1, len: 1 }
 		];
 
