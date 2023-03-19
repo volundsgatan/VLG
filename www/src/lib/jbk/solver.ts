@@ -85,6 +85,7 @@ export const trimLeft = (
 } => {
 	let guideStart = 0;
 	let cellsStart = 0;
+	return { guideStart: 0, cellsStart: 0 };
 
 	for (const [idx, c] of cells.entries()) {
 		if (c.state === false && idx > 0 && cells[idx - 1].state === true) {
@@ -430,16 +431,18 @@ const moveStart = (
 			}
 		}
 
-		//if (arrayEquals(guide, [1, 1, 3, 1])) {
-		//	const strictGroups = findStrictlySeparatedGroups(cells);
-		//	for (const strictGroup of strictGroups) {
-		//		const len = strictGroup.end - strictGroup.start + 1;
-		//		// if can not fit
-		//		if (len < guideVal && strictGroup.start >= start) {
-		//			start = strictGroup.end + 2;
-		//		}
-		//	}
-		//}
+		// not enough guides to fit separated groups
+		// TODO: could possibly take size in to account, but seems to work well enough for now!
+		const strictGroups = findStrictlySeparatedGroups(cells)
+			.map((r) => {
+				return { ...r, len: r.end - r.start + 1 };
+			})
+			.filter((r) => r.start > start);
+
+		const guidesAfter = guide.slice(guideIdx + 1);
+		if (guidesAfter.length < strictGroups.length) {
+			start++;
+		}
 
 		if (start === preIterationStart) {
 			return start;
