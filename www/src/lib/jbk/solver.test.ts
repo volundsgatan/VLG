@@ -4,16 +4,17 @@ import {
 	getGuidePossibleRanges,
 	getGuidePossibleRangesOneDirection,
 	type GuideRange,
-	solveEdegs,
+	solveEdges,
 	solveMinimumEdge,
 	solveNextToBlocked,
 	solveOverlapsBasic,
 	trimLeft,
-	groupPossibleSizes
+	groupPossibleSizes,
+	solveOverlapsSlidingRanges
 } from './solver';
 
 describe('solver', () => {
-	test('solveEdegs', () => {
+	test('solveEdges', () => {
 		const guide = [3, 6, 2];
 		const cells: Cell[] = Array(15);
 
@@ -22,7 +23,7 @@ describe('solver', () => {
 		}
 		cells[0].state = true;
 
-		const res = solveEdegs(guide, cells);
+		const res = solveEdges(guide, cells);
 
 		const expected: Cell[] = [
 			{ state: true },
@@ -45,7 +46,7 @@ describe('solver', () => {
 		expect(res).toStrictEqual(expected);
 	});
 
-	test('solveEdegs/preblocked', () => {
+	test('solveEdges/preblocked', () => {
 		const guide = [3, 6, 2];
 		const cells: Cell[] = Array(15);
 
@@ -55,7 +56,7 @@ describe('solver', () => {
 		cells[0].state = false;
 		cells[1].state = true;
 
-		const res = solveEdegs(guide, cells);
+		const res = solveEdges(guide, cells);
 
 		const expected: Cell[] = [
 			{ state: false },
@@ -688,6 +689,114 @@ describe('solver', () => {
 		expect(res).toStrictEqual(exp);
 	});
 
+	test('getGuidePossibleRanges/bunny-1-3-1-1-solved', () => {
+		const guide = [1, 3, 1, 1];
+		const cells: Cell[] = Array(15);
+
+		for (let i = 0; i < 15; i++) {
+			cells[i] = { state: undefined };
+		}
+
+		cells[0].state = false;
+		cells[1].state = false;
+		cells[2].state = false;
+		cells[3].state = true; // T
+		cells[4].state = false;
+		cells[5].state = false;
+		cells[6].state = true; // T
+		cells[7].state = true; // T
+		cells[8].state = true; // T
+		cells[9].state = false;
+		cells[10].state = true; // T
+		cells[11].state = false;
+		cells[12].state = true; // T
+		cells[13].state = false;
+		cells[14].state = false;
+
+		const res = getGuidePossibleRanges(guide, cells);
+
+		const exp: GuideRange[] = [
+			{ start: 3, end: 3, guideIdx: 0, guideVal: 1, len: 1 },
+			{ start: 6, end: 8, guideIdx: 1, guideVal: 3, len: 3 },
+			{ start: 10, end: 10, guideIdx: 2, guideVal: 3, len: 1 },
+			{ start: 12, end: 12, guideIdx: 3, guideVal: 1, len: 1 }
+		];
+
+		expect(res).toStrictEqual(exp);
+	});
+
+	test('getGuidePossibleRangesOneDirection/bunny-1-3-1-1-solved', () => {
+		const guide = [1, 3, 1, 1];
+		const cells: Cell[] = Array(15);
+
+		for (let i = 0; i < 15; i++) {
+			cells[i] = { state: undefined };
+		}
+
+		cells[0].state = false;
+		cells[1].state = false;
+		cells[2].state = false;
+		cells[3].state = true; // T
+		cells[4].state = false;
+		cells[5].state = false;
+		cells[6].state = true; // T
+		cells[7].state = true; // T
+		cells[8].state = true; // T
+		cells[9].state = false;
+		cells[10].state = true; // T
+		cells[11].state = false;
+		cells[12].state = true; // T
+		cells[13].state = false;
+		cells[14].state = false;
+
+		const res = getGuidePossibleRangesOneDirection(guide, cells);
+
+		const exp: GuideRange[] = [
+			{ start: 3, end: 12, guideIdx: 0, guideVal: 1 },
+			{ start: 6, end: 12, guideIdx: 1, guideVal: 3 },
+			{ start: 10, end: 12, guideIdx: 2, guideVal: 1 },
+			{ start: 12, end: 12, guideIdx: 3, guideVal: 1 }
+		];
+
+		expect(res).toStrictEqual(exp);
+	});
+
+	test('getGuidePossibleRangesOneDirection/bunny-1-3-1-1-solved/reverse', () => {
+		const guide = [1, 1, 3, 1];
+		const cells: Cell[] = Array(15);
+
+		for (let i = 0; i < 15; i++) {
+			cells[i] = { state: undefined };
+		}
+
+		cells[0].state = false;
+		cells[1].state = false;
+		cells[2].state = true; // T
+		cells[3].state = false;
+		cells[4].state = true; // T
+		cells[5].state = false;
+		cells[6].state = true; // T
+		cells[7].state = true; // T
+		cells[8].state = true; // T
+		cells[9].state = false;
+		cells[10].state = false;
+		cells[11].state = true; // T
+		cells[12].state = false;
+		cells[13].state = false;
+		cells[14].state = false;
+
+		const res = getGuidePossibleRangesOneDirection(guide, cells);
+
+		const exp: GuideRange[] = [
+			{ start: 2, end: 11, guideIdx: 0, guideVal: 1 },
+			{ start: 4, end: 11, guideIdx: 1, guideVal: 1 },
+			{ start: 6, end: 11, guideIdx: 2, guideVal: 3 },
+			{ start: 11, end: 11, guideIdx: 3, guideVal: 1 }
+		];
+
+		expect(res).toStrictEqual(exp);
+	});
+
 	test('groupPossibleSizes', () => {
 		const cells: Cell[] = Array(20);
 
@@ -728,5 +837,20 @@ describe('solver', () => {
 		expect([...groupPossibleSizes(1, 1, cells)].sort(sortNum)).toStrictEqual([1, 2]);
 
 		expect([...groupPossibleSizes(4, 5, cells)].sort(sortNum)).toStrictEqual([2, 3, 4]);
+	});
+
+	test('solveOverlapsSlidingRanges/single-cell', () => {
+		const guide = [1];
+		const cells: Cell[] = Array(1);
+
+		for (let i = 0; i < 1; i++) {
+			cells[i] = { state: undefined };
+		}
+
+		const res = solveOverlapsSlidingRanges(guide, cells);
+
+		const expected: Cell[] = [{ state: true }];
+
+		expect(res).toStrictEqual(expected);
 	});
 });
