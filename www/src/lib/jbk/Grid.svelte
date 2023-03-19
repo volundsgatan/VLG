@@ -407,7 +407,7 @@
 			return;
 		}
 
-		if (e.key === 'z' || e.keyCode === 'z' || e.code === 'z') {
+		if (e.key.toLowerCase() === 'z' || e.code.toLowerCase() === 'z') {
 			const ctrLike = e.metaKey || e.ctrlKey;
 			if (e.shiftKey && ctrLike) {
 				redo();
