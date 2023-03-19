@@ -12,12 +12,12 @@ export const load: PageLoad = () => {
 	// const id = "JW";
 
 	id = 'ubuntu';
-	id = 'och-smasha';
 	id = 'mr-cool';
 	id = 'candle';
 	id = 'skogens-konung';
 	id = 'med-langa-ben';
 	id = 'nalle';
+	id = 'och-smasha';
 	id = 'slippery-conditions';
 	const guide = guides.find((g) => g.id === id);
 

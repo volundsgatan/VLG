@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { createEventDispatcher, onMount } from 'svelte';
 	import Guide from '$lib/jbk/Guide.svelte';
+	import Timer from './Timer.svelte';
 
 	export let guide:
 		| {
@@ -19,6 +20,9 @@
 	export let inputRows: number | undefined = undefined;
 	export let showGuide = false;
 	export let allowFalseState = true;
+
+	let timerSeconds = 0;
+	let timerPaused = false;
 
 	const dispatch = createEventDispatcher();
 
@@ -467,6 +471,16 @@
 		}
 
 		restore();
+
+		const timerInterval = setInterval(() => {
+			if (!timerPaused) {
+				timerSeconds++;
+			}
+		}, 1000);
+
+		return () => {
+			clearInterval(timerInterval);
+		};
 	});
 
 	const fixGridSize = () => {
@@ -513,7 +527,19 @@
 
 <svelte:window on:keydown={(e) => onWindowKeyDown(e)} />
 
-{#if state}
+{#if timerPaused}
+	<div class="flex flex-col items-center gap-4 p-2">
+		<div>Pausad!</div>
+		<div>
+			<button
+				class="rounded-md border-2  bg-purple-200  border-purple-800 p-1 px-2"
+				on:click={() => (timerPaused = false)}
+			>
+				▶️
+			</button>
+		</div>
+	</div>
+{:else if state}
 	<div class="flex min-h-full flex-col items-center space-y-4 bg-white p-2 text-black">
 		<div class="flex flex-col space-y-4">
 			<div class="flex justify-center space-x-4">
@@ -611,6 +637,17 @@
 						style="margin-top: {colsGuideWidth}px"
 					>
 						<h1 class="font-bold">{name}</h1>
+
+						<div class="flex justify-between items-center w-full">
+							<Timer seconds={timerSeconds} />
+
+							<button
+								class="rounded-md border-2  bg-purple-200  border-purple-800 p-1 px-2"
+								on:click={() => (timerPaused = true)}
+							>
+								⏸️
+							</button>
+						</div>
 
 						<div class="flex space-x-2">
 							<button
