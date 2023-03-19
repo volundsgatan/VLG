@@ -19,6 +19,7 @@
 		showSidebar={true}
 		showGuide={true}
 		saveState={true}
+		showUndoRedo={true}
 	/>
 
 	<div class="text-gray-400">Gjord med 🧠 av GW och EC</div>

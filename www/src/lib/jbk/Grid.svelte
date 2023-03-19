@@ -20,6 +20,7 @@
 	export let inputRows: number | undefined = undefined;
 	export let showGuide = false;
 	export let allowFalseState = true;
+	export let showUndoRedo = false;
 
 	let timerSeconds = 0;
 	let timerPaused = false;
@@ -638,41 +639,43 @@
 					>
 						<h1 class="font-bold">{name}</h1>
 
-						<div class="flex justify-between items-center w-full">
-							<Timer seconds={timerSeconds} />
+						{#if showUndoRedo}
+							<div class="flex justify-between items-center w-full">
+								<Timer seconds={timerSeconds} />
 
-							<button
-								class="rounded-md border-2  bg-purple-200  border-purple-800 p-1 px-2"
-								on:click={() => (timerPaused = true)}
-							>
-								⏸️
-							</button>
-						</div>
+								<button
+									class="rounded-md border-2  bg-purple-200  border-purple-800 p-1 px-2"
+									on:click={() => (timerPaused = true)}
+								>
+									⏸️
+								</button>
+							</div>
 
-						<div class="flex space-x-2">
-							<button
-								class="rounded-md border-2   p-1"
-								class:bg-purple-200={canUndo}
-								class:border-purple-800={canUndo}
-								class:bg-gray-300={!canUndo}
-								class:border-gray-600={!canUndo}
-								disabled={!canUndo}
-								on:click={undo}
-							>
-								↩️
-							</button>
-							<button
-								class="rounded-md border-2 border-purple-800 p-1"
-								class:bg-purple-200={canRedo}
-								class:border-purple-800={canRedo}
-								class:bg-gray-300={!canRedo}
-								class:border-gray-600={!canRedo}
-								disabled={!canRedo}
-								on:click={redo}
-							>
-								↪️
-							</button>
-						</div>
+							<div class="flex space-x-2">
+								<button
+									class="rounded-md border-2   p-1"
+									class:bg-purple-200={canUndo}
+									class:border-purple-800={canUndo}
+									class:bg-gray-300={!canUndo}
+									class:border-gray-600={!canUndo}
+									disabled={!canUndo}
+									on:click={undo}
+								>
+									↩️
+								</button>
+								<button
+									class="rounded-md border-2 border-purple-800 p-1"
+									class:bg-purple-200={canRedo}
+									class:border-purple-800={canRedo}
+									class:bg-gray-300={!canRedo}
+									class:border-gray-600={!canRedo}
+									disabled={!canRedo}
+									on:click={redo}
+								>
+									↪️
+								</button>
+							</div>
+						{/if}
 
 						<button
 							class="rounded-md border-2 border-purple-800 bg-purple-200 p-1"
