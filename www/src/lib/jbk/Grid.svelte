@@ -51,6 +51,9 @@
 
 	type State = typeof state;
 
+	let history: string[] = []; // states as JSON
+	let historyIdx = 0;
+
 	type Position = [number, number];
 
 	let cursor: Position = [-1, -1];
@@ -65,6 +68,13 @@
 		dispatch('stateChanged', {
 			state
 		});
+
+		if (historyIdx !== history.length - 1) {
+			history = history.slice(0, historyIdx + 1);
+		}
+		history.push(JSON.stringify(state));
+		history = history;
+		historyIdx = history.length - 1;
 	};
 
 	const restore = () => {
@@ -81,6 +91,23 @@
 					state
 				});
 			}
+		}
+	};
+
+	$: canUndo = historyIdx > 0;
+	$: canRedo = history.length - 1 > historyIdx;
+
+	const undo = () => {
+		if (canUndo) {
+			historyIdx--;
+			state = JSON.parse(history[historyIdx]);
+		}
+	};
+
+	const redo = () => {
+		if (canRedo) {
+			historyIdx++;
+			state = JSON.parse(history[historyIdx]);
 		}
 	};
 
@@ -572,6 +599,32 @@
 						style="margin-top: {colsGuideWidth}px"
 					>
 						<h1 class="font-bold">{name}</h1>
+
+						<div class="flex space-x-2">
+							<button
+								class="rounded-md border-2   p-1"
+								class:bg-purple-200={canUndo}
+								class:border-purple-800={canUndo}
+								class:bg-gray-300={!canUndo}
+								class:border-gray-600={!canUndo}
+								disabled={!canUndo}
+								on:click={undo}
+							>
+								↩️
+							</button>
+							<button
+								class="rounded-md border-2 border-purple-800 p-1"
+								class:bg-purple-200={canRedo}
+								class:border-purple-800={canRedo}
+								class:bg-gray-300={!canRedo}
+								class:border-gray-600={!canRedo}
+								disabled={!canRedo}
+								on:click={redo}
+							>
+								↪️
+							</button>
+						</div>
+
 						<button
 							class="rounded-md border-2 border-purple-800 bg-purple-200 p-1"
 							on:click={validate}
