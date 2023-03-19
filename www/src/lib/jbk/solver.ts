@@ -51,55 +51,6 @@ export const solveOverlapsBasic = (guide: number[], cells: Cell[]): Cell[] => {
 	return cells;
 };
 
-export const solveEdges = (guide: number[], cells: Cell[]): Cell[] => {
-	let offset = 0;
-
-	while (cells[offset] && cells[offset].state === false) {
-		offset++;
-	}
-
-	if (!cells[offset]) {
-		return cells;
-	}
-
-	// fill in first guide and end with stop
-	if (cells[offset].state === true) {
-		let idx = 0;
-		for (idx = 0; idx < guide[0]; idx++) {
-			cells[idx + offset].state = true;
-		}
-		if (cells[idx + offset]) {
-			cells[idx + offset].state = false;
-		}
-	}
-
-	return cells;
-};
-
-export const solveMinimumEdge = (guide: number[], cells: Cell[]): Cell[] => {
-	// remove completed guides from left
-
-	let any = false;
-
-	let offset = 0;
-	while (cells[offset] && cells[offset].state === false) {
-		offset++;
-	}
-	if (!cells[offset]) {
-		return cells;
-	}
-
-	for (let idx = 0; idx < guide[0]; idx++) {
-		if (cells[offset + idx].state === true) {
-			any = true;
-		}
-		if (any) {
-			cells[offset + idx].state = true;
-		}
-	}
-	return cells;
-};
-
 type Region = { start: number; end: number; hasTrue: boolean };
 
 const detectRegions = (cells: Cell[]): Region[] => {
@@ -139,54 +90,6 @@ const detectRegions = (cells: Cell[]): Region[] => {
 		});
 	}
 	return regions;
-};
-
-export const solveOutOfReach = (guide: number[], cells: Cell[]): Cell[] => {
-	const regions = detectRegions(cells);
-	const regionsWithTrue = regions.filter((r) => r.hasTrue);
-	const regionsWithFalse = regions.filter((r) => !r.hasTrue);
-
-	if (regionsWithTrue.length === guide.length) {
-		// fill all non-true regions with false
-		for (const r of regionsWithFalse) {
-			for (let idx = r.start; idx < r.end; idx++) {
-				cells[idx].state = false;
-			}
-		}
-
-		for (const [idx, r] of regionsWithTrue.entries()) {
-			let first = -1;
-			let last = -1;
-			for (let idx = r.start; idx <= r.end; idx++) {
-				if (cells[idx].state === true) {
-					if (first === -1) {
-						first = idx;
-					}
-					last = idx;
-				}
-			}
-
-			// fill between
-			for (let idx = first; idx <= last; idx++) {
-				cells[idx].state = true;
-			}
-
-			// fill false where out of reach
-			const len = last - first + 1;
-			const range = guide[idx] - len;
-
-			for (let idx = r.start; idx <= r.end; idx++) {
-				if (idx < first - range) {
-					cells[idx].state = false;
-				}
-				if (idx > last + range) {
-					cells[idx].state = false;
-				}
-			}
-		}
-	}
-
-	return cells;
 };
 
 const min = (...nums: number[]): number => {
@@ -279,15 +182,6 @@ const findStrictlySeparatedGroups = (cells: Cell[]): Range[] => {
 const containsBlockedWithinN = (cells: Cell[], start: number, n: number): boolean => {
 	for (let offset = 0; offset < n; offset++) {
 		if (cells[start + offset] && cells[start + offset].state === false) {
-			return true;
-		}
-	}
-	return false;
-};
-
-const containsTrueWithinN = (cells: Cell[], start: number, n: number): boolean => {
-	for (let offset = 0; offset < n; offset++) {
-		if (cells[start + offset] && cells[start + offset].state === true) {
 			return true;
 		}
 	}
@@ -706,93 +600,6 @@ export const solveOutOfReachWithSlidingStarts = (guide: number[], cells: Cell[])
 	return cells;
 };
 
-export const solveNextToBlocked = (guide: number[], cells: Cell[]): Cell[] => {
-	let start = -1;
-	let end = -1;
-
-	let blockedCount = 0;
-	let undefinedCount = 0;
-
-	for (const [idx, c] of cells.entries()) {
-		if (c.state === true && start < 0) {
-			start = idx;
-		}
-		if (c.state === false && start >= 0 && end === -1) {
-			end = idx;
-			const plottedLen = end - start;
-
-			const g = guide[0];
-
-			const sub = idx - plottedLen - undefinedCount - blockedCount;
-
-			if (plottedLen > g) {
-				return cells;
-			}
-
-			if (idx - plottedLen > g) {
-				return cells;
-			}
-
-			if (sub <= g) {
-				// mark all until -g
-				let i = 1;
-				for (; i <= g; i++) {
-					cells[idx - i].state = true;
-				}
-				if (cells[idx - i]) {
-					cells[idx - i].state = false;
-				}
-			}
-		}
-		if (c.state === undefined) {
-			start = -1;
-			end = -1;
-		}
-
-		if (c.state === false) {
-			blockedCount++;
-		}
-		if (c.state === undefined) {
-			undefinedCount++;
-		}
-	}
-
-	return cells;
-};
-
-export const solveNoSpace = (guide: number[], cells: Cell[]): Cell[] => {
-	let min = guide[0];
-	for (const g of guide) {
-		if (g < min) {
-			min = g;
-		}
-	}
-	let start = -1;
-	for (const [idx, c] of cells.entries()) {
-		if (c.state === undefined && (idx === 0 || cells[idx - 1].state === false)) {
-			if (start < 0) {
-				start = idx;
-			}
-		}
-		if (c.state === false) {
-			if (start > -1) {
-				const count = idx - start;
-				if (count < min) {
-					for (let i = start; i < idx; i++) {
-						cells[i].state = false;
-					}
-				}
-			}
-			start = -1;
-		}
-		if (c.state === true) {
-			start = -1;
-		}
-	}
-
-	return cells;
-};
-
 export const solveMaxLength = (guide: number[], cells: Cell[]): Cell[] => {
 	const guideRanges = getGuidePossibleRanges(guide, cells);
 	const groups = findGroups(cells);
@@ -830,58 +637,6 @@ const arrayEquals = (a: any, b: any): boolean => {
 	);
 };
 
-export const solveCompletedRow = (guide: number[], cells: Cell[]): Cell[] => {
-	const completed = [];
-	let count = 0;
-	for (const [idx, c] of cells.entries()) {
-		if ((idx === 0 || cells[idx - 1].state === false || count > 0) && c.state === true) {
-			count++;
-		}
-
-		if (c.state === false) {
-			if (count > 0) {
-				completed.push(count);
-			}
-			count = 0;
-		}
-		if (c.state === undefined) {
-			count = 0;
-		}
-	}
-	if (count > 0) {
-		completed.push(count);
-	}
-
-	if (arrayEquals(completed, guide)) {
-		for (const [idx, c] of cells.entries()) {
-			if (c.state === undefined) {
-				cells[idx].state = false;
-			}
-		}
-	}
-
-	return cells;
-};
-
-export const solveFirstNoFit = (guide: number[], cells: Cell[]): Cell[] => {
-	for (const [idx, c] of cells.entries()) {
-		if (c.state === true) {
-			break;
-		}
-		if (c.state === false) {
-			if (idx < guide[0]) {
-				for (let i = 0; i < idx; i++) {
-					cells[i].state = false;
-				}
-			}
-
-			break;
-		}
-	}
-
-	return cells;
-};
-
 export const solveZero = (guide: number[], cells: Cell[]): Cell[] => {
 	if (arrayEquals(guide, [0])) {
 		for (const [idx] of cells.entries()) {
@@ -889,13 +644,6 @@ export const solveZero = (guide: number[], cells: Cell[]): Cell[] => {
 		}
 	}
 
-	return cells;
-};
-
-export const solveStartGuideTouching = (guide: number[], cells: Cell[]): Cell[] => {
-	if (cells[guide[0]] && cells[guide[0]].state === true) {
-		cells[0].state = false;
-	}
 	return cells;
 };
 
@@ -977,17 +725,9 @@ export const solve = (
 
 	const funcs = [
 		{ fn: solveOverlapsBasic, reverse: false },
-		{ fn: solveEdges, false: true },
-		{ fn: solveMinimumEdge, reverse: false },
-		{ fn: solveOutOfReach, reverse: false },
-		{ fn: solveNextToBlocked, reverse: false },
 		{ fn: solveMaxLength, reverse: false },
-		{ fn: solveNoSpace, reverse: false },
-		{ fn: solveCompletedRow, reverse: true },
-		{ fn: solveFirstNoFit, reverse: true },
-		{ fn: solveZero, reverse: true },
-		{ fn: solveStartGuideTouching, reverse: true },
-		{ fn: solveOutOfReachWithSlidingStarts, reverse: true },
+		{ fn: solveZero, reverse: false },
+		{ fn: solveOutOfReachWithSlidingStarts, reverse: false },
 		{ fn: solveOverlapsSlidingRanges, reverse: false }
 	];
 
