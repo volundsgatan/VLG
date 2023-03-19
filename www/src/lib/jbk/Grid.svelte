@@ -74,12 +74,16 @@
 			state
 		});
 
+		// add to history
 		if (historyIdx !== history.length - 1) {
 			history = history.slice(0, historyIdx + 1);
 		}
 		history.push(JSON.stringify(state));
 		history = history;
 		historyIdx = history.length - 1;
+
+		// run validator
+		validate();
 	};
 
 	const restore = () => {
@@ -225,7 +229,16 @@
 		selected = [cursor];
 	};
 
+	let autoValidate = false;
+
 	const validate = () => {
+		if (!autoValidate) {
+			validatedRows = [];
+			validatedCols = [];
+			return;
+			// clear
+		}
+
 		// validate rows
 		validatedRows = state.map((row, idx) => validateRow(guide.rows[idx], row));
 
@@ -242,6 +255,8 @@
 
 		validatedCols = asCols.map((col, idx) => validateRow(guide.cols[idx], col));
 	};
+
+	$: autoValidate, validate();
 
 	const clearHighlights = () => {
 		if (!mutable) {
@@ -315,6 +330,10 @@
 	const validateRow = (guide: number[], cells: Cell[]): boolean => {
 		let current = 0;
 		const groups = [];
+
+		if (guide.length === 1 && guide[0] === 0) {
+			guide = [];
+		}
 
 		for (let cell of cells) {
 			if (cell.state === true) {
@@ -676,13 +695,21 @@
 								</button>
 							</div>
 						{/if}
-
-						<button
-							class="rounded-md border-2 border-purple-800 bg-purple-200 p-1"
-							on:click={validate}
-						>
-							Rätta
-						</button>
+						<div class="relative flex items-start">
+							<div class="flex h-6 items-center">
+								<input
+									id="comments"
+									aria-describedby="comments-description"
+									name="comments"
+									type="checkbox"
+									bind:checked={autoValidate}
+									class="h-4 w-4 rounded border-gray-300 text-purple-800 focus:ring-indigo-600 checked:bg-red-200"
+								/>
+							</div>
+							<div class="ml-3 text-sm leading-6">
+								<label for="comments" class="font-medium">Rätta</label>
+							</div>
+						</div>
 						<button
 							class="rounded-md border-2 border-purple-800 bg-purple-200 p-1"
 							on:click={clearHighlights}
