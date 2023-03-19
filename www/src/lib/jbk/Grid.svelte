@@ -64,7 +64,7 @@
 	let cursor: Position = [-1, -1];
 	let selected: Position[] = [];
 
-	const save = () => {
+	const save = (addToHistory: boolean) => {
 		if (!saveState) {
 			return;
 		}
@@ -75,12 +75,14 @@
 		});
 
 		// add to history
-		if (historyIdx !== history.length - 1) {
-			history = history.slice(0, historyIdx + 1);
+		if (addToHistory) {
+			if (historyIdx !== history.length - 1) {
+				history = history.slice(0, historyIdx + 1);
+			}
+			history.push(JSON.stringify(state));
+			history = history;
+			historyIdx = history.length - 1;
 		}
-		history.push(JSON.stringify(state));
-		history = history;
-		historyIdx = history.length - 1;
 
 		// run validator
 		validate();
@@ -99,6 +101,7 @@
 				dispatch('stateChanged', {
 					state
 				});
+				save(true);
 			}
 		}
 	};
@@ -110,6 +113,7 @@
 		if (canUndo) {
 			historyIdx--;
 			state = JSON.parse(history[historyIdx]);
+			save(false);
 		}
 	};
 
@@ -117,6 +121,7 @@
 		if (canRedo) {
 			historyIdx++;
 			state = JSON.parse(history[historyIdx]);
+			save(false);
 		}
 	};
 
@@ -188,7 +193,7 @@
 			state[p[0]][p[1]].state = nextState;
 		}
 
-		save();
+		save(true);
 	};
 
 	const clearSelected = () => {
@@ -202,7 +207,7 @@
 			state[p[0]][p[1]].hilight = false;
 		}
 
-		save();
+		save(true);
 	};
 
 	const toggleCurrentCellHilight = () => {
@@ -217,7 +222,7 @@
 			state[p[0]][p[1]].hilight = !cell.hilight;
 		}
 
-		save();
+		save(true);
 	};
 
 	const clickCell = (cell: Cell) => {
@@ -268,7 +273,7 @@
 				state[r][c].hilight = false;
 			}
 		}
-		save();
+		save(true);
 	};
 
 	const clearAll = () => {
@@ -287,7 +292,7 @@
 			}
 		}
 
-		save();
+		save(true);
 	};
 
 	const cellClasses = (cell: Cell, selected: Position[]): string => {
@@ -538,7 +543,7 @@
 		}
 
 		state = state;
-		save();
+		save(true);
 	};
 
 	$: cols, fixGridSize();
