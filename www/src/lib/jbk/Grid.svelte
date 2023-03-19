@@ -213,7 +213,7 @@
 			state[p[0]][p[1]].hilight = !cell.hilight;
 		}
 
-		// setCellHilight(cell, !cell.hilight);
+		save();
 	};
 
 	const clickCell = (cell: Cell) => {

@@ -24,10 +24,14 @@
 				class:w-4={tiny}
 			>
 				<div
-					class="flex h-full w-full items-center  justify-center border-[1px] border-gray-200 "
-					class:bg-green-400={valid}
-					class:bg-red-400={invalid}
-					class:bg-blue-200={selected}
+					class="flex h-full w-full items-center  justify-center   "
+					class:bg-green-300={valid}
+					class:bg-red-300={invalid}
+					class:bg-blue-300={selected}
+					class:border-blue-400={selected}
+					class:border-4={selected}
+					class:border-gray-200={!selected}
+					class:border-[1px]={!selected}
 				>
 					{g}
 				</div>
