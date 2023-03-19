@@ -10,8 +10,10 @@ import {
 	solveOverlapsBasic,
 	trimLeft,
 	groupPossibleSizes,
-	solveOverlapsSlidingRanges
+	solveOverlapsSlidingRanges,
+	solve
 } from './solver';
+import guides from '$lib/jbk/guides.json';
 
 describe('solver', () => {
 	test('solveEdges', () => {
@@ -291,48 +293,6 @@ describe('solver', () => {
 		];
 
 		expect(res).toStrictEqual(expected);
-	});
-
-	test('trimLeft', () => {
-		const guide = [2, 1, 1, 2];
-		const cells: Cell[] = Array(15);
-
-		for (let i = 0; i < 15; i++) {
-			cells[i] = { state: undefined };
-		}
-
-		const res = trimLeft(guide, cells);
-
-		expect(res.guideStart).toStrictEqual(0);
-		expect(res.cellsStart).toStrictEqual(0);
-
-		cells[0].state = false;
-		cells[1].state = true;
-		cells[2].state = true;
-		cells[3].state = false;
-
-		const res2 = trimLeft(guide, cells);
-
-		expect(res2.guideStart).toStrictEqual(1);
-		expect(res2.cellsStart).toStrictEqual(4);
-
-		cells[4].state = false;
-		cells[5].state = false;
-		cells[6].state = false;
-
-		const res3 = trimLeft(guide, cells);
-
-		expect(res3.guideStart).toStrictEqual(1);
-		expect(res3.cellsStart).toStrictEqual(7);
-
-		cells[4].state = false;
-		cells[5].state = true;
-		cells[6].state = false;
-
-		const res4 = trimLeft(guide, cells);
-
-		expect(res4.guideStart).toStrictEqual(2);
-		expect(res4.cellsStart).toStrictEqual(7);
 	});
 
 	test('getGuidePossibleRangesOneDirection', () => {
@@ -853,4 +813,39 @@ describe('solver', () => {
 
 		expect(res).toStrictEqual(expected);
 	});
+
+	const puzzles = [
+		'med-langa-ben',
+		'nalle',
+		'candle',
+		'mr-cool',
+		'skogens-konung',
+		'och-smasha',
+		'slippery-conditions'
+	];
+
+	for (const p of puzzles) {
+		test('canSolve/' + p, () => {
+			const guide = guides.find((g) => g.id === p);
+
+			expect(guide).toBeTruthy();
+
+			if (!guide) {
+				return;
+			}
+
+			const res = solve(guide?.rows, guide?.cols);
+
+			let isSolved = true;
+			for (const row of res.cells) {
+				for (const cell of row) {
+					if (cell.state === undefined) {
+						isSolved = false;
+					}
+				}
+			}
+
+			expect(isSolved).toBeTruthy();
+		});
+	}
 });

@@ -1066,10 +1066,10 @@ export const solve = (
 
 	const funcs = [
 		{ fn: solveOverlapsBasic, reverse: false },
-		{ fn: solveEdges, reverse: true },
-		{ fn: solveMinimumEdge, reverse: true },
+		{ fn: solveEdges, false: true },
+		{ fn: solveMinimumEdge, reverse: false },
 		{ fn: solveOutOfReach, reverse: false },
-		{ fn: solveNextToBlocked, reverse: true },
+		{ fn: solveNextToBlocked, reverse: false },
 		{ fn: solveMaxLength, reverse: false },
 		{ fn: solveNoSpace, reverse: false },
 		{ fn: solveCompletedRow, reverse: true },
@@ -1085,19 +1085,13 @@ export const solve = (
 		count: number;
 	};
 
-	const updateRowState = (
-		name: string,
-		r: number,
-		s: Cell[],
-		trim: Trim,
-		reversed = false
-	): Updated => {
+	const updateRowState = (name: string, r: number, s: Cell[], reversed = false): Updated => {
 		let count = 0;
 
 		for (const [idx, v] of s.entries()) {
-			let c = idx + trim.cellsStart;
+			let c = idx;
 			if (reversed) {
-				c = state[r].length - 1 - idx - trim.cellsStart;
+				c = state[r].length - 1 - idx;
 			}
 
 			if (v.state === true || v.state === false) {
@@ -1130,18 +1124,12 @@ export const solve = (
 		return { error: false, count };
 	};
 
-	const updateColState = (
-		name: string,
-		c: number,
-		s: Cell[],
-		trim: Trim,
-		reversed = false
-	): Updated => {
+	const updateColState = (name: string, c: number, s: Cell[], reversed = false): Updated => {
 		let count = 0;
 		for (const [idx, v] of s.entries()) {
-			let r = idx + trim.cellsStart;
+			let r = idx;
 			if (reversed) {
-				r = state.length - 1 - idx - trim.cellsStart;
+				r = state.length - 1 - idx;
 			}
 
 			if (v.state === true || v.state === false) {
@@ -1175,8 +1163,6 @@ export const solve = (
 	};
 
 	for (let it = 0; it < maxIterations; it++) {
-		console.log('~~ITERATION~~');
-
 		let updates = 0;
 
 		// reset hilights
@@ -1193,33 +1179,24 @@ export const solve = (
 			for (const fn of funcs) {
 				const guide = copyGuide(guideRows[r]);
 				const cells = copyCells(state[r]);
-				const trim = trimLeft(guide, cells);
 
-				if (trim.cellsStart < cells.length - 1) {
-					const s = fn.fn(guide.slice(trim.guideStart), cells.slice(trim.cellsStart));
-					const { error, count } = updateRowState(fn.fn.name, r, s, trim);
-					if (error) {
-						return { cells: state, iterations: it };
-					}
-					updates += count;
+				const s = fn.fn(guide, cells);
+				const { error, count } = updateRowState(fn.fn.name, r, s);
+				if (error) {
+					return { cells: state, iterations: it };
 				}
+				updates += count;
 
 				if (fn.reverse) {
 					const reversedGuide = copyGuide(guideRows[r]).reverse();
 					const reversedCells = copyCells(state[r]).reverse();
-					const trim = trimLeft(reversedGuide, reversedCells);
 
-					if (trim.cellsStart < cells.length - 1) {
-						const s2 = fn.fn(
-							reversedGuide.slice(trim.guideStart),
-							reversedCells.slice(trim.cellsStart)
-						);
-						const { error, count } = updateRowState(fn.fn.name, r, copyCells(s2), trim, true);
-						if (error) {
-							return { cells: state, iterations: it };
-						}
-						updates += count;
+					const s2 = fn.fn(reversedGuide, reversedCells);
+					const { error, count } = updateRowState(fn.fn.name, r, copyCells(s2), true);
+					if (error) {
+						return { cells: state, iterations: it };
 					}
+					updates += count;
 				}
 			}
 		}
@@ -1229,42 +1206,31 @@ export const solve = (
 			for (const fn of funcs) {
 				const cells = copyCells(state.map((row) => row[c]));
 				const guide = copyGuide(guideCols[c]);
-				const trim = trimLeft(guide, cells);
 
-				if (trim.cellsStart < cells.length - 1) {
-					const s = fn.fn(guide.slice(trim.guideStart), cells.slice(trim.cellsStart));
-					const { error, count } = updateColState(fn.fn.name, c, s, trim);
+				const s = fn.fn(guide, cells);
+				const { error, count } = updateColState(fn.fn.name, c, s);
+				if (error) {
+					return { cells: state, iterations: it };
+				}
+				updates += count;
+
+				if (fn.reverse) {
+					const reversedGuide = copyGuide(guideCols[c]).reverse();
+					const reversedCells = copyCells(cells).reverse();
+
+					const s2 = fn.fn(reversedGuide, reversedCells);
+					const { error, count } = updateColState(fn.fn.name, c, copyCells(s2), true);
 					if (error) {
 						return { cells: state, iterations: it };
 					}
 					updates += count;
 				}
-
-				if (fn.reverse) {
-					const reversedGuide = copyGuide(guideCols[c]).reverse();
-					const reversedCells = copyCells(cells).reverse();
-					const trim = trimLeft(reversedGuide, reversedCells);
-
-					if (trim.cellsStart < cells.length - 1) {
-						const s2 = fn.fn(
-							reversedGuide.slice(trim.guideStart),
-							reversedCells.slice(trim.cellsStart)
-						);
-						const { error, count } = updateColState(fn.fn.name, c, copyCells(s2), trim, true);
-						if (error) {
-							return { cells: state, iterations: it };
-						}
-						updates += count;
-					}
-				}
 			}
 		}
 
 		if (updates === 0) {
-			console.log(`No changes after ${it} iterations`);
 			return { cells: state, iterations: it };
 		}
-		console.log(updates);
 	}
 
 	return { cells: state, iterations: -1 };
