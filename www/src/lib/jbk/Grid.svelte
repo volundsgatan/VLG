@@ -371,8 +371,20 @@
 			return;
 		}
 
-		if (e.key === 'z') {
+		if (e.key === 'a') {
 			toggleCurrentCellHilight();
+			e.preventDefault();
+			e.stopPropagation();
+			return;
+		}
+
+		if (e.key === 'z') {
+			const ctrLike = e.metaKey || e.ctrlKey;
+			if (e.shiftKey && ctrLike) {
+				redo();
+			} else if (ctrLike) {
+				undo();
+			}
 			e.preventDefault();
 			e.stopPropagation();
 			return;
@@ -659,7 +671,9 @@
 				<div style="margin-left: {rowGuideWidth}px">
 					<div><span class="font-mono">[space]</span> – Cycla svar [ja/nej/tom]</div>
 					<div><span class="font-mono">[backspace]</span> – Rensa cell</div>
-					<div><span class="font-mono">z</span> – Markera</div>
+					<div><span class="font-mono">A</span> – Markera</div>
+					<div><span class="font-mono">Ctrl/⌘ + <kbd>Z</kbd></span> – Ångra</div>
+					<div><span class="font-mono">Ctrl/⌘ + Shift + Z</span> – Upprepa</div>
 				</div>
 			{/if}
 		</div>
