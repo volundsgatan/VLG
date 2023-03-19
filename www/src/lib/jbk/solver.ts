@@ -64,7 +64,7 @@ export const solveOverlapsBasic = (guide: number[], cells: Cell[]): Cell[] => {
 	return cells;
 };
 
-export const solveEdegs = (guide: number[], cells: Cell[]): Cell[] => {
+export const solveEdges = (guide: number[], cells: Cell[]): Cell[] => {
 	let offset = 0;
 
 	for (; cells[offset] && cells[offset].state === false; offset++) {
@@ -997,7 +997,7 @@ export const solveStartGuideTouching = (guide: number[], cells: Cell[]): Cell[] 
 	return cells;
 };
 
-const solveOverlapsSlidingRanges = (guide: number[], cells: Cell[]): Cell[] => {
+export const solveOverlapsSlidingRanges = (guide: number[], cells: Cell[]): Cell[] => {
 	// guide ranges that doesn't overlap with other guide ranges
 	const ranges = getGuidePossibleRanges(guide, cells);
 
@@ -1071,7 +1071,7 @@ export const solve = (
 
 	const funcs = [
 		{ fn: solveOverlapsBasic, reverse: false },
-		{ fn: solveEdegs, reverse: true },
+		{ fn: solveEdges, reverse: true },
 		{ fn: solveMinimumEdge, reverse: true },
 		{ fn: solveOutOfReach, reverse: false },
 		{ fn: solveNextToBlocked, reverse: true },
