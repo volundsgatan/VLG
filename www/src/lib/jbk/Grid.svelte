@@ -407,7 +407,7 @@
 			return;
 		}
 
-		if (e.key === 'z') {
+		if (e.key === 'z' || e.keyCode === 'z' || e.code === 'z') {
 			const ctrLike = e.metaKey || e.ctrlKey;
 			if (e.shiftKey && ctrLike) {
 				redo();
