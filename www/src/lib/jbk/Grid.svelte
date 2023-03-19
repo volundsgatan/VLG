@@ -540,8 +540,8 @@
 									class:w-6={!tiny}
 									class:h-4={tiny}
 									class:w-4={tiny}
-									class:border-red-800={cell.hilightRed}
-									class:border-green-800={cell.hilightGreen}
+									class:!border-red-800={cell.hilightRed}
+									class:!border-green-800={cell.hilightGreen}
 									class:!border-4={cell.hilightRed || cell.hilightGreen}
 									class:bg-yellow-400={cell.hilight && cell.state !== true}
 									class:bg-black={cell.state === true}
@@ -576,19 +576,19 @@
 							class="rounded-md border-2 border-purple-800 bg-purple-200 p-1"
 							on:click={validate}
 						>
-							Validate
+							Rätta
 						</button>
 						<button
 							class="rounded-md border-2 border-purple-800 bg-purple-200 p-1"
 							on:click={clearHighlights}
 						>
-							Clear highlights
+							Rensa markeringar
 						</button>
 						<button
 							class="rounded-md border-2 border-purple-800 bg-purple-200 p-1"
 							on:click={clearAll}
 						>
-							Start over
+							Börja om
 						</button>
 						<div>
 							<a
@@ -604,9 +604,9 @@
 
 			{#if showInstructions}
 				<div style="margin-left: {rowGuideWidth}px">
-					<div><span class="font-mono">[space]</span> – Toggle cell [yes/no/undefined]</div>
-					<div><span class="font-mono">[backspace]</span> – Clear cell</div>
-					<div><span class="font-mono">z</span> – Hilight</div>
+					<div><span class="font-mono">[space]</span> – Cycla svar [ja/nej/tom]</div>
+					<div><span class="font-mono">[backspace]</span> – Rensa cell</div>
+					<div><span class="font-mono">z</span> – Markera</div>
 				</div>
 			{/if}
 		</div>

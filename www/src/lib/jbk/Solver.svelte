@@ -45,8 +45,15 @@
 		runSolver(stopAfterIteration);
 	};
 
+	let solverDuration: number;
+
 	const runSolver = (stopAfter: number) => {
+		const start = Date.now();
 		const res = solve(guide.rows, guide.cols, stopAfter, true);
+		const end = Date.now();
+
+		solverDuration = end - start;
+
 		const solved = res.cells;
 
 		// LOL magic number
@@ -120,4 +127,8 @@
 	</div>
 
 	<Grid {guide} withState={state} name="solver" id="solver" showGuide={true} mutable={false} />
+
+	<div class="text-gray-500 text-sm">
+		Solved in {maxUsedIterations} iterations ({solverDuration} ms)
+	</div>
 </div>
