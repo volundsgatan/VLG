@@ -700,21 +700,25 @@
 								</button>
 							</div>
 						{/if}
-						<div class="relative flex items-start">
-							<div class="flex h-6 items-center">
-								<input
-									id="comments"
-									aria-describedby="comments-description"
-									name="comments"
-									type="checkbox"
-									bind:checked={autoValidate}
-									class="h-4 w-4 rounded border-gray-300 text-purple-800 focus:ring-indigo-600 checked:bg-red-200"
-								/>
+
+						{#if showGuide}
+							<div class="relative flex items-start">
+								<div class="flex h-6 items-center">
+									<input
+										id="comments"
+										aria-describedby="comments-description"
+										name="comments"
+										type="checkbox"
+										bind:checked={autoValidate}
+										class="h-4 w-4 rounded border-gray-300 text-purple-800 focus:ring-indigo-600 checked:bg-red-200"
+									/>
+								</div>
+								<div class="ml-3 text-sm leading-6">
+									<label for="comments" class="font-medium">Rätta</label>
+								</div>
 							</div>
-							<div class="ml-3 text-sm leading-6">
-								<label for="comments" class="font-medium">Rätta</label>
-							</div>
-						</div>
+						{/if}
+
 						<button
 							class="rounded-md border-2 border-purple-800 bg-purple-200 p-1"
 							on:click={clearHighlights}
