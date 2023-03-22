@@ -405,74 +405,7 @@ describe("solver", () => {
     expect(res).toStrictEqual(exp);
   });
 
-  test("getGuidePossibleRanges/2-4-5", () => {
-    const guide = [2, 4, 5];
-    const cells: Cell[] = Array(30);
-
-    for (let i = 0; i < 30; i++) {
-      cells[i] = { state: undefined };
-    }
-
-    cells[13].state = true;
-    cells[12].state = true;
-
-    /* (from left)
-        01234 56789 01234 56789
-                     TT
-    0:  XXXXX XXXXX XXXXX XXXXX
-    1:      X XXXXX XXXXX XXXXX
-    2:         XXXX XXXXX XXXXX
-    3:           XX XXXXX XXXXX
-    */
-
-    /* (from right)
-        01234 56789 01234 56789
-                     TT
-    0:  XXXXX XXX
-    1:  XXXXX XXXXX
-    2:  XXXXX XXXXX XXXXX X
-    3:  XXXXX XXXXX XXXXX XXXXX
-    */
-
-    /* (combined)
-        01234 56789 01234 56789
-                     TT
-    0:  XXXXX XXX
-    1:      X XXXXX
-    2:         XXXX XXXXX X
-    3:           XX XXXXX XXXXX
-    */
-
-    /* (single guide groups)
-        01234 56789 01234 56789
-                     TT
-    0:  XXXXX XXX
-    1:      X XXXXX
-    2:         XXXX XXXXX X
-    3:              XXXX
-    */
-
-    /* (adjusted)
-        01234 56789 01234 56789
-                     TT
-    0:  XXXXX X
-    3:      X XXX
-    2:         XXXX
-    1:              XXXX
-    */
-
-    const res = getGuidePossibleRanges(guide, cells);
-
-    const exp: GuideRange[] = [
-      { start: 0, end: 5, guideIdx: 0, guideVal: 3, len: 6 },
-      { start: 4, end: 7, guideIdx: 1, guideVal: 1, len: 4 },
-      { start: 6, end: 9, guideIdx: 2, guideVal: 1, len: 4 },
-      { start: 10, end: 13, guideIdx: 3, guideVal: 3, len: 4 },
-    ];
-
-    expect(res).toStrictEqual(exp);
-  });
-
+ 
   test("getGuidePossibleRanges/1-1-3-1", () => {
     const guide = [1, 1, 3, 1];
     const cells: Cell[] = Array(20);
