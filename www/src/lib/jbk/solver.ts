@@ -307,10 +307,20 @@ export const getGuidePossibleRangesOneDirection = (
   return guidePossibleRanges;
 };
 
+const guidePossibeRangesMemo = new Map<string, GuideRange[]>();
+
 export const getGuidePossibleRanges = (
   guide: number[],
   cells: Cell[],
 ): GuideRange[] => {
+  const key = JSON.stringify({ guide, cells });
+  if (guidePossibeRangesMemo.has(key)) {
+    const r = guidePossibeRangesMemo.get(key);
+    if (r) {
+      return r;
+    }
+  }
+
   const first = getGuidePossibleRangesOneDirection(guide, cells);
 
   // flip it, and get from the second direction
@@ -334,7 +344,9 @@ export const getGuidePossibleRanges = (
   const groups = findGroups(cells);
 
   for (let it = 0; it < 100; it++) {
-    const preCombined = JSON.stringify(combined);
+    // const preCombined = hash(combined);
+
+    let changed = false;
 
     // if there are groups that are only within one guide, adjust that guide to the group (plus surrounding)
     const singleGuideGroups = detectSingleGuideGroups(groups, combined, cells);
@@ -357,6 +369,10 @@ export const getGuidePossibleRanges = (
           const nStart = max(0, minGroupStart - delta, guide.start);
           const nEnd = min(cells.length - 1, maxGroupEnd + delta, guide.end);
 
+          if (nStart !== guide.start || nEnd !== guide.end) {
+            changed = true;
+          }
+
           combined[idx] = {
             ...guide,
             start: nStart,
@@ -369,58 +385,78 @@ export const getGuidePossibleRanges = (
     // adjust start
     for (const [idx, guide] of combined.entries()) {
       if (combined[idx - 1]) {
-        combined[idx].start = max(
+        const s = max(
           combined[idx - 1].start + combined[idx - 1].guideVal + 1,
           guide.start,
         );
+        if (s !== guide.start) {
+          changed = true;
+        }
+        combined[idx].start = s;
       }
     }
 
     // adjust ends
     for (let idx = combined.length - 1; idx >= 0; idx--) {
       if (combined[idx + 1]) {
-        combined[idx].end = min(combined[idx + 1].end - 2, combined[idx].end);
+        const e = min(combined[idx + 1].end - 2, combined[idx].end);
+        if (e !== combined[idx].end) {
+          changed = true;
+        }
+        combined[idx].end = e;
       }
     }
 
     // after start and end have been adjusted, apply same rules as in getGuidePossibleRangesOneDirection for moving them
     for (const [idx, range] of combined.entries()) {
-      combined[idx].start = moveStart(
+      const s = moveStart(
         range.start,
         idx,
         range.guideVal,
         guide,
         cells,
       );
-      combined[idx].end = moveEnd(range.end, cells);
-    }
+      const e = moveEnd(range.end, cells);
 
-    // set len of all ranges
-    for (const [idx, guide] of combined.entries()) {
-      combined[idx].len = guide.end - guide.start + 1;
+      if (s !== range.start || e !== range.end) {
+        changed = true;
+      }
+
+      combined[idx].start = s;
+      combined[idx].end = e;
     }
 
     // no changes
-    const postCombined = JSON.stringify(combined);
-    if (postCombined === preCombined) {
+    if (!changed) {
       break;
     }
   }
 
+  // set len of all ranges
+  for (const [idx, guide] of combined.entries()) {
+    combined[idx].len = guide.end - guide.start + 1;
+  }
+
+  guidePossibeRangesMemo.set(key, combined);
+
   return combined;
 };
 
-const groupPossibleSizesMemo: Map<string, Set<number>> = new Map();
+const groupCanBeOfSizeMemo: Map<string, boolean> = new Map();
 
-export const groupPossibleSizes = (
+export const groupCanBeOfSize = (
   start: number,
   end: number,
   cells: Cell[],
-): Set<number> => {
-  const key = JSON.stringify({ start, end, cells });
+  expectedSize: number,
+): boolean => {
+  // const key = JSON.stringify({ start, end, cells, expectedSize });
+  const key = `${start}-${end}-${
+    cells.map((c) => c.state === true ? "t" : c.state === false ? "f" : "u")
+  }-${expectedSize}`;
 
-  const fromCache = groupPossibleSizesMemo.get(key);
-  if (fromCache) {
+  const fromCache = groupCanBeOfSizeMemo.get(key);
+  if (fromCache !== undefined) {
     return fromCache;
   }
 
@@ -436,23 +472,37 @@ export const groupPossibleSizes = (
 
   const len = end - start + 1;
 
-  const res = new Set([len]);
+  if (len === expectedSize) {
+    groupCanBeOfSizeMemo.set(key, true);
+    return true;
+  }
+
+  if (len > expectedSize) {
+    groupCanBeOfSizeMemo.set(key, false);
+    return false;
+  }
+
+  // const res = new Set([len]);
 
   // if not blocked to left
   if (cells[start - 1] && cells[start - 1].state !== false) {
-    groupPossibleSizes(start - 1, end, cells).forEach((v) => {
-      res.add(v);
-    });
+    if (groupCanBeOfSize(start - 1, end, cells, expectedSize)) {
+      groupCanBeOfSizeMemo.set(key, true);
+      return true;
+    }
   }
 
   // if not blocked to right
   if (cells[end + 1] && cells[end + 1].state !== false) {
-    groupPossibleSizes(start, end + 1, cells).forEach((v) => res.add(v));
+    if (groupCanBeOfSize(start, end + 1, cells, expectedSize)) {
+      groupCanBeOfSizeMemo.set(key, true);
+      return true;
+    }
   }
 
-  groupPossibleSizesMemo.set(key, res);
+  groupCanBeOfSizeMemo.set(key, false);
 
-  return res;
+  return false;
 };
 
 const detectSingleGuideGroups = (
@@ -472,7 +522,7 @@ const detectSingleGuideGroups = (
         r.start <= g.start &&
         r.end >= g.end &&
         r.guideVal >= len &&
-        groupPossibleSizes(g.start, g.end, cells).has(r.guideVal)
+        groupCanBeOfSize(g.start, g.end, cells, r.guideVal)
       );
     });
 
@@ -500,12 +550,6 @@ export const solveOutOfReachWithSlidingStarts = (
 
   const guidePossibleRanges = getGuidePossibleRanges(guide, cells);
 
-  const singleGuideGroups = detectSingleGuideGroups(
-    groups,
-    guidePossibleRanges,
-    cells,
-  );
-
   // Cells with no overlapping range
   for (const [idx] of cells.entries()) {
     const ranges = guidePossibleRanges.filter((r) =>
@@ -513,54 +557,6 @@ export const solveOutOfReachWithSlidingStarts = (
     );
     if (ranges.length === 0) {
       cells[idx].state = false;
-    }
-  }
-
-  // TODO: Is the thing below even used?
-
-  for (const [guideIdx, groups] of Object.entries(singleGuideGroups)) {
-    let start = groups[0].start;
-    let end = groups[0].end;
-    for (const g of groups) {
-      if (g.start < start) {
-        start = g.start;
-      }
-      if (g.end > end) {
-        end = g.end;
-      }
-    }
-
-    // if more than 1 group, merge them
-    if (groups.length > 1) {
-      for (let idx = start; idx <= end; idx++) {
-        cells[idx].state = true;
-      }
-    }
-
-    const guideLen = guide[parseInt(guideIdx)];
-
-    // if start touching a blocker or edge, fill the rest
-    if (!cells[start - 1] || cells[start - 1].state === false) {
-      // fill len
-      for (let idx = start; idx < start + guideLen; idx++) {
-        cells[idx].state = true;
-      }
-      // stop
-      if (cells[start + guideLen]) {
-        cells[start + guideLen].state = false;
-      }
-    }
-
-    // if end touching a blocker or edge, fill the rest
-    if (!cells[end + 1] || cells[end + 1].state === false) {
-      // fill len
-      for (let idx = end; idx > end - guideLen; idx--) {
-        cells[idx].state = true;
-      }
-      // stop
-      if (cells[end - guideLen]) {
-        cells[end - guideLen].state = false;
-      }
     }
   }
 
@@ -649,6 +645,14 @@ export const solveOverlapsSlidingRanges = (
   return cells;
 };
 
+const copyState = (state: Cell[][]): Cell[][] => {
+  const res: Cell[][] = [];
+  for (const c of state) {
+    res.push(copyCells(c));
+  }
+  return res;
+};
+
 const copyCells = (cells: Cell[]): Cell[] => {
   const res: Cell[] = [];
   for (const c of cells) {
@@ -665,28 +669,144 @@ const copyGuide = (guide: number[]): number[] => {
   return res;
 };
 
-type SolveResult = {
-  cells: Cell[][];
-  iterations: number;
+export type SolveResult = LogicSolverResult & {
+  totalGuesses: number;
+  isSolved: boolean;
+  guesses: { row: number; col: number }[];
 };
 
-export const solve = (
+export function* solve(
   guideRows: number[][],
   guideCols: number[][],
   maxIterations = 100,
   highlightChanges = false,
-): SolveResult => {
-  console.clear();
-
-  const state: Cell[][] = [];
+): Generator<SolveResult> {
+  const rootState: Cell[][] = [];
+  groupCanBeOfSizeMemo.clear();
+  guidePossibeRangesMemo.clear();
 
   // init full state
   for (let r = 0; r < guideRows.length; r++) {
-    state[r] = [];
+    rootState[r] = [];
     for (let c = 0; c < guideCols.length; c++) {
-      state[r][c] = { state: undefined };
+      rootState[r][c] = { state: undefined };
     }
   }
+
+  let totalGuesses = 0;
+
+  type QS = {
+    state: Cell[][];
+    depth: number;
+    guesses: { row: number; col: number }[];
+  };
+
+  const Q: QS[] = [];
+
+  Q.push({ state: copyState(rootState), depth: 0, guesses: [] });
+
+  while (Q.length > 0) {
+    const q = Q.shift();
+    if (!q) {
+      break;
+    }
+    const { state, depth, guesses } = q;
+
+    totalGuesses++;
+
+    // apply guesses
+    const thisState = copyState(state);
+    for (const g of guesses) {
+      thisState[g.row][g.col].state = true;
+    }
+
+    const res = logicSolver(
+      thisState,
+      guideRows,
+      guideCols,
+      maxIterations,
+      highlightChanges,
+    );
+
+    if (res.isError) {
+      // if (depth === 0) {
+      yield {
+        ...res,
+        isSolved: false,
+        totalGuesses,
+        isError: true,
+        guesses,
+      };
+      continue;
+      // }
+
+      // continue;
+    }
+
+    // if (totalGuesses > 5) {
+    //   break;
+    // }
+
+    if (isSolved(res.cells)) {
+      yield {
+        ...res,
+        isSolved: true,
+        totalGuesses,
+        isError: false,
+        guesses,
+      };
+      break;
+    }
+
+    if (depth > 2) {
+      continue;
+    }
+
+    // try mark once cell as true...
+    for (let r = 0; r < res.cells.length; r++) {
+      for (let c = 0; c < res.cells[r].length; c++) {
+        if (res.cells[r][c].state === undefined) {
+          // const newState = copyState(res.cells);
+          // newState[r][c].state = true;
+          Q.push({
+            state: thisState,
+            depth: depth + 1,
+            guesses: [...guesses, { row: r, col: c }],
+          });
+        }
+      }
+    }
+  }
+
+  // return {}
+}
+
+const isSolved = (state: Cell[][]): boolean => {
+  for (const row of state) {
+    for (const cell of row) {
+      if (cell.state === undefined) {
+        return false;
+      }
+    }
+  }
+  return true;
+};
+
+type LogicSolverResult = {
+  cells: Cell[][];
+  iterations: number;
+  isError: boolean;
+  counters: Map<string, number>;
+};
+
+const logicSolver = (
+  state: Cell[][],
+  guideRows: number[][],
+  guideCols: number[][],
+  maxIterations = 100,
+  highlightChanges = false,
+): LogicSolverResult => {
+  // console.clear();
 
   const funcs = [
     { fn: solveOverlapsBasic },
@@ -701,17 +821,24 @@ export const solve = (
     count: number;
   };
 
+  const counters = new Map<string, number>();
+
+  const bump = (name: string) => {
+    const c = counters.get(name) || 0;
+    counters.set(name, c + 1);
+  };
+
   const updateRowState = (name: string, r: number, s: Cell[]): Updated => {
     let count = 0;
 
     for (const [c, v] of s.entries()) {
       if (v.state === true || v.state === false) {
         if (state[r][c].state !== v.state && state[r][c].state !== undefined) {
-          console.error(
-            `${name} row=${r} changed [${r}, ${c}] from ${
-              state[r][c].state
-            } to ${v.state}`,
-          );
+          // console.error(
+          //   `${name} row=${r} changed [${r}, ${c}] from ${
+          //     state[r][c].state
+          //   } to ${v.state}`,
+          // );
           state[r][c].hilight = true;
           return { error: true, count: 0 };
         }
@@ -720,6 +847,7 @@ export const solve = (
           if (highlightChanges) {
             state[r][c].hilight = true;
           }
+          bump(name);
         }
         state[r][c].state = v.state;
       }
@@ -742,11 +870,11 @@ export const solve = (
     for (const [r, v] of s.entries()) {
       if (v.state === true || v.state === false) {
         if (state[r][c].state !== v.state && state[r][c].state !== undefined) {
-          console.error(
-            `${name} col=${c} changed [${r}, ${c}] from ${
-              state[r][c].state
-            } to ${v.state}`,
-          );
+          // console.error(
+          //   `${name} col=${c} changed [${r}, ${c}] from ${
+          //     state[r][c].state
+          //   } to ${v.state}`,
+          // );
           state[r][c].hilight = true;
           return { error: true, count: 0 };
         }
@@ -755,6 +883,7 @@ export const solve = (
           if (highlightChanges) {
             state[r][c].hilight = true;
           }
+          bump(name);
         }
         state[r][c].state = v.state;
       }
@@ -787,13 +916,18 @@ export const solve = (
     // solve rows
     for (let r = 0; r < guideRows.length; r++) {
       for (const fn of funcs) {
-        const guide = copyGuide(guideRows[r]);
-        const cells = copyCells(state[r]);
+        const guide = guideRows[r];
+        const cells = state[r];
 
         const s = fn.fn(guide, cells);
         const { error, count } = updateRowState(fn.fn.name, r, s);
         if (error) {
-          return { cells: state, iterations: it };
+          return {
+            cells: state,
+            iterations: it,
+            isError: true,
+            counters,
+          };
         }
         updates += count;
       }
@@ -803,21 +937,26 @@ export const solve = (
     for (let c = 0; c < guideCols.length; c++) {
       for (const fn of funcs) {
         const cells = copyCells(state.map((row) => row[c]));
-        const guide = copyGuide(guideCols[c]);
+        const guide = guideCols[c];
 
         const s = fn.fn(guide, cells);
         const { error, count } = updateColState(fn.fn.name, c, s);
         if (error) {
-          return { cells: state, iterations: it };
+          return {
+            cells: state,
+            iterations: it,
+            isError: true,
+            counters,
+          };
         }
         updates += count;
       }
     }
 
     if (updates === 0) {
-      return { cells: state, iterations: it };
+      return { cells: state, iterations: it, isError: false, counters };
     }
   }
 
-  return { cells: state, iterations: -1 };
+  return { cells: state, iterations: -1, isError: false, counters };
 };

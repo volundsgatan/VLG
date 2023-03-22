@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Guide from '$lib/jbk/Guide.svelte';
-	import { onMount } from 'svelte';
+	import { onMount, tick } from 'svelte';
 	import { solve, type Cell as SolverCell } from '$lib/jbk/solver';
 	import Grid from './Grid.svelte';
 
@@ -39,6 +39,11 @@
 	let maxUsedIterations = 1;
 	let stopAfterIteration = 0;
 
+	let isError = false;
+	let isSolved = false;
+	let totalGuesses = 0;
+	let guesses: { row: number; col: number }[];
+
 	const changeIteration = (delta: number) => {
 		console.log('xx');
 		stopAfterIteration = stopAfterIteration + delta;
@@ -47,47 +52,73 @@
 
 	let solverDuration: number;
 
-	const runSolver = (stopAfter: number) => {
+	const runSolver = async (stopAfter: number) => {
+		running = true;
 		const start = Date.now();
-		const res = solve(guide.rows, guide.cols, stopAfter, true);
-		const end = Date.now();
+		const solver = solve(guide.rows, guide.cols, stopAfter, true);
 
-		solverDuration = end - start;
-
-		const solved = res.cells;
-
-		// LOL magic number
-		if (stopAfter === 1000) {
-			maxUsedIterations = res.iterations;
-			stopAfterIteration = 0;
-		}
-
-		state = [];
-
-		for (let row = 0; row < rows; row++) {
-			state.push(makeRow(row));
-		}
-
-		for (let r = 0; r < rows; r++) {
-			for (let c = 0; c < cols; c++) {
-				state[r][c].state = solved[r][c].state;
-				state[r][c].hilight = solved[r][c].hilight === true;
-				state[r][c].hilightGreen = solved[r][c].hilightGreen === true;
-				state[r][c].hilightRed = solved[r][c].hilightRed === true;
+		while (true) {
+			// await tick();
+			const s = solver.next();
+			if (s.done) {
+				const end = Date.now();
+				solverDuration = end - start;
+				break;
 			}
-		}
+			const res = s.value;
 
-		state = state;
+			const solved = res.cells;
+
+			isSolved = !!res.isSolved;
+			isError = !!res.isError;
+			totalGuesses = res.totalGuesses || 0;
+			guesses = res.guesses;
+
+			// LOL magic number
+			if (stopAfter === 1000) {
+				maxUsedIterations = res.iterations;
+				stopAfterIteration = 0;
+			}
+
+			state = [];
+
+			for (let row = 0; row < rows; row++) {
+				state.push(makeRow(row));
+			}
+
+			for (let r = 0; r < rows; r++) {
+				for (let c = 0; c < cols; c++) {
+					state[r][c].state = solved[r][c].state;
+					state[r][c].hilight = solved[r][c].hilight === true;
+					state[r][c].hilightGreen = solved[r][c].hilightGreen === true;
+					state[r][c].hilightRed = solved[r][c].hilightRed === true;
+				}
+			}
+
+			for (const g of guesses) {
+				state[g.row][g.col].hilightGreen = true;
+			}
+
+			state = state;
+
+			await new Promise((f) => setTimeout(f, 0));
+		}
 	};
 
-	onMount(() => {
-		runSolver(1000);
+	let running = true;
+
+	onMount(async () => {
+		running = true;
+		await tick();
+		await runSolver(1000);
+		running = false;
 	});
 
-	$: guide, runSolver(1000);
+	// $: guide, runSolver(1000);
 </script>
 
 <div class="flex flex-col items-center space-y-4">
+	<div>running={running}</div>
 	<div>
 		{#if stopAfterIteration > 0}
 			Iteration {stopAfterIteration} / {maxUsedIterations}
@@ -131,4 +162,11 @@
 	<div class="text-gray-500 text-sm">
 		Solved in {maxUsedIterations} iterations ({solverDuration} ms)
 	</div>
+
+	<pre>
+		isSolved={isSolved}
+		isError={isError}
+		totalGuesses={totalGuesses}
+		guesses={JSON.stringify(guesses)}
+	</pre>
 </div>
