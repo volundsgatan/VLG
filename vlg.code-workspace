@@ -1,0 +1,17 @@
+{
+	"folders": [
+		{
+			"path": "tailscale-whoami"
+		},
+		{
+			"path": "www"
+		},
+		{
+			"path": "kubernetes"
+		},
+		{
+			"name": "root",
+			"path": "."
+		}
+	]
+}
