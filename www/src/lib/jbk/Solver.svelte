@@ -9,6 +9,8 @@
 		rows: number[][];
 	};
 
+	export let allowBruteForce: boolean = false;
+
 	$: cols = guide?.cols.length;
 	$: rows = guide?.rows.length;
 
@@ -55,7 +57,8 @@
 	const runSolver = async (stopAfter: number) => {
 		running = true;
 		const start = Date.now();
-		const solver = solve(guide.rows, guide.cols, stopAfter, true);
+		const hilightChanges = false;
+		const solver = solve(guide.rows, guide.cols, stopAfter, hilightChanges, allowBruteForce);
 
 		while (true) {
 			// await tick();
@@ -114,11 +117,12 @@
 		running = false;
 	});
 
-	// $: guide, runSolver(1000);
+	$: guide, runSolver(1000);
 </script>
 
 <div class="flex flex-col items-center space-y-4">
 	<div>running={running}</div>
+
 	<div>
 		{#if stopAfterIteration > 0}
 			Iteration {stopAfterIteration} / {maxUsedIterations}
@@ -159,14 +163,18 @@
 
 	<Grid {guide} withState={state} name="solver" id="solver" showGuide={true} mutable={false} />
 
-	<div class="text-gray-500 text-sm">
-		Solved in {maxUsedIterations} iterations ({solverDuration} ms)
-	</div>
-
-	<pre>
-		isSolved={isSolved}
-		isError={isError}
-		totalGuesses={totalGuesses}
-		guesses={JSON.stringify(guesses)}
-	</pre>
+	{#if running}
+		<div class="text-gray-500 text-sm">Running... ({totalGuesses} guesses)</div>
+	{:else}
+		<div class="text-gray-500 text-sm">
+			{#if isSolved}
+				Solved in {maxUsedIterations} iterations
+			{:else if isError}
+				Error after {maxUsedIterations} iterations. This is a bug in the solver!
+			{:else}
+				Stuck after {maxUsedIterations} iterations, this puzzle might not have a solution.
+			{/if}
+			({solverDuration} ms).
+		</div>
+	{/if}
 </div>

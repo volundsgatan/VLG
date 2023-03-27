@@ -680,6 +680,7 @@ export function* solve(
   guideCols: number[][],
   maxIterations = 100,
   highlightChanges = false,
+  allowBruteForce = false,
 ): Generator<SolveResult> {
   const rootState: Cell[][] = [];
   groupCanBeOfSizeMemo.clear();
@@ -747,19 +748,24 @@ export function* solve(
     //   break;
     // }
 
+    yield {
+      ...res,
+      isSolved: isSolved(res.cells),
+      totalGuesses,
+      isError: false,
+      guesses,
+    };
+
     if (isSolved(res.cells)) {
-      yield {
-        ...res,
-        isSolved: true,
-        totalGuesses,
-        isError: false,
-        guesses,
-      };
       break;
     }
 
     if (depth > 2) {
       continue;
+    }
+
+    if (!allowBruteForce) {
+      break
     }
 
     // try mark once cell as true...

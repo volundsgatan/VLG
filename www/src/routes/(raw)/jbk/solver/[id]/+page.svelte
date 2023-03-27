@@ -6,5 +6,5 @@
 </script>
 
 <div class="flex min-h-full flex-col items-center space-y-4 bg-white p-2 text-black">
-	<Solver {guide} />
+	<Solver {guide} allowBruteForce={true} />
 </div>
