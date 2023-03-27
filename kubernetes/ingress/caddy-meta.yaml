@@ -17,6 +17,7 @@ data:
     }
     meta.unicorn-alligator.ts.net/whoami {
       reverse_proxy http://whoami.caddy-system.svc.cluster.local:80
+      header Access-Control-Allow-Origin "*"
       tls {
           get_certificate tailscale 
       }
