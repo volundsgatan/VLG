@@ -1,5 +1,6 @@
 {
-        "denoland.vscode-deno"
+    "recommendations": [
+        "denoland.vscode-deno",
         "svelte.svelte-vscode",
         "esbenp.prettier-vscode"
     ]
