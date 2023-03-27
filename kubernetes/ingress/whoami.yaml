@@ -46,6 +46,8 @@ spec:
                 name: tailscale-api-auth
                 key: TS_API_KEY
                 optional: true
+      imagePullSecrets:
+      - name: regcred
 ---
 apiVersion: v1
 kind: Service
