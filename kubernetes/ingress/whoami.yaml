@@ -10,7 +10,7 @@ metadata:
   name: whoami
   namespace: caddy-system
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app.kubernetes.io/name: whoami
@@ -23,8 +23,8 @@ spec:
       securityContext: {}
       containers:
         - name: whoami
-          image: "registry.unicorn-alligator.ts.net/whoami:v2"
-          imagePullPolicy: IfNotPresent
+          image: "registry.unicorn-alligator.ts.net/whoami:latest"
+          imagePullPolicy: Always
           args:
             - "deno"
             - "run"

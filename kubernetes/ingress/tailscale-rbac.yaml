@@ -22,6 +22,8 @@ rules:
         "tailscale-state-ingress-prometheus",
         "tailscale-state-ingress-zigbee2mqtt",
         "tailscale-state-ingress-sonos",
+        "tailscale-state-ingress-meta",
+        "tailscale-state-ingress-argocd",
         "tailscale-state-subnet-router",
       ]
     resources: ["secrets"]
