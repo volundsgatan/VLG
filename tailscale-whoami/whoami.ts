@@ -52,6 +52,8 @@ for await (const conn of server) {
 async function serveHttp(conn: Deno.Conn) {
   const httpConn = Deno.serveHttp(conn);
   for await (const requestEvent of httpConn) {
+    console.log(requestEvent.request.headers);
+
     const ip = requestEvent.request.headers.get("x-forwarded-for");
     if (!ip) {
       requestEvent.respondWith(
