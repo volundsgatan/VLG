@@ -3,6 +3,12 @@
 
 	let wowRealVisitorCounter = 73;
 	let canAccessApp = false;
+	let name = 'Mr. Boss';
+
+	const usernames = new Map<string, string>([
+		['zegl@github', 'Gustav'],
+		['elinclemmedsson@github', 'Elin']
+	]);
 
 	onMount(() => {
 		const int = setInterval(() => {
@@ -10,9 +16,11 @@
 			wowRealVisitorCounter = Math.round(wowRealVisitorCounter + delta);
 		}, 1500);
 
-		fetch('https://sonos.unicorn-alligator.ts.net/state')
-			.then(() => {
+		fetch('https://meta.unicorn-alligator.ts.net/whoami')
+			.then((response) => response.json())
+			.then((res) => {
 				canAccessApp = true;
+				name = usernames.get(res.user) || 'Mr. Boss';
 			})
 			.catch(() => {
 				canAccessApp = false;
@@ -29,7 +37,7 @@
 		<h1 class="text-2xl font-bold text-black">VLG is LIFE</h1>
 		{#if canAccessApp}
 			<div>
-				<h2 class="text-lg font-medium tetx-black">Välkommen hem</h2>
+				<h2 class="text-lg font-medium tetx-black">Välkommen hem {name}</h2>
 			</div>
 		{/if}
 
