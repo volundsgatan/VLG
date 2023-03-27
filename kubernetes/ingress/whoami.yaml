@@ -10,10 +10,7 @@ metadata:
   name: whoami
   namespace: caddy-system
 spec:
-  replicas: 1
-  podManagementPolicy: "Parallel"
-  updateStrategy:
-    type: "RollingUpdate"
+  replicas: 2
   selector:
     matchLabels:
       app.kubernetes.io/name: whoami
