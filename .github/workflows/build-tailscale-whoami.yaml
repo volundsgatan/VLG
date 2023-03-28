@@ -13,4 +13,4 @@ jobs:
       - name: Deps
         run: sudo apt-get update && sudo apt-get install -y buildah
       - name: Build
-        run: bash ./tailscale-whoami/build.sh
+        run: sudo bash ./tailscale-whoami/build.sh
