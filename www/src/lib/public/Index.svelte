@@ -38,6 +38,7 @@
 		{#if canAccessApp}
 			<div>
 				<h2 class="text-lg font-medium tetx-black">Välkommen hem {name}</h2>
+				<a href="/app">Gå till appen 🏠</a>
 			</div>
 		{/if}
 
