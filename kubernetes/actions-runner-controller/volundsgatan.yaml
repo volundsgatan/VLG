@@ -8,3 +8,4 @@ spec:
   template:
     spec:
       repository: volundsgatan/VLG
+      image: ghcr.io/actions/actions-runner-controller/actions-runner:ubuntu-22.04
