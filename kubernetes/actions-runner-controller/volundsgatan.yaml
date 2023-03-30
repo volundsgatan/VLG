@@ -9,3 +9,19 @@ spec:
     spec:
       repository: volundsgatan/VLG
       image: ghcr.io/actions/actions-runner-controller/actions-runner:ubuntu-22.04
+      # containers:
+      #   - name: runner
+      #     securityContext:
+      #       capabilities:
+      #         add:
+      #           - SYS_ADMIN
+      #           - CAP_SETUID
+      #           - CAP_SETGID
+      #   - name: docker
+      #     securityContext:
+      #       privileged: true
+      #       capabilities:
+      #         add:
+      #           - SYS_ADMIN
+      #           - CAP_SETUID
+      #           - CAP_SETGID
