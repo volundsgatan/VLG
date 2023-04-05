@@ -10,3 +10,18 @@ spec:
       repository: volundsgatan/VLG
       image: ghcr.io/actions/actions-runner-controller/actions-runner-dind:ubuntu-22.04
       dockerdWithinRunnerContainer: true
+
+      containers:
+        - name: runner
+          volumeMounts:
+            - name: docker-secret
+              mountPath: "/home/runner/.docker/"
+              readOnly: true
+
+      volumes:
+        - name: docker-secret
+          secret:
+            secretName: regcred
+            items:
+              - key: .dockerconfigjson
+                path: config.json
