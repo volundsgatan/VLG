@@ -21,6 +21,10 @@ data:
           get_certificate tailscale 
       }
     }
+    registry.registry.svc.cluster.local:443 {
+      reverse_proxy http://registry.registry.svc.cluster.local:80
+      tls /vlg-certs/tls.crt /vlg-certs/tls.key
+    }
 ---
 apiVersion: apps/v1
 kind: StatefulSet
@@ -81,6 +85,8 @@ spec:
               mountPath: /var/run
             - name: config-volume
               mountPath: /config
+            - mountPath: /vlg-certs
+              name: cert-volume
         - name: tailscale-registry
           imagePullPolicy: Always
           image: "ghcr.io/tailscale/tailscale:latest"
@@ -118,6 +124,9 @@ spec:
         - name: config-volume
           configMap:
             name: caddy-registry
+        - name: cert-volume
+          secret:
+            secretName: registry-cert
   volumeClaimTemplates:
     - metadata:
         name: tailscale-tmp
@@ -127,3 +136,16 @@ spec:
         resources:
           requests:
             storage: "100Mi"
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: registry
+  namespace: caddy-system
+spec:
+  selector:
+    app.kubernetes.io/name: caddy-registry
+  ports:
+    - protocol: TCP
+      port: 443
+      targetPort: 443

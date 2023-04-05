@@ -1,0 +1,23 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: registry-cert
+  namespace: caddy-system
+spec:
+  dnsNames:
+  #- webhook-service.actions-runner-system.svc
+  #- webhook-service.actions-runner-system.svc.cluster.local
+  - registry.caddy-system.svc
+  - registry.caddy-system.svc.cluster.local
+  issuerRef:
+    kind: Issuer
+    name: selfsigned-issuer
+  secretName: registry-cert
+---
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: selfsigned-issuer
+  namespace: caddy-system
+spec:
+  selfSigned: {}
