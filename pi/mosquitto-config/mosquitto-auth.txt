@@ -1,3 +1,0 @@
-influx:$7$101$ww+vqsx2sCXIwh3q$uP1YCQI3ZYaCspu8NjCpaYWDH9A84KSS1tp/Siyjbymbp/bpibRLqaUgrTB3+pWzH5afcE3iS/ypk5fet9rtMw==
-mqtt-exporter:$7$101$7kHwHZM31GoX9A6p$Vx1JNXQLb3bTOMGTOxWoCP3hGxRjp83puiaAy3/bj1lIseyM1uzpDBHHZhuDjsjZ3pONifyTBfqmE+UcJNor/g==
-homebridge:$7$101$MrM7UZu5egS/zZZP$Md+0Aiv8npcYKX8oyBPxTXyPkeoltkecmBHl/iIVqo6Ti1K6ArSxuUWL8sZ6ZlihD32kghVRfJn1Dr+fvGXZcg==
