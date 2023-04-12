@@ -47,14 +47,14 @@
 		</div>
 	{/if}
 
-	{#if image}
-		<img src={image} class="h-16 w-16 cursor-pointer" on:click|preventDefault={play} />
-	{:else}
+	{#if abbr}
 		<div
-			class="inline-flex h-16 w-16 cursor-pointer items-center justify-center bg-stone-500 text-stone-300"
+			class="bg-cover inline-flex h-16 w-16 cursor-pointer items-center justify-center bg-stone-500 text-stone-300"
 			on:click|preventDefault={play}
 		>
 			{abbr}
 		</div>
+	{:else if image}
+		<img src={image} class="h-16 w-16 cursor-pointer" on:click|preventDefault={play} />
 	{/if}
 </div>

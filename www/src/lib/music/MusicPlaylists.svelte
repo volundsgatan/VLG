@@ -7,8 +7,16 @@
 
 	import godJul from './artwork/god_jul.jpeg';
 	import nyJulmusik from './artwork/ny_julmusik.jpeg';
+	import { onMount } from 'svelte';
+	import { sonosRequest, type Favourite } from './sonos';
 
-	const playlists = [
+	type Playlist = {
+		name: string;
+		image?: string;
+		abbr?: string;
+	};
+
+	let playlists: Array<Playlist> = [
 		{
 			name: 'Your Favorite Coffeehouse',
 			image: coffee
@@ -22,7 +30,7 @@
 			image: p4
 		},
 		{
-			name: 'Gustav Westling’s Station',
+			name: 'Gustav Westlings Station',
 			abbr: 'GW'
 		},
 		// {
@@ -42,6 +50,26 @@
 			image: nyJulmusik
 		}
 	];
+
+	onMount(() => {
+		sonosRequest('favorites/detailed')
+			// .then((res) => res.json() as Array<Favourite>)
+			.then((res) => res as Array<Favourite>)
+			.then((favs) => {
+				console.log(favs);
+				playlists = favs
+					.filter((f) => f.title.startsWith('⭐️') || f.title.startsWith('✏️'))
+					.map((f) => {
+						return {
+							name: f.title,
+							// abbr: f.title
+							image: f.albumArtUri || undefined,
+							abbr: (f.title.startsWith('✏️') && f.title.substring(1).trim()) || undefined
+							// abbr: f.title,
+						};
+					});
+			});
+	});
 </script>
 
 <div class="flex flex-wrap justify-center gap-4">
