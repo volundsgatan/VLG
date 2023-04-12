@@ -6,7 +6,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: tailscale-whoami
+  IMAGE_NAME: volundsgatan/tailscale-whoami
 
 jobs:
   build-tailscale-whoami:
