@@ -104,12 +104,9 @@ data:
   mosquitto.conf: |-
     listener 1883
     allow_anonymous true
-
     listener 8883
     allow_anonymous false
     password_file /config/mosquitto-auth.txt
-    #certfile /tls/vlg-pi.unicorn-alligator.ts.net.crt.pem
-    #keyfile /tls/vlg-pi.unicorn-alligator.ts.net.key.pem
   mosquitto-auth.txt: |-
     influx:$7$101$ww+vqsx2sCXIwh3q$uP1YCQI3ZYaCspu8NjCpaYWDH9A84KSS1tp/Siyjbymbp/bpibRLqaUgrTB3+pWzH5afcE3iS/ypk5fet9rtMw==
     mqtt-exporter:$7$101$7kHwHZM31GoX9A6p$Vx1JNXQLb3bTOMGTOxWoCP3hGxRjp83puiaAy3/bj1lIseyM1uzpDBHHZhuDjsjZ3pONifyTBfqmE+UcJNor/g==

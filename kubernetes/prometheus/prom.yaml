@@ -149,29 +149,7 @@ data:
       scrape_interval: 15s
       scrape_timeout: 10s
       evaluation_interval: 1m
-    #alerting:
-    #  alertmanagers:
-    #  - kubernetes_sd_configs:
-    #    - role: endpoints
-    #      namespaces:
-    #        names:
-    #        - ${NAMESPACE}
-    #    scheme: http
-    #    path_prefix: /
-    #    timeout: 10s
-    #    relabel_configs:
-    #    - source_labels: [__meta_kubernetes_namespace, __meta_kubernetes_service_label_k8s_app]
-    #      separator: ;
-    #      regex: ${NAMESPACE};alertmanager
-    #      replacement: $1
-    #      action: keep
-    #    - source_labels: [__meta_kubernetes_endpoint_port_name]
-    #      separator: ;
-    #      regex: http
-    #      replacement: $1
-    #      action: keep
     rule_files:
-    #- /etc/config/rules.yaml
     - /etc/config/alerts.yaml
     scrape_configs:
     - job_name: kubernetes-service-endpoints
