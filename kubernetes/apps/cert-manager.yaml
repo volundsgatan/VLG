@@ -1,0 +1,14 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: cert-manager
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/volundsgatan/VLG
+    targetRevision: HEAD
+    path: kubernetes/cert-manager
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: cert-manager
