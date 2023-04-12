@@ -23,7 +23,7 @@ spec:
       securityContext: {}
       containers:
         - name: whoami
-          image: "registry.unicorn-alligator.ts.net/whoami:latest"
+          image: "ghcr.io/volundsgatan/tailscale-whoami:main"
           imagePullPolicy: Always
           args:
             - "deno"
@@ -44,7 +44,7 @@ spec:
                 key: TS_API_KEY
                 optional: true
       imagePullSecrets:
-      - name: regcred
+      - name: dockerconfigjson-github-com
 ---
 apiVersion: v1
 kind: Service

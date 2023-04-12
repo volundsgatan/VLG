@@ -21,7 +21,7 @@ data:
           get_certificate tailscale 
       }
     }
-    registry.registry.svc.cluster.local:443 {
+    registry.caddy-system.svc.cluster.local:443 {
       reverse_proxy http://registry.registry.svc.cluster.local:80
       tls /vlg-certs/tls.crt /vlg-certs/tls.key
     }
