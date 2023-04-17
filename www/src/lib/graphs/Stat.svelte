@@ -4,6 +4,7 @@
 	import 'chartjs-adapter-date-fns';
 	import originalFetch from 'isomorphic-fetch';
 	import fetchBuilder from 'fetch-retry-ts';
+	import config from '$lib/config';
 
 	const retryOpts = {
 		retries: 5,
@@ -66,7 +67,34 @@
 		responsive: false
 	};
 
-	let data = {
+	type XY = {
+		x: number;
+		y: number;
+	};
+
+	type Series = {
+		name: string;
+		data: XY[];
+	};
+
+	type Dataset = {
+		label: string;
+		data: XY[];
+
+		lineTension?: number;
+		backgroundColor?: string;
+		borderColor?: string;
+		pointRadius?: number;
+		pointHitRadius?: number;
+		showLine?: boolean;
+		fill?: {
+			target: string;
+		};
+	};
+
+	let data: {
+		datasets: Dataset[];
+	} = {
 		datasets: [] // loaded later
 	};
 
@@ -74,13 +102,16 @@
 
 	const hexrgba = (hex: string, a: number): string => {
 		const hexes = hex.substring(1).match(/.{1,2}/g);
+		if (!hexes || hexes?.length !== 3) {
+			return 'rgba(0,0,0,1)';
+		}
 		const rgba = [parseInt(hexes[0], 16), parseInt(hexes[1], 16), parseInt(hexes[2], 16), a];
 		return `rgba(${rgba.join(',')})`;
 	};
 
 	let loadedOnce = false;
 
-	let tsTimer;
+	let tsTimer: ReturnType<typeof setTimeout>;
 
 	const ts = async () => {
 		const topic = selectedRooms.join('|');
@@ -96,9 +127,8 @@
 			]);
 			isLoading = false;
 
-			data.datasets = avg
-				.map((v, idx) => {
-					console.log(hexrgba(roomColors[v.name], 0.5));
+			const ds = avg
+				.map((v, idx): Dataset[] => {
 					return [
 						{
 							label: `AVG: ${timeSeries} / ${v.name}`,
@@ -130,18 +160,17 @@
 					];
 				})
 				.flatMap((v) => v);
-			loadedOnce = true;
+
+			if (ds) {
+				data.datasets = ds;
+				loadedOnce = true;
+			}
 		}, 500);
 	};
 
-	const query = async (
-		query: string
-	): Promise<Array<ApexAxisChartSeries | ApexNonAxisChartSeries>> => {
+	const query = async (query: string): Promise<Array<Series>> => {
 		const response = await fetch(
-			`https://prometheus.unicorn-alligator.ts.net/api/v1/query_range?query=${query}&start=${tsStart}&end=${tsEnd}&step=${step}`,
-			{
-				method: 'GET',
-			}
+			`https://prometheus.${config.hostname}/api/v1/query_range?query=${query}&start=${tsStart}&end=${tsEnd}&step=${step}`
 		);
 		const data = await response.json();
 
@@ -160,19 +189,18 @@
 
 	let height = 100;
 	let width = 100;
-	let wrapper;
+	let wrapper: HTMLElement;
 	let readyToRender = false;
 
 	onMount(async () => {
 		ts();
 		await tick();
-		console.log('wrapper', wrapper, wrapper.offsetHeight, wrapper.offsetWidth);
 		height = wrapper.offsetHeight;
 		width = wrapper.offsetWidth;
 		readyToRender = true;
 	});
 
-	let resizeTimer;
+	let resizeTimer: ReturnType<typeof setTimeout>;
 
 	const dispatchResize = async () => {
 		readyToRender = false;

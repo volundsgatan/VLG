@@ -7,6 +7,9 @@ dependencies:
   '@types/color-convert':
     specifier: ^2.0.0
     version: 2.0.0
+  '@types/isomorphic-fetch':
+    specifier: ^0.0.36
+    version: 0.0.36
   '@types/jest':
     specifier: ^29.4.0
     version: 29.4.0
@@ -1437,6 +1440,10 @@ packages:
     dependencies:
       '@types/node': 18.15.0
     dev: true
+
+  /@types/isomorphic-fetch@0.0.36:
+    resolution: {integrity: sha512-ulw4d+vW1HKn4oErSmNN2HYEcHGq0N1C5exlrMM0CRqX1UUpFhGb5lwiom5j9KN3LBJJDLRmYIZz1ghm7FIzZw==}
+    dev: false
 
   /@types/istanbul-lib-coverage@2.0.4:
     resolution: {integrity: sha512-z/QT1XN4K4KYuslS23k62yDIDLwLFkzxOuMplDtObz0+y7VqJCaO2o+SPwHCvLFZh7xazvvoor2tA/hPz9ee7g==}

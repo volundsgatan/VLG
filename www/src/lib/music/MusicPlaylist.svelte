@@ -2,7 +2,7 @@
 	import Spinner from '$lib/ui/Spinner.svelte';
 	import { createEventDispatcher } from 'svelte';
 	import { sonosRequest } from './sonos';
-	import config from '$lib/config'
+	import config from '$lib/config';
 
 	const dispatch = createEventDispatcher();
 
@@ -12,7 +12,7 @@
 
 	let loading = false;
 
-	const firstSonos = config.sonos.devices[0]
+	const firstSonos = config.sonos.devices[0];
 
 	const play = async () => {
 		loading = true;
@@ -24,11 +24,10 @@
 			})
 
 			.then(async (data) => {
-
 				// Join ALL
 				for (const name of config.sonos.devices) {
 					if (name === firstSonos) {
-						continue
+						continue;
 					}
 
 					await sonosRequest(`${name}/join/${firstSonos}`);
@@ -60,10 +59,17 @@
 		<div
 			class="bg-cover inline-flex h-16 w-16 cursor-pointer items-center justify-center bg-stone-500 text-stone-300"
 			on:click|preventDefault={play}
+			on:keyup={play}
 		>
 			{abbr}
 		</div>
 	{:else if image}
-		<img src={image} class="h-16 w-16 cursor-pointer" on:click|preventDefault={play} />
+		<img
+			src={image}
+			class="h-16 w-16 cursor-pointer"
+			alt="Album art"
+			on:click|preventDefault={play}
+			on:keyup={play}
+		/>
 	{/if}
 </div>

@@ -79,6 +79,7 @@
 	on:touchstart={onTouchStart}
 	on:touchmove={onTouchMove}
 	on:touchend={onTouchEnd}
+	on:keyup={toggleLights}
 	class="absolute inline-flex cursor-pointer items-center justify-around text-center text-3xl text-orange-800 {pos}"
 >
 	{#if touching}

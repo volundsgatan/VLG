@@ -10,7 +10,7 @@
 	export let addr: string;
 
 	let sparks: number[];
-	let sparkEl;
+	let sparkEl: SVGSVGElement | undefined;
 	let promState;
 
 	const render = () => {
@@ -25,7 +25,7 @@
 		const query = 'avg_over_time(mqtt_temperature{vlg_topic=%22' + name + '%22}[10m])';
 
 		const response = await fetch(
-			`https://prometheus.unicorn-alligator.ts.net/api/v1/query_range?query=${query}&start=${start}&end=${now}&step=100`,
+			`https://prometheus.${config.hostname}/api/v1/query_range?query=${query}&start=${start}&end=${now}&step=100`,
 			{
 				method: 'GET',
 			}
@@ -61,6 +61,7 @@
 <div
 	class="{className} inline-flex h-[24px] w-[100px] items-center justify-center"
 	on:click={onClick}
+	on:keyup={onClick}
 >
 	{#if showSparks}
 		<svg

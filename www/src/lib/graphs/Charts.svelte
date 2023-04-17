@@ -10,7 +10,7 @@
 		'Living Room': '#fbbf24', // Amber 400
 		Fridge: '#818cf8', // Indigo 400
 		Bathroom: '#fb7185' // Rose 400
-	};
+	} as const;
 
 	let moveDiff = 0;
 	let startDiff = 0;
@@ -54,7 +54,7 @@
 
 	useMonth();
 
-	const rooms = ['Outdoor', 'Bedroom', 'Living Room', 'Fridge', 'Bathroom'];
+	const rooms = ['Outdoor', 'Bedroom', 'Living Room', 'Fridge', 'Bathroom'] as const;
 	let selectedRooms = ['Outdoor', 'Living Room'];
 </script>
 
@@ -81,17 +81,19 @@
 				<span
 					class="block inline-flex h-10 w-10 cursor-pointer items-center justify-center rounded-full text-2xl"
 					class:bg-stone-300={!isMonthView}
-					on:click={useDay}>☀️</span
+					on:click={useDay}
+					on:keyup={useDay}>☀️</span
 				>
 				<span
 					class="block inline-flex h-10 w-10 cursor-pointer items-center justify-center rounded-full text-2xl"
 					class:bg-stone-300={isMonthView}
-					on:click={useMonth}>🌙</span
+					on:click={useMonth}
+					on:keyup={useMonth}>🌙</span
 				>
 
-				<span on:click={back}>⏪</span>
-				<span on:click={forward}>⏩</span>
-				<span on:click={reset}>🔄</span>
+				<span on:click={back} on:keyup={back} >⏪</span>
+				<span on:click={forward} on:keyup={forward}>⏩</span>
+				<span on:click={reset} on:keyup={reset}>🔄</span>
 			</div>
 		</div>
 	</div>
@@ -104,8 +106,6 @@
 		{period}
 		{step}
 		timeSeries="mqtt_temperature"
-		title="Temperature"
-		unit="℃"
 	/>
 
 	<Stat
@@ -116,7 +116,5 @@
 		{period}
 		{step}
 		timeSeries="mqtt_humidity"
-		title="Humidity"
-		unit="%"
 	/>
 </div>

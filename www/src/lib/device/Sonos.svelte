@@ -34,6 +34,7 @@
 
 <div
 	on:click|stopPropagation={toggle}
+	on:keyup={toggle}
 	class="inline-flex h-16 w-16 cursor-pointer items-center justify-center"
 >
 	{#if !isPlaying && sonosIsUpdating}
