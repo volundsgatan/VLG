@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { groups } from '$lib/devices';
+	import config from '$lib/config'
 	import Device from '$lib/device/Device.svelte';
 	import Sonos from '$lib/device/Sonos.svelte';
 	import MusicPlaylists from '$lib/music/MusicPlaylists.svelte';
@@ -10,6 +10,7 @@
 	import { devices as states } from '$lib/z2m';
 	import { sonos, sonosIsUpdating } from '$lib/sonos';
 	import type { room as roomType } from './types';
+	import type { Group } from '$lib/devices';
 
 	onMount(() => {
 		const refresh = setTimeout(window.location.reload, 1000 * 60 * 60);
@@ -18,24 +19,27 @@
 		};
 	});
 
-	const rooms = ['Bedroom', 'Kitchen', 'Entrance', 'Living Room'];
+	const rooms = config.rooms;
 
 	$: roomAnyLightOn =
 		rooms.map((room) => {
+			
+			const group = config.groups.find((g) => g.name === room)
+
 			// All devices in a room
-			const devices = groups
-				.find((g) => g?.name === room)
-				.devices.map(({ addr }) => addr)
-				.filter(Boolean);
+			const devices: string[] = group?.devices
+				.filter((d) => d.addr)
+				.map(({ addr }) => addr)
+				.map((a) => a as string) || [];
 
 			const deviceSet = new Set(devices);
 
 			const deviceStates: boolean[] = Object.values($states)
-				.filter((s) => deviceSet.has(s.device?.ieeeAddr))
+				.filter((s) => s.device?.ieeeAddr && deviceSet.has(s.device.ieeeAddr))
 				.map((s) => s.state === 'ON');
 
 			const brightness: number[] = Object.values($states)
-				.filter((s) => deviceSet.has(s.device?.ieeeAddr))
+				.filter((s) => s.device?.ieeeAddr && deviceSet.has(s.device.ieeeAddr))
 				.filter((s) => s.brightness !== undefined)
 				.map((s): number => (s.state === 'ON' && s.brightness !== undefined ? s.brightness : 0));
 
@@ -43,7 +47,7 @@
 
 			return {
 				room,
-				devices,
+				devices: devices || [],
 				anyOn,
 				brightness
 			};
