@@ -2,7 +2,7 @@
 	import { onMount } from 'svelte';
 	import config from '$lib/config'
 
-	let canAccessApp = true;
+	let canAccessApp = false;
 	let name = 'Mr. Boss';
 
 	const usernames = config.accounts;
@@ -15,7 +15,7 @@
 				name = usernames.get(res.user) || 'Mr. Boss';
 			})
 			.catch(() => {
-				canAccessApp = true;
+				canAccessApp = false;
 			});
 	});
 </script>
