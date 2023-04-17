@@ -2,13 +2,14 @@
 	import { type Zone, sonosRequest } from './sonos';
 	import Button from './Button.svelte';
 	import { createEventDispatcher, onDestroy, onMount } from 'svelte';
+	import config from '$lib/config';
 
 	const dispatch = createEventDispatcher();
 
 	export let zone: Zone;
 	$: rooms = zone.members.map((m) => m.roomName);
 
-	const sonoses = ['TV', 'Five', 'Kitchen', 'Bedroom'];
+	const sonoses = config.sonos.devices;
 
 	const command = (cmd: string) => {
 		return sonosRequest(`${zone.coordinator.roomName}/${cmd}`)

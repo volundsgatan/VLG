@@ -2,6 +2,7 @@
 	import Spinner from '$lib/Spinner.svelte';
 	import { createEventDispatcher } from 'svelte';
 	import { sonosRequest } from './sonos';
+	import config from '$lib/config'
 
 	const dispatch = createEventDispatcher();
 
@@ -11,20 +12,28 @@
 
 	let loading = false;
 
+	const firstSonos = config.sonos.devices[0]
+
 	const play = async () => {
 		loading = true;
 
-		return sonosRequest('TV/favourite/' + encodeURIComponent(name))
+		return sonosRequest(`${firstSonos}/favourite/${encodeURIComponent(name)}`)
 			.then(async (data) => {
-				await sonosRequest('TV/shuffle/on');
-				await sonosRequest('TV/next');
+				await sonosRequest(`${firstSonos}/shuffle/on`);
+				await sonosRequest(`${firstSonos}/next`);
 			})
 
 			.then(async (data) => {
+
 				// Join ALL
-				await sonosRequest('Five/join/TV');
-				await sonosRequest('Kitchen/join/TV');
-				await sonosRequest('Bedroom/join/TV');
+				for (const name of config.sonos.devices) {
+					if (name === firstSonos) {
+						continue
+					}
+
+					await sonosRequest(`${name}/join/${firstSonos}`);
+				}
+
 				dispatch('sonosUpdated', {});
 			})
 
