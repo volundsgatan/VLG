@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import Spinner from '$lib/Spinner.svelte';
+	import Spinner from '$lib/ui/Spinner.svelte';
 	import { connect, z2mConnected, z2mConnectionError } from '$lib/z2m';
 	import { fetchSonos } from '$lib/sonos';
 

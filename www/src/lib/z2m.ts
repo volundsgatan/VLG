@@ -1,5 +1,6 @@
 import type { State as DeviceState } from '$lib/devices';
 import { derived, writable } from 'svelte/store';
+import config from './config';
 
 export type m2qevent = {
 	topic: string;
@@ -35,7 +36,7 @@ export const connect = () => {
 	z2mConnected.set(false);
 	devices.set({});
 
-	const ws = new WebSocket('wss://zigbee2mqtt.unicorn-alligator.ts.net/api');
+	const ws = new WebSocket(`wss://zigbee2mqtt.${config.hostname}/api`);
 
 	rawSocket.set(ws);
 
@@ -51,11 +52,13 @@ export const connect = () => {
 			return;
 		}
 
+		const payload = data.payload as State;
+
 		devices.update((s) => {
 			if (s[data.topic]) {
-				s[data.topic] = Object.assign(s[data.topic], data.payload);
-			} else if (data.payload) {
-				s[data.topic] = data.payload;
+				s[data.topic] = Object.assign(s[data.topic], payload);
+			} else if (payload) {
+				s[data.topic] = payload;
 			}
 			return s;
 		});

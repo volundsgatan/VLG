@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { type State, sonosRequest } from '$lib/music/sonos';
 	import { createEventDispatcher } from 'svelte';
-	import Spinner from '$lib/Spinner.svelte';
+	import Spinner from '$lib/ui/Spinner.svelte';
 
 	const dispatch = createEventDispatcher();
 
