@@ -497,10 +497,22 @@ data:
   alerts.yaml: |-
     groups:
 
+    - name: Zigbee
+      rules:
+      - alert: DeviceOfflineForTooLong
+        expr: 'timestamp(mqtt_last_seen{vlg_topic!="Christmas Tree"}) - (mqtt_last_seen / 1000) > 10'
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Device Offline ({{ $labels.vlg_topic }})"
+          description: "Device {{ $labels.vlg_topic }} has been offline for {{ $value }} seconds"
+
+
     - name: KubestateExporter
 
       rules:
-
+     
         - alert: KubernetesNodeReady
           expr: 'kube_node_status_condition{condition="Ready",status="true"} == 0'
           for: 10m
