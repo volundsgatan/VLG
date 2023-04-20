@@ -58,26 +58,26 @@
 		.map((on) => (on ? '1' : '0'))
 		.join('');
 
-	$: bg = `/floorplan_2_${bgKey}.png?1`;
+	$: bg = `/floorplan_${bgKey}.png?2`;
 </script>
 
 <svelte:head>
-	<link rel="preload" as="image" href="/floorplan_2_0000.png?1" />
-	<link rel="preload" as="image" href="/floorplan_2_0001.png?1" />
-	<link rel="preload" as="image" href="/floorplan_2_0010.png?1" />
-	<link rel="preload" as="image" href="/floorplan_2_0011.png?1" />
-	<link rel="preload" as="image" href="/floorplan_2_0100.png?1" />
-	<link rel="preload" as="image" href="/floorplan_2_0101.png?1" />
-	<link rel="preload" as="image" href="/floorplan_2_0110.png?1" />
-	<link rel="preload" as="image" href="/floorplan_2_0111.png?1" />
-	<link rel="preload" as="image" href="/floorplan_2_1000.png?1" />
-	<link rel="preload" as="image" href="/floorplan_2_1001.png?1" />
-	<link rel="preload" as="image" href="/floorplan_2_1010.png?1" />
-	<link rel="preload" as="image" href="/floorplan_2_1011.png?1" />
-	<link rel="preload" as="image" href="/floorplan_2_1100.png?1" />
-	<link rel="preload" as="image" href="/floorplan_2_1101.png?1" />
-	<link rel="preload" as="image" href="/floorplan_2_1110.png?1" />
-	<link rel="preload" as="image" href="/floorplan_2_1111.png?1" />
+	<link rel="preload" as="image" href="/floorplan_0000.png?2" />
+	<link rel="preload" as="image" href="/floorplan_0001.png?2" />
+	<link rel="preload" as="image" href="/floorplan_0010.png?2" />
+	<link rel="preload" as="image" href="/floorplan_0011.png?2" />
+	<link rel="preload" as="image" href="/floorplan_0100.png?2" />
+	<link rel="preload" as="image" href="/floorplan_0101.png?2" />
+	<link rel="preload" as="image" href="/floorplan_0110.png?2" />
+	<link rel="preload" as="image" href="/floorplan_0111.png?2" />
+	<link rel="preload" as="image" href="/floorplan_1000.png?2" />
+	<link rel="preload" as="image" href="/floorplan_1001.png?2" />
+	<link rel="preload" as="image" href="/floorplan_1010.png?2" />
+	<link rel="preload" as="image" href="/floorplan_1011.png?2" />
+	<link rel="preload" as="image" href="/floorplan_1100.png?2" />
+	<link rel="preload" as="image" href="/floorplan_1101.png?2" />
+	<link rel="preload" as="image" href="/floorplan_1110.png?2" />
+	<link rel="preload" as="image" href="/floorplan_1111.png?2" />
 </svelte:head>
 
 <div class="relative -mt-12 xl:mt-0">
