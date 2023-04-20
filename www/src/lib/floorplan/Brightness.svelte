@@ -3,7 +3,6 @@
 	import type { room as roomType } from './types';
 
 	export let room: roomType;
-	export let pos = '';
 
 	let touchStartX = 0;
 	let startBrightness = 0;
@@ -80,7 +79,9 @@
 	on:touchmove={onTouchMove}
 	on:touchend={onTouchEnd}
 	on:keyup={toggleLights}
-	class="absolute inline-flex cursor-pointer items-center justify-around text-center text-3xl text-orange-800 {pos}"
+	class="absolute inline-flex cursor-pointer items-center justify-around text-center text-3xl text-orange-800"
+	style="top: {room.room.top}px; left: {room.room.left}px; height: {room.room
+		.height}px; width: {room.room.width}px;"
 >
 	{#if touching}
 		<div class="w-32 rounded-lg bg-orange-100 p-8 text-center shadow-lg">

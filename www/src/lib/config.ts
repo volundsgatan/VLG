@@ -6,8 +6,18 @@ type Config = {
 	sonos: {
 		devices: string[];
 	};
-	rooms: string[];
+	rooms: Room[];
 	groups: Group[];
+};
+
+export type Room = {
+	name: string;
+
+	// touch area configuration
+	top: number;
+	left: number;
+	height: number;
+	width: number;
 };
 
 const config: Config = {
@@ -23,7 +33,39 @@ const config: Config = {
 		devices: ['TV', 'Five', 'Bedroom', 'Kitchen']
 	},
 
-	rooms: ['Bedroom', 'Kitchen', 'Entrance', 'Living Room'],
+	rooms: [
+		{
+			name: 'Bedroom',
+			top: 90,
+			left: 60,
+			height: 210,
+			width: 310
+		},
+
+		{
+			name: 'Kitchen',
+			top: 310,
+			left: 60,
+			height: 190,
+			width: 310
+		},
+
+		{
+			name: 'Entrance',
+			top: 210,
+			left: 380,
+			height: 150,
+			width: 220
+		},
+
+		{
+			name: 'Living Room',
+			top: 80,
+			left: 630,
+			height: 220,
+			width: 320
+		}
+	],
 
 	groups: [
 		{

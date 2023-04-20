@@ -1,5 +1,7 @@
+import type { Room } from '$lib/config';
+
 export type room = {
-	room: string;
+	room: Room;
 	devices: string[];
 	anyOn: boolean;
 	brightness: number[];

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import config from '$lib/config'
+	import config from '$lib/config';
 	import Device from '$lib/device/Device.svelte';
 	import Sonos from '$lib/device/Sonos.svelte';
 	import MusicPlaylists from '$lib/music/MusicPlaylists.svelte';
@@ -23,14 +23,14 @@
 
 	$: roomAnyLightOn =
 		rooms.map((room) => {
-			
-			const group = config.groups.find((g) => g.name === room)
+			const group = config.groups.find((g) => g.name === room.name);
 
 			// All devices in a room
-			const devices: string[] = group?.devices
-				.filter((d) => d.addr)
-				.map(({ addr }) => addr)
-				.map((a) => a as string) || [];
+			const devices: string[] =
+				group?.devices
+					.filter((d) => d.addr)
+					.map(({ addr }) => addr)
+					.map((a) => a as string) || [];
 
 			const deviceSet = new Set(devices);
 
@@ -54,7 +54,7 @@
 		}) || ([] as roomType[]);
 
 	$: bgKey = rooms
-		.map((roomName) => roomAnyLightOn?.find((r) => r.room === roomName)?.anyOn)
+		.map((room) => roomAnyLightOn?.find((r) => r.room.name === room.name)?.anyOn)
 		.map((on) => (on ? '1' : '0'))
 		.join('');
 
@@ -83,23 +83,15 @@
 <div class="relative -mt-12 xl:mt-0">
 	<div
 		style="background-image: url('{bg}')"
-		class="h-[536px] w-[1024px] bg-[length:1024px_576px] bg-no-repeat text-white transition-all duration-500	"
+		class="h-[536px] w-[1024px] bg-[length:1024px_576px] bg-no-repeat text-white transition-all duration-500"
 	>
 		<a class="absolute top-[440px] left-[600px] cursor-pointer text-3xl" href="/graphs"> 📊 </a>
 		<a class="absolute top-[440px] left-[550px] cursor-pointer text-3xl" href="/gradient"> 🎨 </a>
 		<a class="absolute top-[480px] left-[550px] cursor-pointer text-3xl" href="/dashboard"> 🎛️ </a>
 
-		<!-- Bedroom -->
-		<Brightness room={roomAnyLightOn[0]} pos="top-[90px]  left-[60px] h-[210px] w-[310px]" />
-
-		<!-- Kitchen -->
-		<Brightness room={roomAnyLightOn[1]} pos="top-[310px] left-[60px] h-[190px] w-[310px]" />
-
-		<!-- Entrance -->
-		<Brightness room={roomAnyLightOn[2]} pos="top-[210px]   left-[380px] h-[150px] w-[220px] " />
-
-		<!-- Living Room -->
-		<Brightness room={roomAnyLightOn[3]} pos=" top-[80px]  left-[630px] h-[220px] w-[320px]" />
+		{#each roomAnyLightOn as room}
+			<Brightness {room} />
+		{/each}
 
 		<!-- Frigde -->
 		<TemperatureSpark

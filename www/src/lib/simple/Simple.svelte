@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Brightness from './Brightness.svelte';
-	import config from '$lib/config'
+	import config from '$lib/config';
 	import { devices as states } from '$lib/z2m';
 	import type { room as roomType } from './types';
 
@@ -8,13 +8,14 @@
 
 	$: roomAnyLightOn =
 		rooms.map((room) => {
-			const group = config.groups.find((g) => g.name === room)
+			const group = config.groups.find((g) => g.name === room.name);
 
 			// All devices in a room
-			const devices: string[] = group?.devices
-				.filter((d) => d.addr)
-				.map(({ addr }) => addr)
-				.map((a) => a as string) || [];
+			const devices: string[] =
+				group?.devices
+					.filter((d) => d.addr)
+					.map(({ addr }) => addr)
+					.map((a) => a as string) || [];
 
 			const deviceSet = new Set(devices);
 
@@ -30,7 +31,7 @@
 			const anyOn = deviceStates.some((s) => s === true);
 
 			return {
-				room,
+				room: room.name,
 				devices,
 				anyOn,
 				brightness
