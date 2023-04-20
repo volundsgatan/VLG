@@ -72,7 +72,6 @@ const config: Config = {
 			name: 'Living Room',
 			devices: [
 				{ addr: '0x00158d0008399e95' }, // Window Sensor
-				{ addr: '0x0017880108faec55' }, // Window Light
 				{ addr: '0x001788010b91f5c1' }, // Signe Floor Light
 				{ addr: '0x00178801082ec23c' }, // Table Light
 				{ addr: '0x00158d000802afb1' }, // Temperature Sensor
