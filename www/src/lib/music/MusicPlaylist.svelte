@@ -44,9 +44,11 @@
 				loading = false;
 			});
 	};
+
+	$: shortAbbr = abbr?.trim().substring(0, 8).trim();
 </script>
 
-<div class="relative overflow-hidden rounded-md">
+<div class="relative overflow-hidden rounded-md z-10 h-16 w-16">
 	{#if loading}
 		<div
 			class="absolute top-0 left-0 inline-flex h-full w-full items-center justify-center bg-black text-white opacity-80"
@@ -57,11 +59,11 @@
 
 	{#if abbr}
 		<div
-			class="bg-cover inline-flex h-16 w-16 cursor-pointer items-center justify-center bg-stone-500 text-stone-300"
+			class="inline-flex h-16 w-16 cursor-pointer items-center justify-center bg-stone-500 text-stone-300 text-center"
 			on:click|preventDefault={play}
 			on:keyup={play}
 		>
-			{abbr}
+			{shortAbbr}
 		</div>
 	{:else if image}
 		<img

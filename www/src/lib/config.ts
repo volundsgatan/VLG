@@ -8,6 +8,8 @@ type Config = {
 	};
 	rooms: Room[];
 	groups: Group[];
+	temperatureSparks: TemperatureSparkConfig[];
+	floorplanDevices: FloorplanShowDeviceConfig[];
 };
 
 export type Room = {
@@ -18,6 +20,18 @@ export type Room = {
 	left: number;
 	height: number;
 	width: number;
+};
+
+export type FloorplanShowDeviceConfig = {
+	addr: string;
+	top: number;
+	left: number;
+};
+
+export type TemperatureSparkConfig = FloorplanShowDeviceConfig & {
+	name: string;
+	zIndex?: number;
+	rotation?: number;
 };
 
 const config: Config = {
@@ -64,6 +78,54 @@ const config: Config = {
 			left: 630,
 			height: 220,
 			width: 320
+		}
+	],
+
+	temperatureSparks: [
+		{
+			name: 'Fridge',
+			addr: '0x00158d0007f82457',
+			top: 464,
+			left: 210
+		},
+		{
+			name: 'Bedroom',
+			addr: '0x00158d0007f82461',
+			top: 62,
+			left: 180
+		},
+		{
+			name: 'Bathroom',
+			addr: '0x00158d0007f01537',
+			top: 60,
+			left: 470
+		},
+		{
+			name: 'Living Room',
+			addr: '0x00158d000802afb1',
+			top: 55,
+			left: 730
+		},
+		{
+			name: 'Outdoor',
+			addr: '0x00158d0007e66b8a',
+			top: 260,
+			left: -30,
+			zIndex: 10,
+			rotation: -90
+		}
+	],
+
+	floorplanDevices: [
+		{
+			addr: '0x00158d000839a1f9',
+			top: 505,
+			left: 350
+		},
+		{
+			addr: '0x00158d0008399e95',
+			top: 190,
+			left: 953
 		}
 	],
 

@@ -93,46 +93,13 @@
 			<Brightness {room} />
 		{/each}
 
-		<!-- Frigde -->
-		<TemperatureSpark
-			name="Fridge"
-			class="absolute top-[463px] left-[210px] text-black"
-			addr="0x00158d0007f82457"
-		/>
+		{#each config.temperatureSparks as spark}
+			<TemperatureSpark {spark} />
+		{/each}
 
-		<!-- Bedroom Temperature -->
-		<TemperatureSpark
-			name="Bedroom"
-			class="absolute top-[62px] left-[180px] text-black"
-			addr="0x00158d0007f82461"
-		/>
-
-		<!-- Bathroom Temperature -->
-		<TemperatureSpark
-			name="Bathroom"
-			class="absolute top-[60px] left-[470px] text-black"
-			addr="0x00158d0007f01537"
-		/>
-
-		<!-- Living Room Temperature -->
-		<TemperatureSpark
-			name="Living Room"
-			class="absolute top-[55px] left-[730px] text-black"
-			addr="0x00158d000802afb1"
-		/>
-
-		<!-- Yard Temperature -->
-		<TemperatureSpark
-			name="Outdoor"
-			class="absolute top-[260px] left-[-30px] z-10 -rotate-90 text-black"
-			addr="0x00158d0007e66b8a"
-		/>
-
-		<!-- Door Sensor -->
-		<Device class="absolute top-[505px] left-[350px] text-black" addr="0x00158d000839a1f9" />
-
-		<!-- Window Sensor -->
-		<Device class="absolute top-[190px] left-[953px] text-black" addr="0x00158d0008399e95" />
+		{#each config.floorplanDevices as device}
+			<Device {device} />
+		{/each}
 
 		<div class="absolute top-[188px] left-[884px] text-black">
 			<Sonos

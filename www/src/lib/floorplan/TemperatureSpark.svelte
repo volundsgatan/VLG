@@ -2,16 +2,12 @@
 	import { onMount, tick } from 'svelte';
 	import { sparkline } from '@fnando/sparkline';
 	import Device from '$lib/device/Device.svelte';
+	import type { TemperatureSparkConfig } from '$lib/config';
 
-	export let name = 'Outdoor';
-	let className = '';
-	export { className as class };
-	export let height = 24;
-	export let addr: string;
+	export let spark: TemperatureSparkConfig;
 
 	let sparks: number[];
 	let sparkEl: SVGSVGElement | undefined;
-	let promState;
 
 	const render = () => {
 		if (sparkEl) {
@@ -22,12 +18,12 @@
 	const ts = async () => {
 		const now = +new Date() / 1000;
 		const start = +new Date() / 1000 - 60 * 60 * 24;
-		const query = 'avg_over_time(mqtt_temperature{vlg_topic=%22' + name + '%22}[10m])';
+		const query = 'avg_over_time(mqtt_temperature{vlg_topic=%22' + spark.name + '%22}[10m])';
 
 		const response = await fetch(
 			`https://prometheus.${config.hostname}/api/v1/query_range?query=${query}&start=${start}&end=${now}&step=100`,
 			{
-				method: 'GET',
+				method: 'GET'
 			}
 		);
 
@@ -56,10 +52,20 @@
 			clearInterval(interval);
 		};
 	});
+
+	$: nestedDevice = {
+		...spark,
+		left: 0,
+		top: 0
+	};
 </script>
 
 <div
-	class="{className} inline-flex h-[24px] w-[100px] items-center justify-center"
+	class="absolute inline-flex h-[24px] w-[100px] items-center justify-center"
+	style="left: {spark.left}px;
+	top: {spark.top}px;
+	z-index: {spark.zIndex || 0};
+	transform: rotate({spark.rotation || 0}deg)"
 	on:click={onClick}
 	on:keyup={onClick}
 >
@@ -67,11 +73,11 @@
 		<svg
 			bind:this={sparkEl}
 			width="100"
-			{height}
+			height="24"
 			stroke-width="2"
 			style="stroke: #c2410c; fill: rgba(255,237,213,0.3);"
 		/>
 	{:else}
-		<Device {addr} />
+		<Device device={nestedDevice} />
 	{/if}
 </div>
