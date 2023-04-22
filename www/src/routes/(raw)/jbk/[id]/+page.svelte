@@ -13,13 +13,14 @@
 	<Grid
 		{guide}
 		name={guide.name}
-		id={guide.name}
+		id={guide.id}
 		mutable={true}
 		showInstructions={true}
 		showSidebar={true}
 		showGuide={true}
 		saveState={true}
 		showUndoRedo={true}
+		showGoToSolver={true}
 	/>
 
 	<div class="text-gray-400">Gjord med 🧠 av GW och EC</div>

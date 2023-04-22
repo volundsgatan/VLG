@@ -1,5 +1,4 @@
 <script lang="ts">
-	import Guide from '$lib/jbk/Guide.svelte';
 	import { onMount, tick } from 'svelte';
 	import { solve, type Cell as SolverCell } from '$lib/jbk/solver';
 	import Grid from './Grid.svelte';
@@ -38,6 +37,7 @@
 
 	let maxUsedIterations = 1;
 	let stopAfterIteration = 0;
+	let bruteForce = false;
 
 	let isError = false;
 	let isSolved = false;
@@ -45,7 +45,6 @@
 	let guesses: { row: number; col: number }[];
 
 	const changeIteration = (delta: number) => {
-		console.log('xx');
 		stopAfterIteration = stopAfterIteration + delta;
 		runSolver(stopAfterIteration);
 	};
@@ -55,16 +54,16 @@
 	const runSolver = async (stopAfter: number) => {
 		running = true;
 		const start = Date.now();
-		const solver = solve(guide.rows, guide.cols, stopAfter, true);
+		const solver = solve(guide.rows, guide.cols, stopAfter, true, bruteForce);
 
 		while (true) {
-			// await tick();
 			const s = solver.next();
-			if (s.done) {
+			if (s.done || s.value.stopped) {
 				const end = Date.now();
 				solverDuration = end - start;
 				break;
 			}
+
 			const res = s.value;
 
 			const solved = res.cells;
@@ -105,6 +104,10 @@
 		}
 	};
 
+	const runSolverNow = () => {
+		// runSolver(stopAfterIteration);
+	};
+
 	let running = true;
 
 	onMount(async () => {
@@ -113,12 +116,30 @@
 		await runSolver(1000);
 		running = false;
 	});
-
-	// $: guide, runSolver(1000);
 </script>
 
 <div class="flex flex-col items-center space-y-4">
-	<div>running={running}</div>
+	<div>
+		{#if running}Running{:else}Stopped{/if}
+	</div>
+	<div>
+		<div class="relative flex items-start">
+			<div class="flex h-6 items-center">
+				<input
+					id="allow-brute-force"
+					aria-describedby="comments-description"
+					name="allow-brute-force"
+					type="checkbox"
+					bind:checked={bruteForce}
+					on:change={() => runSolverNow()}
+					class="h-4 w-4 rounded border-gray-300 text-purple-800 focus:ring-indigo-600 checked:bg-red-200"
+				/>
+			</div>
+			<div class="ml-3 text-sm leading-6">
+				<label for="allow-brute-force" class="font-medium">Brute force</label>
+			</div>
+		</div>
+	</div>
 	<div>
 		{#if stopAfterIteration > 0}
 			Iteration {stopAfterIteration} / {maxUsedIterations}

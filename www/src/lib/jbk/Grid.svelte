@@ -21,6 +21,7 @@
 	export let showGuide = false;
 	export let allowFalseState = true;
 	export let showUndoRedo = false;
+	export let showGoToSolver = false;
 
 	let timerSeconds = 0;
 	let timerPaused = false;
@@ -557,7 +558,7 @@
 		<div>Pausad!</div>
 		<div>
 			<button
-				class="rounded-md border-2  bg-purple-200  border-purple-800 p-1 px-2"
+				class="rounded-md border-2 bg-purple-200 border-purple-800 p-1 px-2"
 				on:click={() => (timerPaused = false)}
 			>
 				▶️
@@ -570,8 +571,8 @@
 			<div class="flex justify-center space-x-4">
 				<div class="flex flex-col">
 					<!-- Column Guides -->
-					{#if showGuide}
-						<div class="flex ">
+					{#if showGuide && guide}
+						<div class="flex">
 							<div style="width: {rowGuideWidth}px" />
 							{#if state[0]}
 								{#each state[0] as cell}
@@ -590,7 +591,7 @@
 									/>
 
 									{#if cell.col % 5 === 4}
-										<div class="h-full w-[2px] " />
+										<div class="h-full w-[2px]" />
 									{/if}
 								{/each}
 							{/if}
@@ -604,7 +605,7 @@
 						{/if}
 
 						<div class="flex">
-							{#if showGuide}
+							{#if showGuide && guide}
 								<!-- Row Guides -->
 								<Guide
 									valid={validatedRows[rowNum] === true}
@@ -668,7 +669,7 @@
 								<Timer seconds={timerSeconds} />
 
 								<button
-									class="rounded-md border-2  bg-purple-200  border-purple-800 p-1 px-2"
+									class="rounded-md border-2 bg-purple-200 border-purple-800 p-1 px-2"
 									on:click={() => (timerPaused = true)}
 								>
 									⏸️
@@ -677,7 +678,7 @@
 
 							<div class="flex space-x-2">
 								<button
-									class="rounded-md border-2   p-1"
+									class="rounded-md border-2 p-1"
 									class:bg-purple-200={canUndo}
 									class:border-purple-800={canUndo}
 									class:bg-gray-300={!canUndo}
@@ -731,6 +732,14 @@
 						>
 							Börja om
 						</button>
+						{#if showGoToSolver}
+							<a
+								class="rounded-md border-2 border-purple-800 bg-purple-200 p-1"
+								href="/jbk/solver/{id}"
+							>
+								Lösning
+							</a>
+						{/if}
 						<div>
 							<a
 								class="text-black underline"
