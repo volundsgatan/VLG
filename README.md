@@ -8,7 +8,7 @@
 - 🎻 Sonos Speaker Integration (via [node-sonos-http-api](https://github.com/jishi/node-sonos-http-api))
 - 🌩 Deployed to Cloudflare Pages
 - 🔒 Tailscale based authentication
-- 📈 Prometheus, [mqtt-exporter](https://github.com/kpetremann/mqtt-exporter), and Grafana for tracking and monitoring
+- 📈 Prometheus, [mqtt-exporter](https://github.com/kpetremann/mqtt-exporter), [yr_exporter](https://github.com/zegl/yr_exporter), [nordpool_exporter](https://github.com/zegl/nordpool_exporter), and Grafana for tracking and monitoring
 - 🛞 Running on bare-metal Kubernetes
 - 🦉 Open source (GPL-3.0), but not very customizeable or easy to use
 
