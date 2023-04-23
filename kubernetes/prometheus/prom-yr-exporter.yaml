@@ -20,7 +20,7 @@ spec:
         - name: yr-exporter
           image: ghcr.io/zegl/yr_exporter:latest
           args:
-            - "--listen-addr=:9370"
+            - "--addr=:9370"
             - "--location=59.337,18.038,stockholm"
       imagePullSecrets:
       - name: dockerconfigjson-github-com
