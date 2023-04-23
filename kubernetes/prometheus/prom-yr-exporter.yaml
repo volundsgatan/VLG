@@ -22,3 +22,5 @@ spec:
           args:
             - "--listen-addr=:9370"
             - "--location=59.337,18.038,stockholm"
+      imagePullSecrets:
+      - name: dockerconfigjson-github-com
