@@ -11,6 +11,7 @@
 	import { sonos, sonosIsUpdating } from '$lib/sonos';
 	import type { room as roomType } from './types';
 	import type { Group } from '$lib/devices';
+	import Weather from '$lib/weather/Weather.svelte';
 
 	onMount(() => {
 		const refresh = setTimeout(window.location.reload, 1000 * 60 * 60);
@@ -100,6 +101,8 @@
 		{#each config.floorplanDevices as device}
 			<Device {device} />
 		{/each}
+
+		<Weather />
 
 		<div class="absolute top-[188px] left-[884px] text-black">
 			<Sonos

@@ -3,6 +3,7 @@
 	import { sparkline } from '@fnando/sparkline';
 	import Device from '$lib/device/Device.svelte';
 	import type { TemperatureSparkConfig } from '$lib/config';
+	import config from '$lib/config';
 
 	export let spark: TemperatureSparkConfig;
 
