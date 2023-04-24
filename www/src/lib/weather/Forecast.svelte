@@ -1,6 +1,10 @@
 <script lang="ts">
+	import { keyword } from 'color-convert';
+	import { convertSymbolKeyToId, getWeatherSymbolId, type TWeatherSymbolKey } from './yr';
+
 	export let hour: number;
 	export let temp: string;
+	export let icon: string;
 
 	$: t = parseInt(parseFloat(temp).toFixed(0));
 	$: h = hour.toFixed(0).padStart(2, '0');
@@ -35,9 +39,16 @@
 		}
 		return 'text-red-800';
 	};
+
+	const key = (icon: string): string => {
+		return convertSymbolKeyToId(icon as TWeatherSymbolKey) || 'cloudy';
+	};
+
+	$: iconKey = key(icon);
 </script>
 
-<div class="p-2 text-center">
-	<div class="text-sm text-gray-500">{h}</div>
-	<div class="text-lg font-semibold {getColor(t)}">{t}°</div>
+<div class="p-2 text-center inline-flex flex-col items-center">
+	<div class="text-sm text-white">{h}</div>
+	<img class="w-6 h-6" src="/yr_icons/{iconKey}.svg" />
+	<div class="text-md text-white">{t}°</div>
 </div>
