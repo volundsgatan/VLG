@@ -15,6 +15,11 @@ data:
     :80 {
       redir https://sonos.unicorn-alligator.ts.net
     }
+    sonos.unicorn-alligator.ts.net/getaa* {
+      reverse_proxy http://192.168.50.250:1400 {
+        header_up -Host
+      }
+    }
     sonos.unicorn-alligator.ts.net {
       reverse_proxy http://sonos.sonos.svc.cluster.local:80
       tls {
@@ -42,7 +47,7 @@ spec:
       annotations:
         "prometheus.io/scrape": "true"
         "prometheus.io/port": "2019"
-        bump: v6
+        bump: v7
     spec:
       serviceAccountName: tailscale
       securityContext: {}
