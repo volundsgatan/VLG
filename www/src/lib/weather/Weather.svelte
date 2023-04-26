@@ -50,7 +50,7 @@
 	};
 
 	const ts_in_one_hour_symbol = async () => {
-		const query = encodeURIComponent('yr_forecast_in_one_hour_symbol{name="stockholm"}');
+		const query = encodeURIComponent('yr_forecast_next_1_hours_symbol{name="stockholm"}');
 
 		const response = await fetch(
 			`https://prometheus.${config.hostname}/api/v1/query?query=${query}`,
