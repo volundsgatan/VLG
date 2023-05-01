@@ -3,7 +3,7 @@
 	export let minute: string;
 </script>
 
-<div class="p-2 text-center inline-flex flex-col items-center">
+<div class="py-2 text-center inline-flex flex-col items-center">
 	<div class="text-sm text-white">{hour}:{minute}</div>
 	<img class="w-6 h-6" src="/yr_icons/01m.svg" />
 	<div class="text-md text-white">Sunset</div>

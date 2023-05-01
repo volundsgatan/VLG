@@ -30,7 +30,7 @@
 	});
 </script>
 
-<div class="flex flex-wrap justify-center gap-4">
+<div class="flex flex-wrap gap-4">
 	{#each playlists as playlist}
 		<MusicPlaylist
 			on:sonosUpdated

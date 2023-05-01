@@ -47,7 +47,7 @@
 	$: iconKey = key(icon);
 </script>
 
-<div class="p-2 text-center inline-flex flex-col items-center">
+<div class="py-2 text-center inline-flex flex-col items-center">
 	<div class="text-sm text-white">{h}</div>
 	<img class="w-6 h-6" src="/yr_icons/{iconKey}.svg" />
 	<div class="text-md text-white">{t}°</div>

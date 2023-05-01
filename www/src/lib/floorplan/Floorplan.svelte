@@ -86,10 +86,6 @@
 		style="background-image: url('{bg}')"
 		class="h-[536px] w-[1024px] bg-[length:1024px_576px] bg-no-repeat text-white transition-all duration-500"
 	>
-		<a class="absolute top-[440px] left-[600px] cursor-pointer text-3xl" href="/graphs"> 📊 </a>
-		<a class="absolute top-[440px] left-[550px] cursor-pointer text-3xl" href="/gradient"> 🎨 </a>
-		<a class="absolute top-[480px] left-[550px] cursor-pointer text-3xl" href="/dashboard"> 🎛️ </a>
-
 		{#each roomAnyLightOn as room}
 			<Brightness {room} />
 		{/each}
@@ -101,8 +97,6 @@
 		{#each config.floorplanDevices as device}
 			<Device {device} />
 		{/each}
-
-		<Weather />
 
 		<div class="absolute top-[188px] left-[884px] text-black">
 			<Sonos
@@ -132,7 +126,7 @@
 			/>
 		</div>
 
-		<div class="absolute top-[350px] left-[650px] w-[300px]">
+		<div class="z-10 absolute top-[330px] left-[640px] w-[380px]">
 			<MusicPlaylists on:sonosUpdated />
 		</div>
 	</div>

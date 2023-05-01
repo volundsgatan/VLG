@@ -119,7 +119,7 @@
 					};
 				})
 				.sort((a, b) => a.in_hours - b.in_hours)
-				.slice(0, 12)) ||
+				.slice(0, 18)) ||
 		[];
 
 	const midnightSecondsHour = (sunriseSeconds: number) => {
@@ -143,15 +143,23 @@
 	$: sunsetMinute = midnightSecondsMinute(sunsetSeconds);
 </script>
 
-<div class="absolute top-[550px] z-10 left-[50px] bg-black/20 rounded-md">
-	<div class="flex divide-x divide-black/30">
-		{#each data as ts}
+<div class="bg-gray-400 rounded-md">
+	<div class="flex justify-around px-2">
+		{#each data as ts, idx}
+			{@const isLast = idx === data.length - 1}
 			<Forecast hour={ts.hour} temp={ts.air_temperature} icon={ts.icon} />
+
 			{#if ts.hour === parseInt(sunsetHour)}
+				<div class="bg-black/30 w-[1px]" />
 				<Sunset hour={sunsetHour} minute={sunsetMinute} />
 			{/if}
 			{#if ts.hour === parseInt(sunriseHour)}
+				<div class="bg-black/30 w-[1px]" />
 				<Sunrise hour={sunriseHour} minute={sunriseMinute} />
+			{/if}
+
+			{#if !isLast}
+				<div class="bg-black/30 w-[1px]" />
 			{/if}
 		{/each}
 	</div>

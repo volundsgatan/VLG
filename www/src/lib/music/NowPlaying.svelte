@@ -1,5 +1,4 @@
 <script lang="ts">
-	import type { Zone } from './sonos';
 	import Controller from './Controller.svelte';
 	import { sonosZones as zones } from '$lib/sonos';
 

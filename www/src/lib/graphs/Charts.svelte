@@ -61,7 +61,7 @@
 <div class="flex h-full flex-col justify-between space-y-2 overflow-hidden bg-gray-300 p-2">
 	<div class="rounded-lg bg-stone-500 p-3 px-4">
 		<div class="flex items-center justify-between space-x-4">
-			<a class="cursor-pointer text-3xl" href="/">🏠</a>
+			<a class="cursor-pointer text-3xl" href="/app">🏠</a>
 
 			<div class="flex space-x-4">
 				{#each rooms as room}
@@ -91,7 +91,7 @@
 					on:keyup={useMonth}>🌙</span
 				>
 
-				<span on:click={back} on:keyup={back} >⏪</span>
+				<span on:click={back} on:keyup={back}>⏪</span>
 				<span on:click={forward} on:keyup={forward}>⏩</span>
 				<span on:click={reset} on:keyup={reset}>🔄</span>
 			</div>
@@ -108,13 +108,5 @@
 		timeSeries="mqtt_temperature"
 	/>
 
-	<Stat
-		{selectedRooms}
-		{tsStart}
-		{tsEnd}
-		{roomColors}
-		{period}
-		{step}
-		timeSeries="mqtt_humidity"
-	/>
+	<Stat {selectedRooms} {tsStart} {tsEnd} {roomColors} {period} {step} timeSeries="mqtt_humidity" />
 </div>
