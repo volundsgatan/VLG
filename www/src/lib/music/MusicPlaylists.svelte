@@ -13,10 +13,8 @@
 
 	onMount(() => {
 		sonosRequest('favorites/detailed')
-			// .then((res) => res.json() as Array<Favourite>)
 			.then((res) => res as Array<Favourite>)
 			.then((favs) => {
-				console.log(favs);
 				playlists = favs
 					.filter((f) => f.title.startsWith('⭐️') || f.title.startsWith('✏️'))
 					.map((f) => {
