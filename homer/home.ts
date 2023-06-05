@@ -57,7 +57,7 @@ const delta = (minutes: number): Date => {
 };
 
 const run = async (devices: Device[], cb: (ws: WebSocket) => void) => {
-  const endpoint = "wss://zigbee2mqtt.unicorn-alligator.ts.net/api";
+  const endpoint = "ws://zigbee2mqtt.zigbee2mqtt.svc.cluster.local/api";
 
   //try {
   const ws = new WebSocket(endpoint);
