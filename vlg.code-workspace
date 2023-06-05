@@ -10,8 +10,16 @@
 			"path": "kubernetes"
 		},
 		{
+			"path": "homer"
+		},
+		{
 			"name": "root",
 			"path": "."
 		}
-	]
+	],
+	"settings": {
+		"deno.enablePaths": [
+			"./homer"
+		]
+	}
 }

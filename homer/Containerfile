@@ -1,0 +1,6 @@
+FROM docker.io/denoland/deno:debian
+USER deno
+WORKDIR /app
+COPY api.ts .
+COPY home.ts .
+
