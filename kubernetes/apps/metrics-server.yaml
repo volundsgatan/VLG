@@ -12,6 +12,5 @@ spec:
   destination:
     server: https://kubernetes.default.svc
     namespace: metrics-server
-  spec:
-    syncPolicy:
-      automated: {}
+  syncPolicy:
+    automated: {}

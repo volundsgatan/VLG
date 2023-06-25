@@ -11,6 +11,5 @@ spec:
     path: kubernetes/apps
   destination:
     server: https://kubernetes.default.svc
-  spec:
-    syncPolicy:
-      automated: {}
+  syncPolicy:
+    automated: {}

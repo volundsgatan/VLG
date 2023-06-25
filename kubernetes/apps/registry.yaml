@@ -12,6 +12,5 @@ spec:
   destination:
     server: https://kubernetes.default.svc
     namespace: registry
-  spec:
-    syncPolicy:
-      automated: {}
+  syncPolicy:
+    automated: {}
