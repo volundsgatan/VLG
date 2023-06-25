@@ -12,3 +12,6 @@ spec:
   destination:
     server: https://kubernetes.default.svc
     namespace: kube-state-metrics
+  spec:
+    syncPolicy:
+      automated: {}
