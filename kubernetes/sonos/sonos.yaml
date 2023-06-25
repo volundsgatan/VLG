@@ -22,6 +22,13 @@ spec:
       containers:
         - name: sonos-api
           image: chrisns/docker-node-sonos-http-api:latest
+          livenessProbe:
+            httpGet:
+              path: /zones
+              port: 5005
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            failureThreshold: 5
 ---
 kind: Service
 apiVersion: v1
