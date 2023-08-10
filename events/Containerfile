@@ -1,0 +1,13 @@
+# syntax=docker/dockerfile:1
+FROM docker.io/golang:1.21-bookworm as builder
+WORKDIR /app
+COPY go.mod .
+COPY go.sum . 
+COPY main.go .
+RUN go build -v -o /app/events .
+
+FROM docker.io/debian:bookworm as runner
+WORKDIR /app
+COPY --from=builder /app/events /app/events
+RUN apt-get update && apt-get install -y ca-certificates
+CMD /app/events
