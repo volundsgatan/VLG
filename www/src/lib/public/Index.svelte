@@ -37,6 +37,10 @@
 			<a class="px-2 py-1 bg-green-200 hover:bg-green-300 rounded-md" href="/jbk">JBK</a>
 			<a
 				class="px-2 py-1 bg-green-200 hover:bg-green-300 rounded-md"
+				href="https://factorio-map.vlg.life">Factorio Maps</a
+			>
+			<a
+				class="px-2 py-1 bg-green-200 hover:bg-green-300 rounded-md"
 				href="https://github.com/volundsgatan/VLG">Source Code</a
 			>
 		</div>
