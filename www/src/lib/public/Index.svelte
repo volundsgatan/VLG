@@ -44,5 +44,19 @@
 				href="https://github.com/volundsgatan/VLG">Source Code</a
 			>
 		</div>
+
+		{#if canAccessApp}
+			<div class="flex flex-col space-y-2">
+				<h2 class="text-xl text-gray-800">Tools</h2>
+				<a
+					class="px-2 py-1 bg-green-200 hover:bg-green-300 rounded-md"
+					href="https://grafana.unicorn-alligator.ts.net">Grafana</a
+				>
+				<a
+					class="px-2 py-1 bg-green-200 hover:bg-green-300 rounded-md"
+					href="https://zigbee2mqtt.unicorn-alligator.ts.net/#/">Z2M</a
+				>
+			</div>
+		{/if}
 	</div>
 </div>
