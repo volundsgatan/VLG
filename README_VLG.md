@@ -19,4 +19,14 @@
 
 ## Network
 
-![Untitled Diagram drawio](https://user-images.githubusercontent.com/47952/188018690-a81be359-d4e2-45a2-8a30-cd627ff2fa96.png)
+```mermaid
+flowchart TD
+    User((User)) --> VLG[vlg.life] --> CF[Cloudflare Pages]
+    VLG -..-> TS
+    User --> TS{{Tailscale}} --> SonosProxy --> Sonos{{Sonos Speakers}}
+    TS --> Z2M[Zigbee2MQTT] --> MQTT --> Devices{{Devices}}
+    Z2M <--> Homebridge <--> Homekit[Apple Homekit]
+    TS --> Grafana --> Prometheus
+    TS --> Prometheus
+    Prometheus --> MQTT
+```
