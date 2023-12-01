@@ -21,12 +21,31 @@
 
 ```mermaid
 flowchart TD
-    User((User)) --> VLG[vlg.life] --> CF[Cloudflare Pages]
+
+    User((User))
+    TS{{Tailscale}}
+
+    User --> TS
+
+    subgraph cf[Cloudflare Pages]
+        VLG[vlg.life]
+    end
+    
+
+    subgraph home[At Home]
+        SonosProxy --> Sonos{{Sonos Speakers}}
+        Z2M[Zigbee2MQTT] --> MQTT --> Devices{{Devices}}
+        Z2M <--> Homebridge <--> Homekit["Apple HomeKit (Apple TV)"]
+        Grafana --> Prometheus
+        Prometheus --> MQTT
+    end
+
+
+    User --> VLG[vlg.life]
     VLG -..-> TS
-    User --> TS{{Tailscale}} --> SonosProxy --> Sonos{{Sonos Speakers}}
-    TS --> Z2M[Zigbee2MQTT] --> MQTT --> Devices{{Devices}}
-    Z2M <--> Homebridge <--> Homekit[Apple Homekit]
-    TS --> Grafana --> Prometheus
+    TS --> SonosProxy
+    TS --> Grafana
     TS --> Prometheus
-    Prometheus --> MQTT
+    TS --> Z2M
+
 ```
