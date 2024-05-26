@@ -30,6 +30,12 @@ const whoami = async (ip: string): Promise<Device | undefined> => {
 
   const devices = await jsonResponse.json() as DevicesResponse;
 
+  if (!devices || !devices.devices) {
+    console.log(`Unexpected devices response`);
+    console.log(await jsonResponse.text());
+    return;
+  }
+
   const device = devices.devices.find((device) =>
     device.addresses.includes(ip)
   );
