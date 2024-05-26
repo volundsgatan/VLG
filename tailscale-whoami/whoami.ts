@@ -28,11 +28,13 @@ const whoami = async (ip: string): Promise<Device | undefined> => {
     },
   );
 
-  const devices = await jsonResponse.json() as DevicesResponse;
+  const body = await jsonResponse.text();
+
+  const devices = JSON.parse(body) as DevicesResponse;
 
   if (!devices || !devices.devices) {
     console.log(`Unexpected devices response`);
-    console.log(await jsonResponse.text());
+    console.log(body);
     return;
   }
 
