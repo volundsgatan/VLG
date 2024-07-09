@@ -36,7 +36,7 @@ export const load: PageLoad = ({ params }) => {
 	const guide = guides.find((g) => g.id === params.id);
 
 	if (!guide) {
-		throw redirect(302, '/jbk');
+		redirect(302, '/jbk');
 	}
 
 	return {
