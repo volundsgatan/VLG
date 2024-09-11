@@ -40,7 +40,7 @@ spec:
               subPath: ""
       containers:
         - name: zigbee2mqtt
-          image: koenkk/zigbee2mqtt:1.39.0
+          image: koenkk/zigbee2mqtt:1.40.1
           imagePullPolicy: IfNotPresent
           env:
             - name: TZ
