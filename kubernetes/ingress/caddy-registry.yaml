@@ -107,6 +107,14 @@ spec:
               value: --hostname=registry
             - name: TS_SOCKET
               value: /var/run/tailscale/tailscaled.sock
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: POD_UID
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.uid
           securityContext:
             capabilities:
               add:
