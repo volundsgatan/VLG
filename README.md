@@ -39,3 +39,5 @@
 3. Use a tool like [Sweet Home 3D](https://www.sweethome3d.com/) to generate different [permutations](./www/static/) of your floorplan in different light conditions. Each 0/1 is on/off in that room. Use the rooms in the same order in the file names as in the room configuration.
 3. Assuming a tailscale network, and the dependencies running correctly...
 4. Run `cd www && pnpm install && pnpm dev`!
+
+:-)
