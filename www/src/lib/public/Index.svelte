@@ -39,6 +39,12 @@
 
 			<a
 				class="px-2 py-1 bg-green-200 hover:bg-green-300 rounded-md"
+				href="https://resevagn.westling.life/"
+				>Elins Resevagnslista
+			</a>
+
+			<a
+				class="px-2 py-1 bg-green-200 hover:bg-green-300 rounded-md"
 				href="https://gustavwestling.com">Gustav</a
 			>
 
