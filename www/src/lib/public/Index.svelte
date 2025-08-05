@@ -37,12 +37,19 @@
 
 			<a class="px-2 py-1 bg-green-200 hover:bg-green-300 rounded-md" href="/jbk">JBK</a>
 
-			<a class="px-2 py-1 bg-green-200 hover:bg-green-300 rounded-md" href="https://westling.dev"
-				>Gustav</a
+			<a
+				class="px-2 py-1 bg-green-200 hover:bg-green-300 rounded-md"
+				href="https://gustavwestling.com">Gustav</a
 			>
 
-			<a class="px-2 py-1 bg-green-200 hover:bg-green-300 rounded-md" href="https://clemmedsson.com"
-				>Elin</a
+			<a
+				class="px-2 py-1 bg-green-200 hover:bg-green-300 rounded-md"
+				href="https://elinwestling.com">Elin</a
+			>
+
+			<a
+				class="px-2 py-1 bg-green-200 hover:bg-green-300 rounded-md"
+				href="https://franswestling.com">Frans</a
 			>
 
 			<!-- <a
