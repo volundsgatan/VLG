@@ -22,10 +22,10 @@
 
 <div class="bg-green-50 min-h-screen font-light">
 	<div class="text-gray-700 w-80 mx-auto py-12 flex flex-col space-y-4">
-		<h1 class="text-4xl font-thin text-gray-800">VLG</h1>
-		<h2 class="text-xl text-gray-800">Smart Home</h2>
+		<h1 class="text-4xl font-thin text-gray-800">Westling.life</h1>
 
 		{#if canAccessApp}
+			<h2 class="text-xl text-gray-800">Smart Home</h2>
 			<a href="/app" class="bg-green-200 rounded-xl p-4 hover:bg-green-300">
 				<h2 class="text-lg font-medium text-black">Välkommen hem {name}</h2>
 				<span>Gå till appen 🏠</span>
@@ -34,11 +34,21 @@
 
 		<div class="flex flex-col space-y-2">
 			<h2 class="text-xl text-gray-800">Apps</h2>
+
 			<a class="px-2 py-1 bg-green-200 hover:bg-green-300 rounded-md" href="/jbk">JBK</a>
-			<a
+
+			<a class="px-2 py-1 bg-green-200 hover:bg-green-300 rounded-md" href="https://westling.dev"
+				>Gustav</a
+			>
+
+			<a class="px-2 py-1 bg-green-200 hover:bg-green-300 rounded-md" href="https://clemmedsson.com"
+				>Elin</a
+			>
+
+			<!-- <a
 				class="px-2 py-1 bg-green-200 hover:bg-green-300 rounded-md"
 				href="https://factorio-map.vlg.life">Factorio Maps</a
-			>
+			> -->
 			<a
 				class="px-2 py-1 bg-green-200 hover:bg-green-300 rounded-md"
 				href="https://github.com/volundsgatan/VLG">Source Code</a
